@@ -1,0 +1,13 @@
+$bog_tracker_progress $mol_view
+	done_count 0
+	total_count 0
+	label \0 / 0
+	percent_width \0%
+	sub /
+		<= Track $mol_view
+			sub /
+				<= Fill $mol_view
+					style *
+						width <= percent_width
+		<= Label $mol_view
+			sub / <= label

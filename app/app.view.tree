@@ -1,20 +1,26 @@
 $bog_tracker_app $mol_page
-	title @ \tracker
+	title @ \Трекер
+	store $bog_tracker_store
 	pages *
-		home <= Home $mol_page
-			title \Home
-			body /
-				<= Welcome $mol_text
-					text \
-						\# tracker
-						\
-						\Welcome to your new $mol app.
+		home <= Home $bog_tracker_list
+			store <= store
+		new <= New $bog_tracker_task_form
+			store <= store
+		task <= Task $bog_tracker_task_page
+			store <= store
+		profile <= Profile $bog_tracker_profile_page
+			store <= store
 	nav_options *
-		home \Home
+		home @ \Задачи
+		profile @ \Профиль
 	Navbar $mol_switch
 		value? <=> screen? \home
 		options <= nav_options
+	Progress $bog_tracker_progress
+		done_count <= done_count 0
+		total_count <= total_count 0
 	tools /
+		<= Progress
 		<= Sources $mol_link_source
 			uri \https://github.com/bog/tracker
 		<= Status $giper_baza_status

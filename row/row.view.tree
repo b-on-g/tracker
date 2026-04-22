@@ -1,0 +1,34 @@
+$bog_tracker_row $mol_view
+	task_id \
+	task_title \
+	task_subject \
+	task_deadline \
+	task_priority \medium
+	task_done? false
+	task_overdue false
+	task_assignee \
+	task_click? null
+	attr *
+		^
+		bog_tracker_row_overdue <= task_overdue
+		bog_tracker_row_priority <= task_priority
+	sub /
+		<= Check $mol_check_icon
+			hint @ \Mark done
+			checked? <=> task_done? false
+			Icon <= Check_icon $mol_icon_check
+		<= Main $mol_button_minor
+			click? <=> task_click? null
+			sub /
+				<= Title_row $mol_view
+					sub / <= task_title
+				<= Meta $mol_view
+					sub /
+						<= Subject $mol_view
+							sub / <= task_subject
+						<= Deadline $mol_view
+							sub / <= task_deadline
+						<= Assignee $mol_view
+							sub / <= task_assignee
+		<= Priority $mol_view
+			sub / <= task_priority

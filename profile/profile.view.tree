@@ -1,0 +1,28 @@
+$bog_tracker_profile_page $mol_page
+	title @ \Профиль
+	store $bog_tracker_store
+	name? \
+	role? \student
+	role_options *
+		student @ \Ученик
+		teacher @ \Учитель
+		parent @ \Родитель
+	tools /
+		<= Back $mol_button_minor
+			title @ \← Назад
+			click? <=> back_click? null
+	body /
+		<= Form $mol_list
+			rows /
+				<= Name_field $mol_labeler
+					title @ \Имя
+					content /
+						<= Name_input $mol_string
+							hint @ \Как вас зовут?
+							value? <=> name? \
+				<= Role_field $mol_labeler
+					title @ \Роль
+					content /
+						<= Role_input $mol_switch
+							value? <=> role? \student
+							options <= role_options

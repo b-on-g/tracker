@@ -1,0 +1,41 @@
+$bog_tracker_list $mol_page
+	title @ \Задания
+	store $bog_tracker_store
+	filter? \all
+	filter_options *
+		all @ \Все
+		active @ \В работе
+		done @ \Сделано
+		overdue @ \Просрочено
+	empty_text @ \Нет заданий. Нажмите «+ Новое задание», чтобы добавить первое.
+	new_task_title @ \+ Новое задание
+	Filter_switch $mol_switch
+		value? <=> filter? \all
+		options <= filter_options
+	New_task $mol_button_major
+		title <= new_task_title
+		click? <=> new_task_click? null
+	Head_bar $mol_view
+		sub /
+			<= Filter_switch
+			<= New_task
+	Row* $bog_tracker_row
+		task_id <= task_id* \
+		task_title <= task_title* \
+		task_subject <= task_subject* \
+		task_deadline <= task_deadline* \
+		task_priority <= task_priority* \medium
+		task_done? <=> task_done*? false
+		task_overdue <= task_overdue* false
+		task_assignee <= task_assignee* \
+		task_click? <=> task_click*? null
+	Rows_list $mol_list
+		rows <= task_rows /
+	Empty $mol_view
+		sub /
+			<= Empty_text $mol_paragraph
+				title <= empty_text
+	head /
+		<= Title
+		<= Head_bar
+	body <= content /
