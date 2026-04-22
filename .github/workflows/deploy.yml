@@ -22,15 +22,15 @@ jobs:
                   package: "bog/tracker"
 
             - uses: b-on-g/mol-prerender-action@main
-              if: github.ref == 'refs/heads/master'
+              if: github.ref == 'refs/heads/main'
               with:
                   folder: "bog/tracker/-"
-                  base-url: "https://bog.github.io/tracker/"
+                  base-url: "https://b-on-g.github.io/tracker/"
                   screens: |
                       home
 
             - uses: hyoo-ru/gh-deploy@v4.4.1
-              if: github.ref == 'refs/heads/master'
+              if: github.ref == 'refs/heads/main'
               with:
                   folder: "bog/tracker/-"
 
