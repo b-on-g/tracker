@@ -20,26 +20,12 @@ jobs:
             - uses: hyoo-ru/mam_build@master2
               with:
                   package: "bog/tracker"
-
-            - uses: b-on-g/mol-prerender-action@main
-              if: github.ref == 'refs/heads/main'
-              with:
-                  folder: "bog/tracker/-"
-                  base-url: "https://b-on-g.github.io/tracker/"
-                  screens: |
-                      home
+                  modules: 'app'
 
             - uses: hyoo-ru/gh-deploy@v4.4.1
               if: github.ref == 'refs/heads/main'
               with:
-                  folder: "bog/tracker/-"
-
-            - name: Deploy feature branch
-              if: startsWith(github.ref, 'refs/heads/feature/')
-              uses: hyoo-ru/gh-deploy@v4.4.1
-              with:
-                  folder: "bog/tracker/-"
-                  target-folder: ${{ github.ref_name }}
+                  folder: "bog/tracker/app/-"
 
     cleanup:
         if: github.event_name == 'delete' && startsWith(github.event.ref, 'feature/')
