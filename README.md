@@ -21,4 +21,6 @@ Feature branches deploy to: https://bog.github.io/tracker/{branch-name}/
 
 ## Desktop (Tauri)
 
-Tag `v*` triggers Tauri build via GitHub Actions.
+Tag `v*` triggers Tauri build via GitHub Actions. 
+
+Do not use this trash
