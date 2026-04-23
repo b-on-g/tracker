@@ -10,9 +10,11 @@ $bog_tracker_app $mol_page
 			store <= store
 		profile <= Profile $bog_tracker_profile_page
 			store <= store
+		lk <= Lk $bog_lk
 	nav_options *
 		home @ \Задачи
 		profile @ \Профиль
+		lk @ \Личный кабинет
 	Navbar $mol_switch
 		value? <=> screen? \home
 		options <= nav_options
