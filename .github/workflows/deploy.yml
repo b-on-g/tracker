@@ -19,12 +19,12 @@ jobs:
         steps:
             - uses: hyoo-ru/mam_build@master2
               with:
-                  package: "bog/tracker/mplit/neolo"
+                  package: "bog/tracker/mpit/neolo"
 
             - uses: hyoo-ru/gh-deploy@v4.4.1
               if: github.ref == 'refs/heads/main'
               with:
-                  folder: "bog/tracker/mplit/neolo/-"
+                  folder: "bog/tracker/mpit/neolo/-"
 
     cleanup:
         if: github.event_name == 'delete' && startsWith(github.event.ref, 'feature/')
