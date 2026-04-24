@@ -15,7 +15,8 @@ jobs:
         steps:
             - uses: hyoo-ru/mam_build@master2
               with:
-                  package: "bog/tracker/mpit/neolo"
+                  package: "bog/tracker"
+                  modules: 'mpit/neolo'
 
             - uses: hyoo-ru/gh-deploy@v4.4.1
               if: github.ref == 'refs/heads/main'
