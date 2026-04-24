@@ -1,8 +1,8 @@
 {
-	"name": "bog_tracker_app",
-	"short_name": "bog_tracker_app",
+	"name": "bog_tracker_mplit_neolo",
+	"short_name": "bog_tracker_mplit_neolo",
 	"description": "",
-	"id": "bog_tracker_app",
+	"id": "bog_tracker_mplit_neolo",
 	"start_url": ".",
 	"display": "standalone",
 	"background_color": "#000000",
