@@ -1,7 +1,6 @@
 namespace $.$$ {
 
 	export class $bog_tracker_mpit_neolo extends $.$bog_tracker_mpit_neolo {
-
 		profile(): $bog_tracker_mpit_neolo_user | null {
 			try {
 				return this.store().profile()
