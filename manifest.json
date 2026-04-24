@@ -1,8 +1,8 @@
 {
-	"name": "bog_tracker_mplit_neolo",
-	"short_name": "bog_tracker_mplit_neolo",
+	"name": "bog_tracker_mpit_neolo",
+	"short_name": "bog_tracker_mpit_neolo",
 	"description": "",
-	"id": "bog_tracker_mplit_neolo",
+	"id": "bog_tracker_mpit_neolo",
 	"start_url": ".",
 	"display": "standalone",
 	"background_color": "#000000",

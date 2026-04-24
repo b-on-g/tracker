@@ -1,0 +1,2135 @@
+$mol_speck $mol_view
+	theme \$mol_theme_accent
+	sub /
+		<= value null
+
+$mol_button $mol_view
+	enabled true
+	click?event null
+	event_click?event null
+	status? /
+	event *
+		^
+		click?event <=> activate?event <=> event_activate?event null
+		dblclick?event <=> clicks?event null
+		keydown?event <=> key_press?event <=> event_key_press?event null
+	attr *
+		^
+		disabled <= disabled false
+		role \button
+		tabindex <= tab_index 0
+		title <= hint_safe <= hint \
+	sub /$mol_view_content
+		<= title
+	Speck $mol_speck
+		value <= error \
+
+$mol_button_typed $mol_button
+	minimal_height 40
+	minimal_width 40
+
+$mol_button_minor $mol_button_typed
+
+$mol_check $mol_button_minor
+	attr *
+		^
+		mol_check_checked <= checked? false
+		aria-checked <= aria_checked \false
+		role <= aria_role \checkbox
+	sub /$mol_view_content
+		<= Icon null
+		<= label /
+			<= Title $mol_view
+				sub /
+					<= title \
+
+$mol_check_list $mol_view
+	dictionary *
+	Option* $mol_check
+		checked? <=> option_checked*? false
+		label <= option_label* /
+			<= option_title* \
+		enabled <= option_enabled* <= enabled true
+		hint <= option_hint* \
+		minimal_height 24
+	options *
+	keys /string
+	sub <= items /$mol_check
+
+$mol_switch $mol_check_list
+	value? \
+
+$mol_hotkey $mol_plugin
+	event *
+		^
+		keydown?event <=> keydown?event null
+	key *
+	mod_ctrl false
+	mod_alt false
+	mod_shift false
+
+$mol_string $mol_view
+	dom_name \input
+	enabled true
+	minimal_height 40
+	autocomplete false
+	selection? /number
+		0
+		0
+	auto /
+		<= selection_watcher null
+		<= error_report null
+	field *
+		^
+		disabled <= disabled false
+		value <= value_changed? <=> value? \
+		placeholder <= hint_visible <= hint \
+		spellcheck <= spellcheck true
+		autocomplete <= autocomplete_native \
+		selectionEnd <= selection_end 0
+		selectionStart <= selection_start 0
+		inputMode <= keyboard \text
+		enterkeyhint <= enter \go
+	attr *
+		^
+		maxlength <= length_max +Infinity
+		type <= type? \text
+	event *
+		^
+		input?event <=> event_change?event null
+	plugins /
+		<= Submit $mol_hotkey
+			mod_ctrl <= submit_with_ctrl false
+			key * enter?event <=> submit?event null
+
+$mol_list $mol_view
+	render_visible_only true
+	render_over 0.1
+	sub <= rows /$mol_view
+		<= Gap_before $mol_view style * paddingTop <= gap_before 0
+		<= Empty $mol_view
+		<= Gap_after $mol_view style * paddingTop <= gap_after 0
+	item_height_min* 1
+	item_width_min* 1
+	view_window_shift? 0
+	view_window /
+		0
+		0
+
+$mol_labeler $mol_list
+	rows /
+		<= Label $mol_view
+			minimal_height 32
+			sub <= label /$mol_view_content
+				<= title
+		<= Content $mol_view
+			minimal_height 24
+			sub <= content /
+
+$mol_button_major $mol_button_minor
+	theme \$mol_theme_base
+
+$bog_tracker_mpit_neolo_auth $mol_view
+	store $bog_tracker_mpit_neolo_store
+	mode? \login
+	mode_options *
+		login @ \Войти
+		register @ \Регистрация
+	role? \
+	error? \
+	busy? false
+	has_error false
+	is_login_mode true
+	is_register_mode false
+	needs_school_field false
+	login_username? \
+	login_password? \
+	reg_username? \
+	reg_password? \
+	reg_password2? \
+	reg_name? \
+	reg_surname? \
+	reg_school? \
+	attr *
+		^
+		bog_tracker_mpit_neolo_auth_busy <= busy
+	sub /
+		<= Card $mol_view
+			sub /
+				<= Brand $mol_view
+					sub /
+						\School
+						<= Brand_accent $mol_view
+							sub /
+								\Plan
+				<= Sub $mol_view
+					sub /
+						\Планировщик для школьников
+				<= Tabs $mol_switch
+					value? <=> mode? \login
+					options <= mode_options
+				<= Error_view $mol_view
+					attr *
+						^
+						bog_tracker_mpit_neolo_auth_error_visible <= has_error false
+					sub /
+						<= error
+				<= Login_form $mol_view
+					attr *
+						^
+						bog_tracker_mpit_neolo_auth_form_visible <= is_login_mode true
+					sub /
+						<= Login_username_field $mol_labeler
+							title @ \Логин
+							content /
+								<= Login_username_input $mol_string
+									hint @ \Ваш логин
+									value? <=> login_username? \
+						<= Login_password_field $mol_labeler
+							title @ \Пароль
+							content /
+								<= Login_password_input $mol_string
+									hint @ \Ваш пароль
+									type \password
+									value? <=> login_password? \
+						<= Login_submit $mol_button_major
+							click? <=> login_click? null
+							enabled <= login_enabled true
+							sub /
+								<= login_label \Войти
+				<= Register_form $mol_view
+					attr *
+						^
+						bog_tracker_mpit_neolo_auth_form_visible <= is_register_mode false
+					sub /
+						<= Reg_username_field $mol_labeler
+							title @ \Логин
+							content /
+								<= Reg_username_input $mol_string
+									hint @ \Придумайте логин
+									value? <=> reg_username? \
+						<= Reg_password_field $mol_labeler
+							title @ \Пароль
+							content /
+								<= Reg_password_input $mol_string
+									hint @ \Придумайте пароль
+									type \password
+									value? <=> reg_password? \
+						<= Reg_password2_field $mol_labeler
+							title @ \Повторите пароль
+							content /
+								<= Reg_password2_input $mol_string
+									hint @ \Повторите пароль
+									type \password
+									value? <=> reg_password2? \
+						<= Reg_two_col $mol_view
+							sub /
+								<= Reg_name_field $mol_labeler
+									title @ \Имя
+									content /
+										<= Reg_name_input $mol_string
+											hint @ \Ваше имя
+											value? <=> reg_name? \
+								<= Reg_surname_field $mol_labeler
+									title @ \Фамилия
+									content /
+										<= Reg_surname_input $mol_string
+											hint @ \Ваша фамилия
+											value? <=> reg_surname? \
+						<= Reg_role_label $mol_view
+							sub /
+								\Кто вы?
+						<= Reg_role_grid $mol_view
+							sub /
+								<= Role_student $bog_tracker_mpit_neolo_auth_role_button
+									role_key \student
+									role_icon \🎒
+									role_label @ \Ученик
+									selected <= role_student_selected false
+									click? <=> role_student_click? null
+								<= Role_teacher $bog_tracker_mpit_neolo_auth_role_button
+									role_key \teacher
+									role_icon \📚
+									role_label @ \Учитель
+									selected <= role_teacher_selected false
+									click? <=> role_teacher_click? null
+								<= Role_parent $bog_tracker_mpit_neolo_auth_role_button
+									role_key \parent
+									role_icon \👨‍👩‍👧
+									role_label @ \Родитель
+									selected <= role_parent_selected false
+									click? <=> role_parent_click? null
+						<= Reg_school_field $mol_labeler
+							attr *
+								^
+								bog_tracker_mpit_neolo_auth_school_visible <= needs_school_field false
+							title @ \Школа
+							content /
+								<= Reg_school_input $mol_string
+									hint @ \Например, Школа №42
+									value? <=> reg_school? \
+						<= Reg_submit $mol_button_major
+							click? <=> register_click? null
+							enabled <= register_enabled true
+							sub /
+								<= register_label \Зарегистрироваться
+
+$bog_tracker_mpit_neolo_auth_role_button $mol_button_minor
+	role_key \
+	role_icon \
+	role_label \
+	selected false
+	attr *
+		^
+		bog_tracker_mpit_neolo_auth_role_button_selected <= selected
+	sub /
+		<= Role_icon $mol_view
+			sub / <= role_icon
+		<= Role_label $mol_view
+			sub / <= role_label
+
+$bog_tracker_mpit_neolo_student_tasks $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	title_label @ \Задания
+	nearest_label @ \Ближайшие задания
+	add_label @ \Добавить задачу
+	add_trigger_label @ \Открыть календарь и создать задачу
+	task_ids /string
+	add_task_click? null
+	open_task*? null
+	task_title* \
+	task_desc* \
+	task_source_label* \
+	task_source_cls* \src-self
+	task_status_label* \
+	task_status_cls* \status-pending
+	task_deadline* \
+	task_rows /
+	Card* $bog_tracker_mpit_neolo_student_tasks_card
+		task_id* <= task_id_value* \
+		task_title <= task_title* \
+		task_desc <= task_desc* \
+		source_label <= task_source_label* \
+		source_cls <= task_source_cls* \src-self
+		status_label <= task_status_label* \
+		status_cls <= task_status_cls* \status-pending
+		deadline <= task_deadline* \
+		click? <=> open_task*? null
+	sub /
+		<= Title $mol_view
+			sub /
+				<= title_label
+		<= Section_title $mol_view
+			sub /
+				<= nearest_label
+		<= Tasks_group $mol_list
+			rows <= task_rows
+		<= Add_box $mol_view
+			sub /
+				<= Add_title $mol_view
+					sub /
+						<= add_label
+				<= Add_trigger $mol_button_minor
+					click? <=> add_task_click? null
+					sub /
+						<= Add_icon $mol_view
+							sub /
+								\+
+						<= Add_text $mol_view
+							sub /
+								<= add_trigger_label
+
+$bog_tracker_mpit_neolo_student_tasks_card $mol_button_minor
+	task_id \
+	task_title \
+	task_desc \
+	source_label \
+	source_cls \src-self
+	status_label \
+	status_cls \status-pending
+	deadline \
+	click? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_student_tasks_card_source <= source_cls \src-self
+		bog_tracker_mpit_neolo_student_tasks_card_status <= status_cls \status-pending
+	sub /
+		<= Bullet $mol_view
+		<= Inner $mol_view
+			sub /
+				<= Name $mol_view
+					sub /
+						<= task_title
+				<= Desc $mol_view
+					sub /
+						<= task_desc
+				<= Meta_row $mol_view
+					sub /
+						<= Source_badge $mol_view
+							attr *
+								^
+							sub /
+								<= source_label
+						<= Status_badge $mol_view
+							attr *
+								^
+							sub /
+								<= status_label
+		<= Deadline $mol_view
+			sub /
+				<= deadline
+
+$bog_tracker_mpit_neolo_student_calendar $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	title_label @ \Календарь
+	month_label \
+	view_month? 0
+	view_year? 0
+	selected_date? \
+	add_label \+ Добавить задачу
+	today_label @ \Задачи на день
+	upcoming_label @ \Ближайшие события
+	empty_note @ \На выбранный день задач нет.
+	prev_month? null
+	next_month? null
+	create_click? null
+	select_day*? null
+	open_task*? null
+	weekday_ids /
+		\Пн
+		\Вт
+		\Ср
+		\Чт
+		\Пт
+		\Сб
+		\Вс
+	cell_ids /string
+	cell_day* \
+	cell_count* \
+	cell_has_count* false
+	cell_is_selected* false
+	cell_is_today* false
+	cell_is_empty* false
+	day_is_empty false
+	selected_label \
+	day_task_ids /string
+	upcoming_ids /string
+	day_task_time* \
+	day_task_title* \
+	day_task_meta* \
+	upcoming_date* \
+	upcoming_time* \
+	upcoming_title* \
+	grid_cells /
+	day_tasks /
+	upcoming /
+	Cell* $bog_tracker_mpit_neolo_student_calendar_cell
+		date_id* <= cell_date_id* \
+		day_number <= cell_day* \
+		count <= cell_count* \
+		has_count <= cell_has_count* false
+		is_selected <= cell_is_selected* false
+		is_today <= cell_is_today* false
+		is_empty <= cell_is_empty* false
+		click? <=> select_day*? null
+	Weekday* $mol_view
+		sub /
+			<= weekday_label* \
+	Day_task* $bog_tracker_mpit_neolo_student_calendar_day_task
+		task_id* <= day_task_id* \
+		time <= day_task_time* \
+		task_title <= day_task_title* \
+		meta <= day_task_meta* \
+		click? <=> open_task*? null
+	Upcoming_row* $bog_tracker_mpit_neolo_student_calendar_upcoming_row
+		task_id* <= upcoming_id* \
+		upcoming_date <= upcoming_date* \
+		upcoming_time <= upcoming_time* \
+		upcoming_title <= upcoming_title* \
+		click? <=> open_task*? null
+	sub /
+		<= Title $mol_view
+			sub /
+				<= title_label
+		<= Calendar_layout $mol_view
+			sub /
+				<= Toolbar $mol_view
+					sub /
+						<= Nav $mol_view
+							sub /
+								<= Prev_btn $mol_button_minor
+									click? <=> prev_month? null
+									sub /
+										\‹
+								<= Month_label $mol_view
+									sub /
+										<= month_label
+								<= Next_btn $mol_button_minor
+									click? <=> next_month? null
+									sub /
+										\›
+						<= Create_btn $mol_button_minor
+							click? <=> create_click? null
+							sub /
+								<= add_label
+				<= Grid $mol_view
+					sub <= grid_cells
+				<= Bottom $mol_view
+					sub /
+						<= Day_box $mol_view
+							sub /
+								<= Day_box_title $mol_view
+									sub /
+										<= today_label
+								<= Selected_label $mol_view
+									sub /
+										<= selected_label
+								<= Day_list $mol_list
+									rows <= day_tasks
+								<= Empty_note $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_student_calendar_empty <= day_is_empty false
+									sub /
+										<= empty_note
+						<= Upcoming_box $mol_view
+							sub /
+								<= Upcoming_title $mol_view
+									sub /
+										<= upcoming_label
+								<= Upcoming_list $mol_list
+									rows <= upcoming
+
+$bog_tracker_mpit_neolo_student_calendar_cell $mol_button_minor
+	date_id \
+	day_number \
+	count \
+	has_count false
+	is_selected false
+	is_today false
+	is_empty false
+	click? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_student_calendar_cell_selected <= is_selected false
+		bog_tracker_mpit_neolo_student_calendar_cell_today <= is_today false
+		bog_tracker_mpit_neolo_student_calendar_cell_empty <= is_empty false
+		bog_tracker_mpit_neolo_student_calendar_cell_has_count <= has_count false
+	sub /
+		<= Day_number $mol_view
+			sub /
+				<= day_number
+		<= Badge $mol_view
+			attr *
+				^
+			sub /
+				<= count
+
+$bog_tracker_mpit_neolo_student_calendar_day_task $mol_button_minor
+	task_id \
+	time \
+	task_title \
+	meta \
+	click? null
+	sub /
+		<= Time_chip $mol_view
+			sub /
+				<= time
+		<= Inner $mol_view
+			sub /
+				<= Title_row $mol_view
+					sub /
+						<= task_title
+				<= Meta_row $mol_view
+					sub /
+						<= meta
+
+$bog_tracker_mpit_neolo_student_calendar_upcoming_row $mol_view
+	task_id \
+	upcoming_date \
+	upcoming_time \
+	upcoming_title \
+	click? null
+	sub /
+		<= Dot $mol_view
+		<= Text $mol_view
+			sub /
+				<= upcoming_date
+				\ ·
+				<= upcoming_time
+				\ —
+				<= Title_btn $mol_button_minor
+					click? <=> click? null
+					sub /
+						<= upcoming_title
+
+$mol_svg $mol_view
+	dom_name \svg
+	dom_name_space \http://www.w3.org/2000/svg
+	font_size 16
+	font_family \
+	style_size *
+
+$mol_svg_root $mol_svg
+	dom_name \svg
+	attr *
+		^
+		viewBox <= view_box \0 0 100 100
+		preserveAspectRatio <= aspect \xMidYMid
+
+$mol_svg_path $mol_svg
+	dom_name \path
+	attr *
+		^
+		d <= geometry \
+
+
+$bog_tracker_mpit_neolo_student_stats $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	profile_title @ \Личный кабинет
+	label_name @ \Имя
+	label_surname @ \Фамилия
+	label_login @ \Логин
+	label_role @ \Роль
+	label_school @ \Школа
+	label_id @ \ID
+	value_name \—
+	value_surname \—
+	value_login \—
+	value_role \—
+	value_school \—
+	value_id \—
+	invitations_title \📬 Приглашения
+	ai_title \🤖 ИИ-наставник
+	ai_button_label \Получить советы
+	stats_title @ \Статистика
+	done_title \✅ Выполненные задания
+	work_title \⏳ Задания в работе
+	overdue_title \⚠️ Просроченные задания
+	rejected_title \❌ Отклонённые задания
+	done_count \0
+	work_count \0
+	overdue_count \0
+	rejected_count \0
+	invitation_ids /string
+	invitation_title* \
+	invitation_sub* \
+	invitation_rows /
+	inv_accept*? null
+	inv_reject*? null
+	ai_click? null
+	ai_text? \
+	ai_visible? false
+	done_line_path \
+	done_fill_path \
+	work_line_path \
+	work_fill_path \
+	overdue_line_path \
+	overdue_fill_path \
+	rejected_line_path \
+	rejected_fill_path \
+	Invitation_row* $bog_tracker_mpit_neolo_student_stats_invitation
+		invitation_id* <= invitation_id_value* \
+		invitation_title <= invitation_title* \
+		invitation_sub <= invitation_sub* \
+		accept_click? <=> inv_accept*? null
+		reject_click? <=> inv_reject*? null
+	Done_chart $bog_tracker_mpit_neolo_student_stats_chart
+		line_path <= done_line_path \
+		fill_path <= done_fill_path \
+		color \#1aa843
+	Work_chart $bog_tracker_mpit_neolo_student_stats_chart
+		line_path <= work_line_path \
+		fill_path <= work_fill_path \
+		color \#111111
+	Overdue_chart $bog_tracker_mpit_neolo_student_stats_chart
+		line_path <= overdue_line_path \
+		fill_path <= overdue_fill_path \
+		color \#c0392b
+	Rejected_chart $bog_tracker_mpit_neolo_student_stats_chart
+		line_path <= rejected_line_path \
+		fill_path <= rejected_fill_path \
+		color \#e67e22
+	Done_card $bog_tracker_mpit_neolo_student_stats_card
+		card_title <= done_title
+		count <= done_count
+		accent \green
+		Chart <= Done_chart
+	Work_card $bog_tracker_mpit_neolo_student_stats_card
+		card_title <= work_title
+		count <= work_count
+		accent \black
+		Chart <= Work_chart
+	Overdue_card $bog_tracker_mpit_neolo_student_stats_card
+		card_title <= overdue_title
+		count <= overdue_count
+		accent \red
+		Chart <= Overdue_chart
+	Rejected_card $bog_tracker_mpit_neolo_student_stats_card
+		card_title <= rejected_title
+		count <= rejected_count
+		accent \orange
+		Chart <= Rejected_chart
+	sub /
+		<= Stats_layout $mol_view
+			sub /
+				<= Profile_card $mol_view
+					sub /
+						<= Profile_title $mol_view
+							sub /
+								<= profile_title
+						<= Profile_table $mol_view
+							sub /
+								<= L_name $mol_view
+									sub /
+										<= label_name
+								<= V_name $mol_view
+									sub /
+										<= value_name
+								<= L_surname $mol_view
+									sub /
+										<= label_surname
+								<= V_surname $mol_view
+									sub /
+										<= value_surname
+								<= L_login $mol_view
+									sub /
+										<= label_login
+								<= V_login $mol_view
+									sub /
+										<= value_login
+								<= L_role $mol_view
+									sub /
+										<= label_role
+								<= V_role $mol_view
+									sub /
+										<= value_role
+								<= L_school $mol_view
+									sub /
+										<= label_school
+								<= V_school $mol_view
+									sub /
+										<= value_school
+								<= L_id $mol_view
+									sub /
+										<= label_id
+								<= V_id $mol_view
+									sub /
+										<= value_id
+						<= Inv_section $mol_view
+							sub /
+								<= Inv_title $mol_view
+									sub /
+										<= invitations_title
+								<= Inv_list $mol_list
+									rows <= invitation_rows
+						<= Ai_section $mol_view
+							sub /
+								<= Ai_heading $mol_view
+									sub /
+										<= ai_title
+								<= Ai_btn $mol_button_minor
+									click? <=> ai_click? null
+									sub /
+										<= ai_button_label
+								<= Ai_block $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_student_stats_ai_visible <= ai_visible false
+									sub /
+										<= Ai_content $mol_view
+											sub /
+												<= ai_text
+				<= Stats_side $mol_view
+					sub /
+						<= Stats_title $mol_view
+							sub /
+								<= stats_title
+						<= Stats_column $mol_view
+							sub /
+								<= Done_card
+								<= Work_card
+								<= Overdue_card
+								<= Rejected_card
+
+$bog_tracker_mpit_neolo_student_stats_card $mol_view
+	card_title \
+	count \0
+	accent \green
+	Chart null
+	attr *
+		^
+		bog_tracker_mpit_neolo_student_stats_card_accent <= accent \green
+	sub /
+		<= Card_title $mol_view
+			sub /
+				<= card_title
+		<= Main $mol_view
+			sub /
+				<= Big_number $mol_view
+					sub /
+						<= count
+				<= Chart_holder $mol_view
+					sub /
+						<= Chart
+
+$bog_tracker_mpit_neolo_student_stats_invitation $mol_view
+	invitation_id \
+	invitation_title \
+	invitation_sub \
+	accept_label @ \Принять
+	reject_label @ \Отклонить
+	accept_click? null
+	reject_click? null
+	sub /
+		<= Inv_title $mol_view
+			sub /
+				<= invitation_title
+		<= Inv_sub $mol_view
+			sub /
+				<= invitation_sub
+		<= Inv_actions $mol_view
+			sub /
+				<= Accept_btn $mol_button_minor
+					click? <=> accept_click? null
+					sub /
+						<= accept_label
+				<= Reject_btn $mol_button_minor
+					click? <=> reject_click? null
+					sub /
+						<= reject_label
+
+$bog_tracker_mpit_neolo_student_stats_chart $mol_svg_root
+	view_box \0 0 400 90
+	aspect \none
+	color \#1aa843
+	line_path \
+	fill_path \
+	style * fill <= color \#1aa843
+	sub /
+		<= Fill $mol_svg_path
+			geometry <= fill_path
+		<= Line $mol_svg_path
+			geometry <= line_path
+
+$bog_tracker_mpit_neolo_student_sidebar $mol_view
+	screen? \tasks
+	invitations_count 0
+	has_invitations false
+	is_tasks false
+	is_calendar false
+	is_stats false
+	about_label @ \О нас
+	terms_label @ \Пользовательское соглашение
+	calendar_label @ \Календарь
+	tasks_label @ \Задания
+	cabinet_label @ \Кабинет
+	calendar_icon \🗓
+	tasks_icon \📋
+	cabinet_icon \👤
+	open_about? null
+	open_terms? null
+	pick_tasks? null
+	pick_calendar? null
+	pick_stats? null
+	sub /
+		<= Stack $mol_view
+			sub /
+				<= Item_calendar $mol_button_minor
+					attr *
+						^
+						bog_tracker_mpit_neolo_student_sidebar_active <= is_calendar false
+					click? <=> pick_calendar? null
+					sub /
+						<= Circle_calendar $mol_view
+							attr *
+								^
+								bog_tracker_mpit_neolo_student_sidebar_circle <= calendar_circle \bk
+							sub /
+								<= calendar_icon
+						<= Label_calendar $mol_view
+							sub /
+								<= calendar_label
+				<= Item_tasks $mol_button_minor
+					attr *
+						^
+						bog_tracker_mpit_neolo_student_sidebar_active <= is_tasks false
+					click? <=> pick_tasks? null
+					sub /
+						<= Circle_tasks $mol_view
+							attr *
+								^
+								bog_tracker_mpit_neolo_student_sidebar_circle <= tasks_circle \g
+							sub /
+								<= tasks_icon
+						<= Label_tasks $mol_view
+							sub /
+								<= tasks_label
+				<= Item_cabinet $mol_button_minor
+					attr *
+						^
+						bog_tracker_mpit_neolo_student_sidebar_active <= is_stats false
+					click? <=> pick_stats? null
+					sub /
+						<= Circle_cabinet $mol_view
+							attr *
+								^
+								bog_tracker_mpit_neolo_student_sidebar_circle <= cabinet_circle \dg
+							sub /
+								<= cabinet_icon
+						<= Label_cabinet $mol_view
+							sub /
+								<= cabinet_label
+						<= Badge $mol_view
+							attr *
+								^
+								bog_tracker_mpit_neolo_student_sidebar_badge_visible <= has_invitations false
+							sub /
+								\!
+		<= Footer $mol_view
+			sub /
+				<= About_btn $mol_button_minor
+					click? <=> open_about? null
+					sub /
+						<= about_label
+				<= Terms_btn $mol_button_minor
+					click? <=> open_terms? null
+					sub /
+						<= terms_label
+
+$bog_tracker_mpit_neolo_student $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	screen? \tasks
+	selected_date? \
+	view_month? 0
+	view_year? 0
+	is_tasks false
+	is_calendar false
+	is_stats false
+	invitations_count 0
+	brand_plain \School
+	brand_accent \Plan
+	logout_label @ \Выход
+	logout_icon \↪
+	logout? null
+	open_task*? null
+	open_about? null
+	open_terms? null
+	add_task_click? null
+	create_click? null
+	prev_month? null
+	next_month? null
+	select_day*? null
+	sub /
+		<= Shell $mol_view
+			sub /
+				<= Topbar $mol_view
+					sub /
+						<= Brand $mol_view
+							sub /
+								<= brand_plain
+								<= Brand_accent $mol_view
+									sub /
+										<= brand_accent
+						<= Logout_btn $mol_button_minor
+							click? <=> logout? null
+							sub /
+								<= Logout_icon $mol_view
+									sub /
+										<= logout_icon
+								<= Logout_text $mol_view
+									sub /
+										<= logout_label
+				<= Layout $mol_view
+					sub /
+						<= Main_area $mol_view
+							sub /
+								<= Tasks_screen $bog_tracker_mpit_neolo_student_tasks
+									attr *
+										^
+										bog_tracker_mpit_neolo_student_screen_visible <= is_tasks false
+									store <= store
+									api <= api
+									open_task*? <=> open_task*? null
+									add_task_click? <=> add_task_click? null
+								<= Calendar_screen $bog_tracker_mpit_neolo_student_calendar
+									attr *
+										^
+										bog_tracker_mpit_neolo_student_screen_visible <= is_calendar false
+									store <= store
+									api <= api
+									view_month? <=> view_month? 0
+									view_year? <=> view_year? 0
+									selected_date? <=> selected_date? \
+									prev_month? <=> prev_month? null
+									next_month? <=> next_month? null
+									create_click? <=> create_click? null
+									select_day*? <=> select_day*? null
+									open_task*? <=> open_task*? null
+								<= Stats_screen $bog_tracker_mpit_neolo_student_stats
+									attr *
+										^
+										bog_tracker_mpit_neolo_student_screen_visible <= is_stats false
+									store <= store
+									api <= api
+						<= Sidebar $bog_tracker_mpit_neolo_student_sidebar
+							screen? <=> screen? \tasks
+							invitations_count <= invitations_count 0
+							open_about? <=> open_about? null
+							open_terms? <=> open_terms? null
+
+$bog_tracker_mpit_neolo_teacher_classes $mol_view
+	store $bog_tracker_mpit_neolo_store
+	teacher_classes /
+	classes_count 0
+	classes_count_text \
+	empty_visible true
+	create_class_click? null
+	open_class_click*? null
+	class_ids /string
+	class_name* \
+	class_subject* \
+	class_count_text* \
+	class_id_tail* \
+	grid_sub /
+	Card* $bog_tracker_mpit_neolo_teacher_classes_card
+		name <= class_name* \
+		subject <= class_subject* \
+		count_text <= class_count_text* \
+		id_tail <= class_id_tail* \
+		click? <=> open_class_click*? null
+	sub /
+		<= Header $mol_view
+			sub /
+				<= Count_label $mol_view
+					sub /
+						<= classes_count_text
+				<= Create_btn $mol_button_major
+					click? <=> create_class_click? null
+					sub /
+						\+ Создать класс
+		<= Grid $mol_view
+			sub <= grid_sub
+		<= Empty $mol_view
+			sub /
+				<= Empty_icon $mol_view
+					sub /
+						\🏫
+				<= Empty_text $mol_view
+					sub /
+						\Классов пока нет
+				<= Empty_sub $mol_view
+					sub /
+						\Создайте первый класс
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_classes_empty <= empty_visible
+
+$bog_tracker_mpit_neolo_teacher_classes_card $mol_button_minor
+	name \
+	subject \
+	count_text \
+	id_tail \
+	attr *
+		^
+	sub /
+		<= Icon $mol_view
+			sub /
+				\🏫
+		<= Name $mol_view
+			sub /
+				<= name
+		<= Subject $mol_view
+			sub /
+				<= subject
+		<= Meta $mol_view
+			sub /
+				<= Count_badge $mol_view
+					sub /
+						<= count_text
+				<= Id_badge $mol_view
+					sub /
+						<= id_tail
+
+$bog_tracker_mpit_neolo_teacher_detail $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	class_id \
+	tab? \students
+	back_click? null
+	invite_click? null
+	assign_click? null
+	delete_click? null
+	class_name \
+	class_subject \
+	class_summary \
+	students_count 0
+	students_count_text \
+	students_tab_active true
+	stats_tab_active false
+	students_empty_visible true
+	students_ids /string
+	student_id_label* \
+	remove_student*? null
+	body_sub /
+	students_tab_click? null
+	stats_tab_click? null
+	Student_row* $bog_tracker_mpit_neolo_teacher_detail_student_row
+		display_id <= student_id_label* \
+		remove_click? <=> remove_student*? null
+	sub /
+		<= Back_btn $mol_button_minor
+			click? <=> back_click? null
+			sub /
+				\← Назад к классам
+		<= Header $mol_view
+			sub /
+				<= Icon $mol_view
+					sub /
+						\🏫
+				<= Header_info $mol_view
+					sub /
+						<= Class_name $mol_view
+							sub /
+								<= class_name
+						<= Class_summary $mol_view
+							sub /
+								<= class_summary
+				<= Header_actions $mol_view
+					sub /
+						<= Assign_btn $mol_button_major
+							click? <=> assign_click? null
+							sub /
+								\📝 Задать задание
+						<= Invite_btn $mol_button_major
+							click? <=> invite_click? null
+							sub /
+								\+ Добавить ученика
+						<= Delete_btn $mol_button_minor
+							click? <=> delete_click? null
+							sub /
+								\🗑 Удалить класс
+		<= Tab_row $mol_view
+			sub /
+				<= Tab_students $bog_tracker_mpit_neolo_teacher_detail_tab
+					label \Ученики
+					active <= students_tab_active
+					click? <=> students_tab_click? null
+				<= Tab_stats $bog_tracker_mpit_neolo_teacher_detail_tab
+					label \Статистика класса
+					active <= stats_tab_active
+					click? <=> stats_tab_click? null
+		<= Body $mol_view
+			sub <= body_sub
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_detail_students_empty <= students_empty_visible
+
+$bog_tracker_mpit_neolo_teacher_detail_tab $mol_button_minor
+	label \
+	active false
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_detail_tab_active <= active
+	sub /
+		<= label
+
+$bog_tracker_mpit_neolo_teacher_detail_student_row $mol_view
+	display_id \
+	remove_click? null
+	sub /
+		<= Avatar $mol_view
+			sub /
+				\👤
+		<= Name_col $mol_view
+			sub /
+				<= Name $mol_view
+					sub /
+						<= display_id
+				<= Role $mol_view
+					sub /
+						\Ученик
+		<= Remove_btn $mol_button_minor
+			click? <=> remove_click? null
+			sub /
+				\Удалить
+
+$mol_link $mol_view
+	uri \
+	dom_name \a
+	uri_off \
+	uri_native null
+	external false
+	attr *
+		^
+		href <= uri_toggle \
+		title <= hint_safe <= hint \
+		target <= target \_self
+		download <= file_name \
+		mol_link_current <= current false
+		rel <= relation \
+	sub /$mol_view_content
+		<= title
+	arg *
+	event *
+		^
+		click?event <=> click?event <=> event_click?event null
+
+$bog_tracker_mpit_neolo_teacher_review $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	review_tasks_list /
+	task_ids /string
+	task_title* \
+	task_meta* \
+	task_desc* \
+	task_file_name* \
+	task_file_url* \
+	task_file_visible* false
+	accept*? null
+	reject*? null
+	header_text \
+	empty_visible true
+	cards_sub /
+	api_base \
+	Card* $bog_tracker_mpit_neolo_teacher_review_card
+		title <= task_title* \
+		meta <= task_meta* \
+		desc <= task_desc* \
+		file_name <= task_file_name* \
+		file_url <= task_file_url* \
+		file_visible <= task_file_visible* false
+		accept_click? <=> accept*? null
+		reject_click? <=> reject*? null
+	sub /
+		<= Header $mol_view
+			sub /
+				<= header_text
+		<= Cards $mol_view
+			sub <= cards_sub
+		<= Empty $mol_view
+			sub /
+				<= Empty_icon $mol_view
+					sub /
+						\📥
+				<= Empty_text $mol_view
+					sub /
+						\Нет работ на проверку
+				<= Empty_sub $mol_view
+					sub /
+						\Когда ученик сдаст задание, оно появится здесь
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_review_empty <= empty_visible
+
+$bog_tracker_mpit_neolo_teacher_review_card $mol_view
+	title \
+	meta \
+	desc \
+	file_name \
+	file_url \
+	file_visible false
+	accept_click? null
+	reject_click? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_review_card_file <= file_visible
+	sub /
+		<= Title $mol_view
+			sub /
+				<= title
+		<= Meta $mol_view
+			sub /
+				<= meta
+		<= Desc $mol_view
+			sub /
+				<= desc
+		<= File_row $mol_link
+			uri <= file_url
+			sub /
+				<= File_icon $mol_view
+					sub /
+						\📄
+				<= File_name $mol_view
+					sub /
+						<= file_name
+				<= File_hint $mol_view
+					sub /
+						\⬇ Скачать
+		<= File_missing $mol_view
+			sub /
+				\Файл не прикреплён
+		<= Actions $mol_view
+			sub /
+				<= Accept_btn $mol_button_major
+					click? <=> accept_click? null
+					sub /
+						\✓ Принять
+				<= Reject_btn $mol_button_minor
+					click? <=> reject_click? null
+					sub /
+						\✕ Отклонить
+
+$bog_tracker_mpit_neolo_teacher_stats $mol_view
+	store $bog_tracker_mpit_neolo_store
+	teacher_classes /
+	class_ids /string
+	class_name* \
+	class_summary* \
+	empty_visible true
+	cards_sub /
+	Card* $bog_tracker_mpit_neolo_teacher_stats_card
+		name <= class_name* \
+		summary <= class_summary* \
+	sub /
+		<= Cards $mol_view
+			sub <= cards_sub
+		<= Empty $mol_view
+			sub /
+				<= Empty_icon $mol_view
+					sub /
+						\📊
+				<= Empty_text $mol_view
+					sub /
+						\Нет классов
+				<= Empty_sub $mol_view
+					sub /
+						\Создайте классы, чтобы видеть статистику
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_stats_empty <= empty_visible
+
+$bog_tracker_mpit_neolo_teacher_stats_card $mol_view
+	name \
+	summary \
+	sub /
+		<= Head $mol_view
+			sub /
+				<= Icon $mol_view
+					sub /
+						\🏫
+				<= Info $mol_view
+					sub /
+						<= Name $mol_view
+							sub /
+								<= name
+						<= Summary $mol_view
+							sub /
+								<= summary
+		<= Placeholder $mol_view
+			sub /
+				\Данные о выполнении заданий будут показаны здесь
+
+$bog_tracker_mpit_neolo_teacher_profile $mol_view
+	store $bog_tracker_mpit_neolo_store
+	classes_count 0
+	teacher_name \
+	teacher_surname \
+	teacher_username \
+	teacher_school \
+	teacher_id_text \
+	classes_count_text \
+	sub /
+		<= Card $mol_view
+			sub /
+				<= Title $mol_view
+					sub /
+						\Личный кабинет
+				<= Grid $mol_view
+					sub /
+						<= Name_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Имя
+							value <= teacher_name
+						<= Surname_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Фамилия
+							value <= teacher_surname
+						<= Username_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Логин
+							value <= teacher_username
+						<= Role_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Роль
+							value \📚 Учитель
+						<= School_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Школа
+							value <= teacher_school
+						<= Id_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Мой ID
+							value <= teacher_id_text
+							highlighted true
+				<= Footer_text $mol_view
+					sub /
+						<= classes_count_text
+
+$bog_tracker_mpit_neolo_teacher_profile_box $mol_view
+	label \
+	value \
+	highlighted false
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_profile_box_highlighted <= highlighted
+	sub /
+		<= Label $mol_view
+			sub /
+				<= label
+		<= Value $mol_view
+			sub /
+				<= value
+
+$bog_tracker_mpit_neolo_teacher $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	screen? \classes
+	open_class_id? \
+	open_class_tab? \students
+	new_class_name? \
+	new_class_subject? \
+	create_class_error \
+	invite_student_id? \
+	invite_result \
+	teacher_side_id_text \
+	screen_title_text \
+	side_classes_active false
+	side_review_active false
+	side_stats_active false
+	side_profile_active false
+	review_badge_text \
+	review_badge_hidden true
+	create_class_modal_hidden true
+	invite_modal_hidden true
+	side_classes_click? null
+	side_review_click? null
+	side_stats_click? null
+	side_profile_click? null
+	logout? null
+	create_class_close? null
+	create_class_submit? null
+	create_class_open_click? null
+	close_class_detail? null
+	invite_close? null
+	invite_submit? null
+	open_class_id_set*? null
+	review_accept*? null
+	review_reject*? null
+	delete_class_click? null
+	invite_open_click? null
+	assign_open_click? null
+	active_screen null
+	Classes_screen $bog_tracker_mpit_neolo_teacher_classes
+		store <= store
+		create_class_click? <=> create_class_open_click? null
+		open_class_click*? <=> open_class_id_set*? null
+	Detail_screen $bog_tracker_mpit_neolo_teacher_detail
+		store <= store
+		api <= api
+		class_id <= open_class_id
+		tab? <=> open_class_tab? \students
+		back_click? <=> close_class_detail? null
+		invite_click? <=> invite_open_click? null
+		assign_click? <=> assign_open_click? null
+		delete_click? <=> delete_class_click? null
+	Review_screen $bog_tracker_mpit_neolo_teacher_review
+		store <= store
+		api <= api
+		accept*? <=> review_accept*? null
+		reject*? <=> review_reject*? null
+	Stats_screen $bog_tracker_mpit_neolo_teacher_stats
+		store <= store
+	Profile_screen $bog_tracker_mpit_neolo_teacher_profile
+		store <= store
+	sub /
+		<= Shell $mol_view
+			sub /
+				<= Topbar $mol_view
+					sub /
+						<= Brand $mol_view
+							sub /
+								\School
+								<= Brand_accent $mol_view
+									sub /
+										\Plan
+								<= Role_badge $mol_view
+									sub /
+										\Учитель
+						<= Logout $mol_button_minor
+							click? <=> logout? null
+							sub /
+								<= Logout_icon $mol_view
+									sub /
+										\↪
+								<= Logout_label $mol_view
+									sub /
+										\Выход
+				<= Layout $mol_view
+					sub /
+						<= Main $mol_view
+							sub /
+								<= Screen_title $mol_view
+									sub /
+										<= screen_title_text
+								<= Screen_content $mol_view
+									sub /
+										<= active_screen
+						<= Sidebar $mol_view
+							sub /
+								<= Side_stack $mol_view
+									sub /
+										<= Side_classes $bog_tracker_mpit_neolo_teacher_side_item
+											icon \🏫
+											icon_kind \g
+											label \Классы
+											active <= side_classes_active
+											badge_text \
+											badge_hidden true
+											click? <=> side_classes_click? null
+										<= Side_review $bog_tracker_mpit_neolo_teacher_side_item
+											icon \📥
+											icon_kind \bk
+											label \Проверка
+											active <= side_review_active
+											badge_text <= review_badge_text
+											badge_hidden <= review_badge_hidden
+											click? <=> side_review_click? null
+										<= Side_stats $bog_tracker_mpit_neolo_teacher_side_item
+											icon \📊
+											icon_kind \bk
+											label \Статистика
+											active <= side_stats_active
+											badge_text \
+											badge_hidden true
+											click? <=> side_stats_click? null
+										<= Side_profile $bog_tracker_mpit_neolo_teacher_side_item
+											icon \👤
+											icon_kind \dg
+											label \Кабинет
+											active <= side_profile_active
+											badge_text \
+											badge_hidden true
+											click? <=> side_profile_click? null
+								<= Side_footer $mol_view
+									sub /
+										<= Side_id $mol_view
+											sub /
+												<= teacher_side_id_text
+		<= Create_class_modal $bog_tracker_mpit_neolo_teacher_create_class_modal
+			hidden <= create_class_modal_hidden
+			name? <=> new_class_name? \
+			subject? <=> new_class_subject? \
+			error <= create_class_error
+			close? <=> create_class_close? null
+			submit? <=> create_class_submit? null
+		<= Invite_modal $bog_tracker_mpit_neolo_teacher_invite_modal
+			hidden <= invite_modal_hidden
+			student_id? <=> invite_student_id? \
+			result <= invite_result
+			close? <=> invite_close? null
+			submit? <=> invite_submit? null
+
+$bog_tracker_mpit_neolo_teacher_side_item $mol_button_minor
+	icon \
+	icon_kind \g
+	label \
+	active false
+	badge_text \
+	badge_hidden true
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_side_item_active <= active
+		bog_tracker_mpit_neolo_teacher_side_item_kind <= icon_kind
+		bog_tracker_mpit_neolo_teacher_side_item_badge_hidden <= badge_hidden
+	sub /
+		<= Circle $mol_view
+			sub /
+				<= icon
+		<= Label $mol_view
+			sub /
+				<= label
+		<= Badge $mol_view
+			sub /
+				<= badge_text
+
+$bog_tracker_mpit_neolo_teacher_create_class_modal $mol_view
+	hidden true
+	name? \
+	subject? \
+	error \
+	close? null
+	submit? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_modal_hidden <= hidden
+	sub /
+		<= Modal_body $mol_view
+			sub /
+				<= Modal_title $mol_view
+					sub /
+						\Новый класс
+				<= Name_field $mol_labeler
+					title \Название класса
+					content /
+						<= Name_input $mol_string
+							hint \Например, 7А
+							value? <=> name? \
+				<= Subject_field $mol_labeler
+					title \Предмет
+					content /
+						<= Subject_input $mol_string
+							hint \Например, Математика
+							value? <=> subject? \
+				<= Error_view $mol_view
+					sub /
+						<= error
+				<= Buttons $mol_view
+					sub /
+						<= Cancel_btn $mol_button_minor
+							click? <=> close? null
+							sub /
+								\Отмена
+						<= Submit_btn $mol_button_major
+							click? <=> submit? null
+							sub /
+								\Создать
+
+$bog_tracker_mpit_neolo_teacher_invite_modal $mol_view
+	hidden true
+	student_id? \
+	result \
+	close? null
+	submit? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_modal_hidden <= hidden
+	sub /
+		<= Modal_body $mol_view
+			sub /
+				<= Modal_title $mol_view
+					sub /
+						\Пригласить ученика
+				<= Hint $mol_view
+					sub /
+						\Введите ID ученика — ему придёт приглашение в класс.
+				<= Id_field $mol_labeler
+					title \ID ученика
+					content /
+						<= Id_input $mol_string
+							hint \Например, 1234567890
+							value? <=> student_id? \
+				<= Result_view $mol_view
+					sub /
+						<= result
+				<= Buttons $mol_view
+					sub /
+						<= Cancel_btn $mol_button_minor
+							click? <=> close? null
+							sub /
+								\Отмена
+						<= Submit_btn $mol_button_major
+							click? <=> submit? null
+							sub /
+								\Отправить приглашение
+
+$bog_tracker_mpit_neolo_parent_children $mol_view
+	children /
+	open_child?val null
+	open_add? null
+	remove_child?val null
+	child_ids /string
+	sub <= rows /
+		<= Header_bar $mol_view
+			sub /
+				<= Count_label $mol_view
+					sub / <= count_label \
+				<= Add_btn $mol_button_major
+					click? <=> open_add? null
+					sub / <= add_label \+ Добавить ребёнка
+		<= Empty $mol_view
+			sub /
+				<= Empty_icon $mol_view
+					sub / \👨‍👩‍👧
+				<= Empty_text $mol_view
+					sub / \Детей пока нет
+				<= Empty_sub $mol_view
+					sub / \Добавьте ребёнка по его ID, чтобы видеть задания и статистику
+				<= Empty_add_btn $mol_button_major
+					click? <=> open_add? null
+					sub / <= empty_add_label \+ Добавить ребёнка
+		<= Grid $mol_view
+			sub <= cards /
+				<= Card* $bog_tracker_mpit_neolo_parent_children_card
+					initial <= child_initial* \
+					name <= child_name* \
+					meta <= child_meta* \
+					open? <=> card_open*? null
+					remove? <=> card_remove*? null
+
+$bog_tracker_mpit_neolo_parent_children_card $mol_view
+	initial \
+	name \
+	meta \
+	open? null
+	remove? null
+	sub /
+		<= Card_body $mol_button_minor
+			click? <=> open? null
+			sub /
+				<= Avatar $mol_view
+					sub / <= initial
+				<= Info $mol_view
+					sub /
+						<= Name $mol_view
+							sub / <= name
+						<= Meta $mol_view
+							sub / <= meta
+		<= Remove_btn $mol_button_minor
+			click? <=> remove? null
+			sub / <= remove_label \×
+
+$bog_tracker_mpit_neolo_parent_child $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	child_id \
+	children /
+	back? null
+	create_task? null
+	task_ids /string
+	sub /
+		<= Back_btn $mol_button_minor
+			click? <=> back? null
+			sub / <= back_label \← Назад к детям
+		<= Header $mol_view
+			sub /
+				<= Avatar $mol_view
+					sub / <= avatar_letter \
+				<= Info $mol_view
+					sub /
+						<= Name $mol_view
+							sub / <= child_name \
+						<= Meta $mol_view
+							sub / <= child_meta \
+				<= Create_task_btn $mol_button_major
+					click? <=> create_task? null
+					sub / <= create_task_label \+ Задание
+		<= Stats $mol_view
+			sub /
+				<= Stat_total $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_total \0
+					label \Всего заданий
+					kind \neutral
+				<= Stat_done $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_done \0
+					label \Выполнено
+					kind \done
+				<= Stat_progress $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_progress \0
+					label \В работе
+					kind \progress
+				<= Stat_review $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_review \0
+					label \На проверке
+					kind \review
+				<= Stat_overdue $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_overdue \0
+					label \Просрочено
+					kind \overdue
+				<= Stat_pending $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_pending \0
+					label \Ожидают
+					kind \pending
+		<= Section_title $mol_view
+			sub / \Задания ребёнка
+		<= Tasks_list $mol_view
+			sub <= task_rows /
+				<= Task_empty $mol_view
+					sub / \У ребёнка пока нет заданий
+				<= Task_row* $bog_tracker_mpit_neolo_parent_child_task_row
+					title <= task_title* \
+					desc <= task_desc* \
+					date <= task_date* \
+					status <= task_status* \
+
+$bog_tracker_mpit_neolo_parent_child_stat $mol_view
+	num \0
+	label \
+	kind \neutral
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_child_stat_kind <= kind
+	sub /
+		<= Stat_num $mol_view
+			sub / <= num
+		<= Stat_lbl $mol_view
+			sub / <= label
+
+$bog_tracker_mpit_neolo_parent_child_task_dot $mol_view
+	status \pending
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_child_task_dot_status <= status
+	sub /
+
+$bog_tracker_mpit_neolo_parent_child_task_row $mol_view
+	title \
+	desc \
+	date \
+	status \pending
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_child_task_row_status <= status
+	sub /
+		<= Dot $bog_tracker_mpit_neolo_parent_child_task_dot
+			status <= status
+		<= Info $mol_view
+			sub /
+				<= Title $mol_view
+					sub / <= title
+				<= Meta $mol_view
+					sub / <= desc
+		<= Date_view $mol_view
+			sub / <= date
+
+$bog_tracker_mpit_neolo_parent_calendar $mol_view
+	store $bog_tracker_mpit_neolo_store
+	children /
+	view_year? 2026
+	view_month? 0
+	selected_date? \
+	prev_month_click? null
+	next_month_click? null
+	day_click?val \
+	day_ids /string
+	event_ids /string
+	sub /
+		<= Toolbar $mol_view
+			sub /
+				<= Nav $mol_view
+					sub /
+						<= Prev_btn $mol_button_minor
+							click? <=> prev_month_click? null
+							sub / <= prev_label \‹
+						<= Month_label $mol_view
+							sub / <= month_label \
+						<= Next_btn $mol_button_minor
+							click? <=> next_month_click? null
+							sub / <= next_label \›
+		<= Weekdays $mol_view
+			sub /
+				<= Wd_mon $mol_view
+					sub / \Пн
+				<= Wd_tue $mol_view
+					sub / \Вт
+				<= Wd_wed $mol_view
+					sub / \Ср
+				<= Wd_thu $mol_view
+					sub / \Чт
+				<= Wd_fri $mol_view
+					sub / \Пт
+				<= Wd_sat $mol_view
+					sub / \Сб
+				<= Wd_sun $mol_view
+					sub / \Вс
+		<= Grid $mol_view
+			sub <= day_cells /
+				<= Day_cell* $bog_tracker_mpit_neolo_parent_calendar_day
+					day_label <= day_label* \
+					count <= day_count* \
+					state <= day_state* \empty
+					click? <=> cell_click*? null
+		<= Bottom $mol_view
+			sub /
+				<= Selected_info $mol_view
+					sub /
+						<= Selected_title $mol_view
+							sub / \Задания на день
+						<= Selected_date_label $mol_view
+							sub / <= selected_date_label \
+						<= Selected_tasks $mol_view
+							sub <= selected_tasks_rows /
+								<= Selected_empty $mol_view
+									sub / \На выбранный день задач нет.
+								<= Selected_task* $mol_view
+									sub /
+										<= Selected_task_time* $mol_view
+											sub / <= selected_task_time* \
+										<= Selected_task_info* $mol_view
+											sub /
+												<= Selected_task_title* $mol_view
+													sub / <= selected_task_title* \
+												<= Selected_task_meta* $mol_view
+													sub / <= selected_task_meta* \
+				<= Upcoming_info $mol_view
+					sub /
+						<= Upcoming_title $mol_view
+							sub / \Ближайшие события
+						<= Upcoming_list $mol_view
+							sub <= upcoming_rows /
+								<= Upcoming_empty $mol_view
+									sub / \Нет предстоящих заданий
+								<= Event_row* $mol_view
+									sub /
+										<= Event_dot* $mol_view
+											sub /
+										<= Event_body* $mol_view
+											sub / <= event_body* \
+
+$bog_tracker_mpit_neolo_parent_calendar_day $mol_button_minor
+	day_label \
+	count \0
+	state \empty
+	click? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_calendar_day_state <= state
+	sub /
+		<= Day_number $mol_view
+			sub / <= day_label
+		<= Day_badge $mol_view
+			sub / <= count
+
+$bog_tracker_mpit_neolo_parent_profile $mol_view
+	profile_name \
+	profile_surname \
+	profile_username \
+	profile_id \
+	children /
+	open_add? null
+	remove_child?val \
+	child_ids /string
+	sub /
+		<= Card $mol_view
+			sub /
+				<= Card_title $mol_view
+					sub / \Личный кабинет
+				<= Table $mol_view
+					sub /
+						<= Row_name $bog_tracker_mpit_neolo_parent_profile_row
+							label \Имя
+							value <= profile_name \
+						<= Row_surname $bog_tracker_mpit_neolo_parent_profile_row
+							label \Фамилия
+							value <= profile_surname_or_dash \
+						<= Row_username $bog_tracker_mpit_neolo_parent_profile_row
+							label \Логин
+							value <= profile_username_at \
+						<= Row_role $bog_tracker_mpit_neolo_parent_profile_row
+							label \Роль
+							value \👨‍👩‍👧 Родитель
+						<= Row_id $bog_tracker_mpit_neolo_parent_profile_row
+							label \ID
+							value <= profile_id \
+		<= Manage $mol_view
+			sub /
+				<= Manage_title $mol_view
+					sub / \Управление детьми
+				<= Children_block $mol_view
+					sub <= children_rows /
+						<= Children_empty $mol_view
+							sub / \Нет добавленных детей
+						<= Child_row* $bog_tracker_mpit_neolo_parent_profile_child_row
+							initial <= child_initial* \
+							name <= child_name* \
+							meta <= child_meta* \
+							remove? <=> child_remove*? null
+				<= Add_btn $mol_button_major
+					click? <=> open_add? null
+					sub / <= add_label \+ Добавить ребёнка
+
+$bog_tracker_mpit_neolo_parent_profile_row $mol_view
+	label \
+	value \
+	sub /
+		<= Label $mol_view
+			sub / <= label
+		<= Value $mol_view
+			sub / <= value
+
+$bog_tracker_mpit_neolo_parent_profile_child_row $mol_view
+	initial \
+	name \
+	meta \
+	remove? null
+	sub /
+		<= Avatar $mol_view
+			sub / <= initial
+		<= Info $mol_view
+			sub /
+				<= Name $mol_view
+					sub / <= name
+				<= Meta $mol_view
+					sub / <= meta
+		<= Remove_btn $mol_button_minor
+			click? <=> remove? null
+			sub / <= remove_label \Удалить
+
+$bog_tracker_mpit_neolo_parent $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	screen_id? \children
+	open_child_id? \
+	logout_click? null
+	open_add_child_modal? null
+	add_child_modal_open? false
+	add_child_id? \
+	add_child_result? \
+	add_child_result_kind? \
+	goto_children? null
+	goto_calendar? null
+	goto_profile? null
+	children_open_child?val \
+	children_remove_child?val \
+	sub /
+		<= Topbar $mol_view
+			sub /
+				<= Brand $mol_view
+					sub /
+						\School
+						<= Brand_em $mol_view
+							sub / \Plan
+						<= Brand_badge $mol_view
+							sub / \Родитель
+				<= Logout_btn $mol_button_minor
+					click? <=> logout_click? null
+					sub / <= logout_label \↪ Выход
+		<= Layout $mol_view
+			sub /
+				<= Main $mol_view
+					sub /
+						<= Screen_title $mol_view
+							sub / <= screen_title \Мои дети
+						<= Screen_content $mol_view
+							sub /
+								<= active_screen null
+				<= Sidebar $mol_view
+					sub /
+						<= Side_stack $mol_view
+							sub /
+								<= Side_children $bog_tracker_mpit_neolo_parent_side_item
+									icon \👨‍👩‍👧
+									label \Дети
+									selected <= side_children_selected true
+									click? <=> goto_children? null
+								<= Side_calendar $bog_tracker_mpit_neolo_parent_side_item
+									icon \🗓
+									label \Календарь
+									selected <= side_calendar_selected false
+									click? <=> goto_calendar? null
+								<= Side_profile $bog_tracker_mpit_neolo_parent_side_item
+									icon \👤
+									label \Кабинет
+									selected <= side_profile_selected false
+									click? <=> goto_profile? null
+						<= Side_footer $mol_view
+							sub /
+								<= Side_id $mol_view
+									sub / <= side_id \
+		<= Add_child_modal $bog_tracker_mpit_neolo_parent_add_child_modal
+			open <= add_child_modal_open false
+			id_input? <=> add_child_id? \
+			result <= add_child_result \
+			result_kind <= add_child_result_kind \
+			submit? <=> add_child_submit? null
+			close? <=> add_child_close? null
+		<= Children_screen $bog_tracker_mpit_neolo_parent_children
+			children <= children_summaries /
+			open_child?val <=> children_open_child?val \
+			open_add? <=> open_add_child_modal? null
+			remove_child?val <=> children_remove_child?val \
+		<= Child_screen $bog_tracker_mpit_neolo_parent_child
+			store <= store
+			api <= api
+			child_id <= open_child_id \
+			children <= children_summaries /
+			back? <=> back_to_children? null
+			create_task? <=> create_task_click? null
+		<= Calendar_screen $bog_tracker_mpit_neolo_parent_calendar
+			store <= store
+			children <= children_summaries /
+		<= Profile_screen $bog_tracker_mpit_neolo_parent_profile
+			profile_name <= profile_name \
+			profile_surname <= profile_surname \
+			profile_username <= profile_username \
+			profile_id <= profile_id \
+			children <= children_summaries /
+			open_add? <=> open_add_child_modal? null
+			remove_child?val <=> children_remove_child?val \
+
+$bog_tracker_mpit_neolo_parent_side_item $mol_button_minor
+	icon \
+	label \
+	selected false
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_side_item_selected <= selected
+	sub /
+		<= Side_circle $mol_view
+			sub / <= icon
+		<= Side_label $mol_view
+			sub / <= label
+
+$bog_tracker_mpit_neolo_parent_add_child_modal $mol_view
+	open? false
+	id_input? \
+	result \
+	result_kind \
+	submit? null
+	close? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_add_child_modal_open <= open
+	sub /
+		<= Backdrop $mol_view
+			sub /
+				<= Dialog $mol_view
+					sub /
+						<= Head $mol_view
+							sub /
+								<= Head_title $mol_view
+									sub / \Добавить ребёнка
+								<= Close_btn $mol_button_minor
+									click? <=> close? null
+									sub / <= close_label \×
+						<= Hint $mol_view
+							sub / \Введите ID ребёнка. Ребёнок найдёт свой ID в разделе «Кабинет» → поле «ID».
+						<= Id_field $mol_labeler
+							title @ \ID ребёнка
+							content /
+								<= Id_input $mol_string
+									hint @ \Например, 3847291
+									value? <=> id_input? \
+						<= Result_view $mol_view
+							attr *
+								^
+								bog_tracker_mpit_neolo_parent_add_child_modal_result_kind <= result_kind
+							sub /
+								<= result
+						<= Actions $mol_view
+							sub /
+								<= Cancel_btn $mol_button_minor
+									click? <=> close? null
+									sub / <= cancel_label \Отмена
+								<= Submit_btn $mol_button_major
+									click? <=> submit? null
+									sub / <= submit_label \Добавить
+
+$bog_tracker_mpit_neolo $mol_view
+	title \SchoolPlan
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	profile null
+	auth_view <= Auth $bog_tracker_mpit_neolo_auth
+		store <= store
+	student_view <= Student $bog_tracker_mpit_neolo_student
+		store <= store
+		api <= api
+	teacher_view <= Teacher $bog_tracker_mpit_neolo_teacher
+		store <= store
+		api <= api
+	parent_view <= Parent $bog_tracker_mpit_neolo_parent
+		store <= store
+		api <= api
+	sub /
+		<= active_view null
+	attr *
+		mol_theme \$mol_theme_light
