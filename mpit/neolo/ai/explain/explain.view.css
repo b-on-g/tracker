@@ -1,0 +1,35 @@
+@keyframes bog_tracker_mpit_neolo_ai_explain_spin {
+	to { transform: rotate(360deg); }
+}
+
+[bog_tracker_mpit_neolo_ai_explain_Spinner] {
+	border-top-color: var(--mol_theme_focus, #2ecc5a) !important;
+	animation: bog_tracker_mpit_neolo_ai_explain_spin 1s linear infinite;
+}
+
+/* Inline tags from markdown-rendered HTML inside the explain block */
+[bog_tracker_mpit_neolo_ai_explain_Explain_text] h3 {
+	font-size: 18px;
+	font-weight: 800;
+	color: #1aa843;
+	margin: 20px 0 10px;
+}
+[bog_tracker_mpit_neolo_ai_explain_Explain_text] p { margin: 0 0 12px; }
+[bog_tracker_mpit_neolo_ai_explain_Explain_text] ul { padding-left: 20px; margin: 0 0 12px; }
+[bog_tracker_mpit_neolo_ai_explain_Explain_text] li { margin-bottom: 6px; }
+[bog_tracker_mpit_neolo_ai_explain_Explain_text] code {
+	background: #f2f7f2;
+	padding: 2px 6px;
+	border-radius: 4px;
+	font-size: 13px;
+	font-family: monospace;
+}
+[bog_tracker_mpit_neolo_ai_explain_Explain_text] pre {
+	background: #f2f7f2;
+	padding: 12px 14px;
+	border-radius: 10px;
+	overflow-x: auto;
+	font-size: 13px;
+	line-height: 1.6;
+	margin: 10px 0;
+}

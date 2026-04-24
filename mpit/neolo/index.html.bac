@@ -1,0 +1,3276 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SchoolPlan</title>
+<style>
+:root {
+	--g0:#ffffff; --g1:#f2f7f2; --g2:#ddeedd; --g3:#a8cca8;
+	--g4:#2ecc5a; --g5:#1aa843; --g6:#0f7a30;
+	--b0:#111111; --b1:#222222; --b2:#444444; --b3:#666666; --b4:#999999;
+	--shadow: 0 16px 34px rgba(0,40,10,.10); --rx: 22px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;min-height:100%;font-family:"Segoe UI",Arial,sans-serif;background:var(--g1);color:var(--b0);}
+button,input,textarea,select{font:inherit;}
+button{border:0;cursor:pointer;}
+[hidden]{display:none!important;}
+
+/* AUTH */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#0f7a30 0%,#1aa843 55%,#2ecc5a 100%);}
+.auth-card{width:min(100%,460px);background:#fff;border-radius:28px;box-shadow:0 32px 80px rgba(0,0,0,.22);padding:36px 32px 32px;max-height:93vh;overflow-y:auto;}
+.auth-brand{font-size:28px;font-weight:800;color:var(--g5);margin-bottom:4px;}
+.auth-brand span{color:var(--b0);}
+.auth-sub{font-size:14px;color:var(--b3);margin-bottom:26px;}
+.auth-tabs{display:flex;background:var(--g2);border-radius:12px;padding:4px;margin-bottom:22px;gap:4px;}
+.auth-tab{flex:1;padding:10px;border-radius:9px;background:transparent;font-weight:700;font-size:14px;color:var(--b3);transition:background .18s,color .18s;}
+.auth-tab.active{background:#fff;color:var(--g5);box-shadow:0 2px 8px rgba(0,100,30,.12);}
+.auth-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.auth-field label{font-size:13px;font-weight:700;color:var(--b2);}
+.auth-field input{width:100%;padding:11px 14px;border:1.5px solid var(--g2);border-radius:11px;background:#fff;font-size:15px;outline:none;transition:border-color .18s;}
+.auth-field input:focus{border-color:var(--g4);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.two-col .auth-field{margin-bottom:0;}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.role-btn{padding:14px 8px;border-radius:14px;border:2px solid var(--g2);background:var(--g1);display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:700;font-size:13px;color:var(--b2);transition:border-color .18s,background .18s,color .18s;}
+.role-btn .role-icon{font-size:26px;}
+.role-btn.selected{border-color:var(--g4);background:#e4f7eb;color:var(--g6);}
+.auth-submit{width:100%;padding:13px;border-radius:13px;background:var(--g5);color:#fff;font-weight:800;font-size:16px;margin-top:6px;transition:background .18s;}
+.auth-submit:hover{background:var(--g6);}
+.auth-error{background:#fff0f0;color:#c0392b;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:600;margin-bottom:14px;}
+
+/* APP SHELL */
+.app{width:100%;min-height:100vh;padding:12px;}
+.shell{width:100%;min-height:calc(100vh - 24px);background:#fff;border-radius:28px;box-shadow:var(--shadow);padding:14px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px;padding:0 6px;}
+.brand{font-size:24px;font-weight:800;color:var(--b0);}
+.brand em{color:var(--g5);font-style:normal;}
+.topbar-btn{background:var(--b0);color:#fff;padding:11px 18px;border-radius:12px;font-weight:700;display:inline-flex;align-items:center;gap:10px;transition:background .18s;}
+.topbar-btn:hover{background:var(--b1);}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 132px;gap:12px;min-height:calc(100vh - 110px);}
+.screen{min-height:100%;border-radius:var(--rx);padding:22px 24px;overflow:hidden;}
+.screen.tasks{background:var(--g4);color:var(--b0);}
+.screen.calendar{background:var(--b0);color:#fff;}
+.screen.stats{background:var(--g6);color:#fff;}
+.screen h1{margin:0 0 16px;font-size:clamp(30px,4vw,44px);line-height:1.02;font-weight:800;}
+.section-title{margin:20px 0 12px;font-size:20px;font-weight:700;}
+.screen.tasks .section-title{color:rgba(0,0,0,.6);}
+.screen.calendar .section-title,.screen.stats .section-title{color:rgba(255,255,255,.7);}
+
+/* SIDEBAR */
+.sidebar{background:var(--g2);border-radius:var(--rx);padding:18px 12px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;}
+.side-stack{display:flex;flex-direction:column;gap:16px;width:100%;}
+.side-item{background:transparent;border-radius:16px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:background .15s;position:relative;}
+.side-item.active{background:rgba(255,255,255,.6);}
+.side-item:hover:not(.active){background:rgba(255,255,255,.35);}
+.side-circle{width:64px;height:64px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.side-circle.g{background:var(--g4);}
+.side-circle.bk{background:var(--b0);color:#fff;}
+.side-circle.dg{background:var(--g6);color:#fff;}
+.side-label{font-size:13px;font-weight:700;text-align:center;color:var(--b1);}
+.side-badge{position:absolute;top:4px;right:8px;min-width:20px;height:20px;border-radius:999px;background:#e74c3c;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+.side-footer{width:100%;padding:0 4px;display:flex;flex-direction:column;gap:6px;}
+.side-footer-btn{width:100%;background:transparent;padding:8px 6px;border-radius:10px;font-size:11px;font-weight:700;color:var(--b2);text-align:center;line-height:1.4;transition:background .15s;}
+.side-footer-btn:hover{background:rgba(255,255,255,.55);}
+
+/* CARDS */
+.card-white{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.09);}
+
+/* TASKS */
+.tasks-group{display:flex;flex-direction:column;gap:12px;}
+.task-card{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:start;padding:14px 16px;text-align:left;}
+.task-bullet{width:18px;height:18px;border-radius:999px;border:2.5px solid var(--g5);background:#fff;margin-top:3px;}
+.task-name{font-size:17px;font-weight:700;margin-bottom:4px;word-break:break-word;color:var(--b0);}
+.task-desc{font-size:13px;color:var(--b3);word-break:break-word;}
+.task-meta{margin-top:4px;font-size:12px;font-weight:700;color:var(--g5);}
+.task-deadline{font-size:13px;font-weight:700;color:var(--b2);white-space:nowrap;}
+.task-meta-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px;}
+.src-badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;white-space:nowrap;}
+.src-teacher{background:#e8f4ff;color:#0a58ca;}
+.src-parent{background:#fff3e8;color:#b85c00;}
+.src-self{background:var(--g2);color:var(--g6);}
+.add-box{margin-top:22px;}
+.add-trigger{width:100%;padding:14px 16px;display:flex;align-items:center;gap:14px;}
+.add-icon{width:28px;height:28px;border-radius:999px;border:2px solid var(--g5);display:inline-flex;align-items:center;justify-content:center;color:var(--g5);font-size:18px;font-weight:800;}
+.add-text{font-size:14px;font-weight:700;color:var(--g6);}
+
+/* CALENDAR */
+.calendar-layout{display:flex;flex-direction:column;gap:22px;}
+.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;}
+.calendar-nav{display:flex;align-items:center;gap:14px;}
+.calendar-arrow{background:transparent;color:var(--g4);font-size:34px;padding:0 4px;}
+.calendar-month{font-size:22px;font-weight:800;color:var(--g4);}
+.calendar-action{background:var(--g4);color:var(--b0);padding:11px 16px;border-radius:12px;font-weight:800;transition:background .18s;}
+.calendar-action:hover{background:var(--g5);color:#fff;}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;}
+.calendar-weekday{font-size:13px;font-weight:700;color:var(--g4);padding-bottom:4px;text-align:center;}
+.calendar-day{min-height:82px;padding:9px;border-radius:16px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:4px;background:rgba(255,255,255,.05);border:1px solid transparent;color:rgba(255,255,255,.85);text-align:left;}
+.calendar-day.empty{visibility:hidden;}
+.calendar-day.selected{background:rgba(46,204,90,.18);border-color:var(--g4);}
+.calendar-day.today .day-number{color:var(--g4);}
+.day-number{font-size:18px;font-weight:800;line-height:1;}
+.day-badge{min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:var(--g4);color:var(--b0);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;align-self:flex-end;}
+.calendar-bottom{display:grid;grid-template-columns:minmax(300px,1fr) minmax(300px,1fr);gap:16px;}
+.info-box{padding:18px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);}
+.info-box-title{font-size:18px;font-weight:800;color:var(--g4);margin-bottom:12px;}
+.day-tasks{display:flex;flex-direction:column;gap:10px;}
+.day-task{width:100%;padding:12px 14px;border-radius:13px;background:rgba(255,255,255,.95);color:var(--b0);display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;text-align:left;}
+.day-time{padding:5px 9px;border-radius:999px;background:var(--g4);color:var(--b0);font-size:12px;font-weight:800;white-space:nowrap;}
+.day-task-title{font-size:15px;font-weight:800;margin-bottom:3px;}
+.day-task-meta{font-size:12px;color:var(--b3);}
+.empty-note{padding:14px;border-radius:12px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.65);font-size:14px;}
+.events{display:flex;flex-direction:column;gap:10px;}
+.event-row{display:flex;align-items:center;gap:12px;font-size:15px;line-height:1.35;}
+.event-dot{width:10px;height:10px;border-radius:999px;background:var(--g4);flex:0 0 auto;}
+
+/* STATS */
+.stats-layout{display:grid;grid-template-columns:minmax(240px,.8fr) minmax(0,1.2fr);gap:28px;}
+.profile-card{padding-right:18px;border-right:1px solid rgba(255,255,255,.14);}
+.profile-title,.stats-title{font-size:22px;font-weight:800;margin-bottom:16px;color:var(--g4);}
+.profile-table{display:grid;grid-template-columns:auto 1fr;gap:12px 22px;font-size:16px;}
+.profile-label{color:rgba(255,255,255,.6);}
+.profile-value{color:#fff;font-weight:600;}
+.stats-column{display:flex;flex-direction:column;gap:14px;}
+.stat-card{padding:16px 18px;color:var(--b0);border-radius:16px;position:relative;overflow:hidden;border-left:4px solid var(--g4);}
+.stat-card::after{content:'';position:absolute;top:0;right:0;width:60px;height:60px;border-radius:0 16px 0 60px;background:rgba(0,0,0,.03);}
+.stat-card-title{font-size:13px;font-weight:700;color:var(--b3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.stat-card-main{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;}
+.big-number{font-size:40px;font-weight:800;line-height:1;color:var(--b0);letter-spacing:-1px;}
+.real-chart{width:100%;height:90px;min-width:0;overflow:hidden;}
+.real-chart svg{display:block;}
+
+/* INVITATIONS in profile */
+.inv-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px 16px;margin-bottom:10px;}
+.inv-card-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:4px;}
+.inv-card-sub{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:10px;}
+.inv-card-actions{display:flex;gap:8px;}
+.inv-accept{padding:8px 14px;border-radius:9px;background:var(--g4);color:var(--b0);font-weight:800;font-size:13px;transition:background .15s;}
+.inv-accept:hover{background:var(--g5);color:#fff;}
+.inv-reject{padding:8px 14px;border-radius:9px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-weight:700;font-size:13px;transition:background .15s;}
+.inv-reject:hover{background:rgba(255,255,255,.25);}
+
+/* MODALS */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.54);display:flex;align-items:center;justify-content:center;padding:20px;z-index:40;}
+.modal{width:min(100%,560px);background:#fff;border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,.24);padding:22px;color:var(--b0);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;}
+.modal-title{font-size:22px;font-weight:800;}
+.modal-close{width:38px;height:38px;border-radius:999px;background:var(--g2);font-size:20px;font-weight:700;color:var(--b0);transition:background .15s;}
+.modal-close:hover{background:var(--g3);}
+.modal-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.modal-form .full{grid-column:1/-1;}
+.modal-field{display:flex;flex-direction:column;gap:6px;}
+.modal-field label{font-size:13px;font-weight:700;color:var(--b2);}
+.modal-field input:not(.time-seg),.modal-field textarea,.modal-field select{width:100%;padding:11px 13px;border:1.5px solid var(--g2);border-radius:11px;background:#fff;outline:none;transition:border-color .18s;}
+/* Voice input */
+.voice-input-wrap{position:relative;display:flex;align-items:stretch;}
+.voice-input-wrap input,.voice-input-wrap textarea{flex:1;padding-right:44px!important;}
+.voice-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:var(--g2);color:var(--b2);font-size:15px;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s,box-shadow .15s;border:none;cursor:pointer;z-index:1;}
+.voice-btn:hover{background:var(--g3);}
+.voice-btn.listening{background:var(--g5);color:#fff;box-shadow:0 0 0 4px rgba(26,168,67,.25);animation:voice-pulse 1.2s infinite;}
+.voice-btn.listening:hover{background:var(--g6);}
+.voice-input-wrap textarea~.voice-btn{top:14px;transform:none;}
+@keyframes voice-pulse{0%,100%{box-shadow:0 0 0 3px rgba(26,168,67,.25);}50%{box-shadow:0 0 0 7px rgba(26,168,67,.10);}}
+.modal-field input:not(.time-seg):focus,.modal-field textarea:focus,.modal-field select:focus{border-color:var(--g4);}
+.modal-field textarea{min-height:100px;resize:vertical;}
+.modal-meta{font-size:13px;font-weight:700;color:var(--g5);margin-bottom:10px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:8px;}
+.modal-secondary{padding:11px 16px;border-radius:11px;background:var(--g2);color:var(--b0);font-weight:700;transition:background .15s;}
+.modal-secondary:hover{background:var(--g3);}
+.modal-primary{padding:11px 16px;border-radius:11px;background:var(--g5);color:#fff;font-weight:800;transition:background .15s;}
+.modal-primary:hover{background:var(--g6);}
+.info-modal{width:min(100%,620px);max-height:82vh;overflow-y:auto;}
+.info-modal h2{font-size:18px;font-weight:800;margin:18px 0 7px;color:var(--g5);}
+.info-modal h2:first-of-type{margin-top:0;}
+.info-modal p{font-size:14px;line-height:1.7;color:#333;margin:0 0 10px;}
+.info-modal ul{padding-left:18px;margin:0 0 10px;}
+.info-modal li{font-size:14px;line-height:1.65;color:#444;margin-bottom:5px;}
+
+/* STATUSES */
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;}
+.status-pending{background:#fff3cd;color:#856404;}
+.status-progress{background:#cfe2ff;color:#0a58ca;}
+.status-review{background:#f8d7da;color:#842029;}
+.status-done{background:#d1e7dd;color:#0a3622;}
+.status-rejected{background:#e2e3e5;color:#41464b;}
+.status-overdue{background:#f8d7da;color:#842029;}
+.task-card{position:relative;}
+.task-status-row{margin-top:4px;}
+.action-btn{padding:11px 18px;border-radius:11px;font-weight:800;font-size:14px;transition:background .15s,color .15s;}
+.action-start{background:#0a58ca;color:#fff;}
+.action-start:hover{background:#084298;}
+.action-finish{background:var(--g5);color:#fff;}
+.action-finish:hover{background:var(--g6);}
+.modal-actions-top{margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+
+/* FILE UPLOAD */
+.file-upload-zone{border:2px dashed var(--g3);border-radius:12px;padding:14px 16px;text-align:center;cursor:pointer;transition:border-color .18s,background .18s;background:var(--g1);position:relative;}
+.file-upload-zone:hover,.file-upload-zone.drag{border-color:var(--g4);background:#f0fff4;}
+.file-upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.file-upload-label{font-size:13px;color:var(--b3);font-weight:600;pointer-events:none;}
+.file-upload-label strong{color:var(--g5);}
+.file-attached{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:10px;background:#e4f7eb;border:1.5px solid var(--g4);font-size:13px;font-weight:700;color:var(--g6);}
+.file-attached-remove{margin-left:auto;background:transparent;color:var(--b3);font-size:18px;padding:0 4px;line-height:1;}
+.file-attached-remove:hover{color:#c0392b;}
+
+/* TIME INPUTS */
+.time-field-wrap{display:flex;flex-direction:column;gap:6px;}
+.time-input-row{display:flex;gap:2px;align-items:center;}
+.time-seg{width:48px;padding:10px 2px;border:1.5px solid var(--g2);border-radius:11px;background:#fff;font-size:15px;font-weight:700;text-align:center;outline:none;transition:border-color .18s,background .18s;-moz-appearance:textfield;appearance:textfield;}
+.time-ai-row{display:flex;align-items:center;gap:8px;margin-top:2px;}
+.time-ai-btn{background:var(--g1);border:1.5px solid var(--g4);color:var(--g6);font-weight:800;font-size:12px;padding:5px 10px;border-radius:8px;white-space:nowrap;cursor:pointer;transition:background .15s;}
+.time-ai-btn:hover{background:var(--g2);}
+.time-seg::-webkit-inner-spin-button,.time-seg::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+.time-seg:focus{border-color:var(--g4);background:#f0fff4;}
+.time-sep{font-weight:800;color:var(--b3);padding:0;font-size:17px;}
+.time-range-sep{font-weight:800;color:var(--b4);padding:0 2px;font-size:15px;}
+
+/* TASK CARD START BUTTON */
+.task-card-inner{display:flex;flex-direction:column;gap:4px;width:100%;}
+.task-card-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
+.task-start-btn{padding:6px 13px;border-radius:9px;background:#0a58ca;color:#fff;font-size:12px;font-weight:800;transition:background .15s;white-space:nowrap;}
+.task-start-btn:hover{background:#084298;}
+
+/* TEACHER UI */
+.t-btn-primary{padding:11px 20px;border-radius:12px;background:var(--b0);color:#fff;font-weight:800;font-size:14px;transition:background .18s;display:inline-flex;align-items:center;gap:8px;}
+.t-btn-primary:hover{background:var(--b1);}
+.t-btn-green{padding:11px 20px;border-radius:12px;background:var(--g5);color:#fff;font-weight:800;font-size:14px;transition:background .18s;display:inline-flex;align-items:center;gap:8px;}
+.t-btn-green:hover{background:var(--g6);}
+.t-btn-ghost{padding:9px 16px;border-radius:10px;background:rgba(0,0,0,.07);color:var(--b1);font-weight:700;font-size:13px;transition:background .15s;}
+.t-btn-ghost:hover{background:rgba(0,0,0,.13);}
+.t-btn-danger{padding:9px 14px;border-radius:10px;background:#ffeaea;color:#c0392b;font-weight:700;font-size:13px;transition:background .15s;}
+.t-btn-danger:hover{background:#ffd5d5;}
+.t-btn-blue{padding:9px 14px;border-radius:10px;background:#e8f4ff;color:#0a58ca;font-weight:700;font-size:13px;transition:background .15s;}
+.t-btn-blue:hover{background:#d0eaff;}
+.t-section-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+.t-class-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.t-class-card{background:#fff;border-radius:18px;padding:22px 20px;box-shadow:0 6px 20px rgba(0,0,0,.08);cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:left;border:2px solid transparent;}
+.t-class-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.13);border-color:var(--g3);}
+.t-class-icon{font-size:36px;margin-bottom:10px;}
+.t-class-name{font-size:22px;font-weight:800;color:var(--b0);margin-bottom:4px;}
+.t-class-subject{font-size:14px;color:var(--b3);font-weight:600;margin-bottom:12px;}
+.t-class-meta{display:flex;gap:14px;flex-wrap:wrap;}
+.t-class-badge{background:var(--g2);color:var(--g6);font-size:12px;font-weight:800;padding:4px 10px;border-radius:999px;}
+.t-empty{text-align:center;padding:48px 24px;color:var(--b3);background:rgba(255,255,255,.6);border-radius:18px;}
+.t-empty-icon{font-size:56px;margin-bottom:12px;}
+.t-empty-text{font-size:18px;font-weight:700;margin-bottom:6px;color:var(--b2);}
+.t-empty-sub{font-size:14px;}
+.t-back-btn{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.6);border-radius:10px;padding:8px 14px;font-weight:700;font-size:14px;color:var(--b1);margin-bottom:16px;transition:background .15s;}
+.t-back-btn:hover{background:rgba(255,255,255,.9);}
+.t-student-list{display:flex;flex-direction:column;gap:10px;}
+.t-student-row{background:#fff;border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 4px 12px rgba(0,0,0,.07);cursor:pointer;transition:box-shadow .15s;text-align:left;}
+.t-student-row:hover{box-shadow:0 8px 20px rgba(0,0,0,.12);}
+.t-student-avatar{width:46px;height:46px;border-radius:999px;background:var(--g4);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--b0);flex:0 0 auto;}
+.t-student-name{font-size:16px;font-weight:800;color:var(--b0);}
+.t-student-meta{font-size:13px;color:var(--b3);margin-top:2px;}
+.t-student-stats{margin-left:auto;display:flex;gap:10px;}
+.t-mini-stat{text-align:center;}
+.t-mini-num{font-size:20px;font-weight:800;color:var(--b0);line-height:1;}
+.t-mini-lbl{font-size:10px;font-weight:700;color:var(--b3);}
+.t-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:22px;}
+.t-stat-box{background:#fff;border-radius:16px;padding:18px 16px;box-shadow:0 4px 14px rgba(0,0,0,.08);}
+.t-stat-num{font-size:40px;font-weight:800;color:var(--b0);line-height:1;}
+.t-stat-lbl{font-size:13px;font-weight:700;color:var(--b3);margin-top:4px;}
+.t-bar-wrap{display:flex;flex-direction:column;gap:8px;}
+.t-bar-row{display:flex;align-items:center;gap:10px;font-size:13px;}
+.t-bar-name{width:130px;font-weight:700;color:var(--b1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.t-bar-track{flex:1;height:10px;border-radius:999px;background:var(--g2);overflow:hidden;}
+.t-bar-fill{height:100%;border-radius:999px;background:var(--g4);transition:width .4s;}
+.t-bar-count{font-weight:800;color:var(--b0);min-width:28px;text-align:right;}
+.t-profile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px;}
+.t-profile-box{background:var(--g1);border-radius:12px;padding:12px 14px;}
+.t-profile-lbl{font-size:11px;font-weight:700;color:var(--b3);text-transform:uppercase;letter-spacing:.5px;}
+.t-profile-val{font-size:17px;font-weight:800;color:var(--b0);margin-top:4px;}
+.t-task-mini{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:var(--g1);margin-bottom:6px;font-size:13px;}
+.t-task-done{opacity:.55;text-decoration:line-through;}
+.t-task-dot{width:10px;height:10px;border-radius:999px;background:var(--g4);flex:0 0 auto;}
+.t-task-dot.overdue{background:#e74c3c;}
+.t-task-dot.done{background:var(--b3);}
+.t-class-header{background:#fff;border-radius:16px;padding:20px 22px;margin-bottom:20px;box-shadow:0 4px 14px rgba(0,0,0,.07);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.t-tab-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.t-tab{padding:9px 18px;border-radius:10px;font-weight:700;font-size:14px;background:rgba(255,255,255,.5);color:var(--b2);transition:background .15s,color .15s;}
+.t-tab.active{background:var(--b0);color:#fff;}
+/* Prediction hint */
+.ai-hint{font-size:13px;color:var(--g5);font-weight:700;opacity:0;transition:opacity .3s ease;position:absolute;left:0;top:100%;margin-top:6px;white-space:nowrap;pointer-events:none;z-index:10;background:#fff;padding:4px 10px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.12);border:1.5px solid var(--g4);}
+.ai-hint.visible{opacity:1;}
+.ai-predict-wrap{position:relative;display:flex;align-items:center;gap:6px;flex-shrink:0;margin-bottom:4px;}
+/* Review task card */
+.review-card{background:#fff;border-radius:14px;padding:16px 18px;box-shadow:0 4px 14px rgba(0,0,0,.08);margin-bottom:10px;display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;}
+.review-card-info{flex:1;min-width:0;}
+.review-card-title{font-size:16px;font-weight:800;color:var(--b0);margin-bottom:4px;}
+.review-card-meta{font-size:13px;color:var(--b3);margin-bottom:8px;}
+.review-card-actions{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;}
+
+
+/* AI TEST MODAL */
+.ai-test-modal{width:min(100%,720px);max-height:90vh;overflow-y:auto;}
+.ai-test-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--g2);}
+.ai-test-icon{font-size:32px;}
+.ai-test-title{font-size:22px;font-weight:800;color:var(--b0);}
+.ai-test-sub{font-size:13px;color:var(--b3);margin-top:2px;}
+.ai-loading{display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px 20px;text-align:center;}
+.ai-spinner{width:48px;height:48px;border:4px solid var(--g2);border-top-color:var(--g4);border-radius:999px;animation:aiSpin 1s linear infinite;}
+@keyframes aiSpin{to{transform:rotate(360deg);}}
+.ai-loading-text{font-size:16px;font-weight:700;color:var(--b2);}
+.ai-loading-sub{font-size:13px;color:var(--b3);max-width:320px;line-height:1.5;}
+
+/* Question card */
+.ai-question-card{background:#f8faf8;border-radius:16px;padding:20px 22px;margin-bottom:14px;border:1.5px solid var(--g2);}
+.ai-question-num{font-size:13px;font-weight:800;color:var(--g5);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.ai-question-text{font-size:16px;font-weight:700;color:var(--b0);margin-bottom:14px;line-height:1.5;}
+.ai-options{display:flex;flex-direction:column;gap:8px;}
+.ai-option{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;background:#fff;border:2px solid var(--g2);cursor:pointer;transition:all .15s;font-size:15px;font-weight:600;color:var(--b1);}
+.ai-option:hover{border-color:var(--g3);background:var(--g1);}
+.ai-option.selected{border-color:var(--g4);background:#e4f7eb;color:var(--g6);}
+.ai-option.correct{border-color:var(--g4);background:#d1e7dd;color:#0a3622;}
+.ai-option.wrong{border-color:#e74c3c;background:#f8d7da;color:#842029;}
+.ai-option-letter{width:28px;height:28px;border-radius:999px;background:var(--g2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--b0);flex-shrink:0;}
+.ai-option.selected .ai-option-letter,.ai-option.correct .ai-option-letter{background:var(--g4);color:#fff;}
+.ai-option.wrong .ai-option-letter{background:#e74c3c;color:#fff;}
+
+/* Test results */
+.ai-results{text-align:center;padding:24px 20px;}
+.ai-results-score{font-size:64px;font-weight:800;color:var(--g5);line-height:1;}
+.ai-results-label{font-size:16px;font-weight:700;color:var(--b2);margin-top:8px;}
+.ai-results-detail{font-size:14px;color:var(--b3);margin-top:6px;}
+.ai-mistakes{margin-top:20px;text-align:left;}
+.ai-mistake-item{background:#fff3e8;border-radius:12px;padding:14px 16px;margin-bottom:10px;border-left:4px solid #b85c00;}
+.ai-mistake-q{font-size:14px;font-weight:700;color:var(--b0);margin-bottom:6px;}
+.ai-mistake-a{font-size:13px;color:var(--b3);line-height:1.5;}
+.ai-mistake-correct{color:var(--g5);font-weight:700;}
+
+/* Explain modal */
+.ai-explain-modal{width:min(100%,640px);max-height:88vh;overflow-y:auto;}
+.ai-explain-content{font-size:15px;line-height:1.8;color:var(--b1);}
+.ai-explain-content h3{font-size:18px;font-weight:800;color:var(--g5);margin:20px 0 10px;}
+.ai-explain-content p{margin:0 0 12px;}
+.ai-explain-content ul{padding-left:20px;margin:0 0 12px;}
+.ai-explain-content li{margin-bottom:6px;}
+.ai-explain-content code{background:var(--g1);padding:2px 6px;border-radius:4px;font-size:13px;font-family:monospace;}
+.ai-explain-content pre{background:var(--g1);padding:12px 14px;border-radius:10px;overflow-x:auto;font-size:13px;line-height:1.6;margin:10px 0;}
+.ai-chat-box{margin-top:16px;padding-top:16px;border-top:1.5px solid var(--g2);}
+.ai-chat-input-row{display:flex;gap:8px;}
+.ai-chat-input{flex:1;padding:10px 14px;border:1.5px solid var(--g2);border-radius:11px;font-size:14px;outline:none;}
+.ai-chat-input:focus{border-color:var(--g4);}
+.ai-chat-send{padding:10px 16px;border-radius:11px;background:var(--g5);color:#fff;font-weight:700;font-size:14px;border:0;cursor:pointer;transition:background .15s;}
+.ai-chat-send:hover{background:var(--g6);}
+.ai-chat-history{max-height:200px;overflow-y:auto;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;}
+.ai-chat-msg{padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.5;max-width:90%;}
+.ai-chat-msg.user{align-self:flex-end;background:var(--g4);color:var(--b0);font-weight:600;}
+.ai-chat-msg.bot{align-self:flex-start;background:var(--g1);color:var(--b1);border:1px solid var(--g2);}
+
+/* Error message for non-topic tasks */
+.ai-error-box{text-align:center;padding:40px 24px;}
+.ai-error-icon{font-size:56px;margin-bottom:16px;}
+.ai-error-title{font-size:20px;font-weight:800;color:var(--b0);margin-bottom:8px;}
+.ai-error-text{font-size:14px;color:var(--b3);line-height:1.6;max-width:360px;margin:0 auto;}
+
+/* AI action buttons in view modal */
+.ai-actions-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.ai-action-btn{padding:8px 14px;border-radius:10px;font-size:13px;font-weight:700;border:1.5px solid var(--g3);background:#fff;color:var(--g6);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
+.ai-action-btn:hover{background:var(--g1);border-color:var(--g4);}
+.ai-action-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+@media(max-width:1100px){
+	.layout{grid-template-columns:1fr;}
+	.sidebar{flex-direction:row;min-height:auto;gap:14px;}
+	.side-stack{flex-direction:row;justify-content:space-around;}
+	.side-footer{display:none;}
+	.stats-layout,.calendar-bottom{grid-template-columns:1fr;}
+	.profile-card{border-right:0;border-bottom:1px solid rgba(255,255,255,.14);padding-right:0;padding-bottom:16px;}
+}
+@media(max-width:760px){
+	.shell{padding:10px;border-radius:18px;}
+	.screen{padding:16px 14px;}
+	.calendar-toolbar{flex-direction:column;align-items:flex-start;}
+	.task-card{grid-template-columns:auto 1fr;}
+	.task-deadline{grid-column:2;}
+	.profile-table{grid-template-columns:1fr;gap:8px;}
+	.calendar-grid{gap:6px;}
+	.calendar-day{min-height:68px;}
+	.modal-form{grid-template-columns:1fr;}
+}
+
+/* ═══════════════════════════════════════
+   PARENT INTERFACE STYLES
+════════════════════════════════════════ */
+.p-layout{display:grid;grid-template-columns:minmax(0,1fr) 132px;gap:12px;min-height:calc(100vh - 110px);}
+.p-screen{min-height:100%;border-radius:var(--rx);padding:22px 24px;overflow:hidden;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;}
+.p-screen h1{margin:0 0 16px;font-size:clamp(30px,4vw,44px);line-height:1.02;font-weight:800;}
+.p-section-title{margin:20px 0 12px;font-size:20px;font-weight:700;color:rgba(255,255,255,.8);}
+.p-card{background:rgba(255,255,255,.95);border-radius:18px;padding:22px 20px;box-shadow:0 6px 20px rgba(0,0,0,.12);color:var(--b0);cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:left;border:2px solid transparent;}
+.p-card:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(0,0,0,.18);border-color:rgba(118,75,162,.3);}
+.p-card-avatar{width:56px;height:56px;border-radius:999px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;flex:0 0 auto;}
+.p-card-info{flex:1;min-width:0;}
+.p-card-name{font-size:18px;font-weight:800;color:var(--b0);margin-bottom:3px;}
+.p-card-meta{font-size:13px;color:var(--b3);}
+.p-card-stats{display:flex;gap:14px;margin-left:auto;}
+.p-mini-stat{text-align:center;}
+.p-mini-num{font-size:22px;font-weight:800;color:var(--b0);line-height:1;}
+.p-mini-lbl{font-size:10px;font-weight:700;color:var(--b3);text-transform:uppercase;}
+.p-empty{text-align:center;padding:48px 24px;color:rgba(255,255,255,.7);background:rgba(255,255,255,.1);border-radius:18px;border:2px dashed rgba(255,255,255,.25);}
+.p-empty-icon{font-size:56px;margin-bottom:12px;}
+.p-empty-text{font-size:20px;font-weight:700;margin-bottom:6px;color:#fff;}
+.p-empty-sub{font-size:14px;opacity:.8;}
+.p-btn-primary{padding:12px 22px;border-radius:14px;background:#fff;color:#764ba2;font-weight:800;font-size:15px;transition:transform .15s,box-shadow .15s;display:inline-flex;align-items:center;gap:10px;border:0;box-shadow:0 4px 14px rgba(0,0,0,.15);cursor:pointer;}
+.p-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2);}
+.p-btn-ghost{padding:10px 18px;border-radius:12px;background:rgba(255,255,255,.15);color:#fff;font-weight:700;font-size:14px;transition:background .15s;border:1.5px solid rgba(255,255,255,.3);cursor:pointer;}
+.p-btn-ghost:hover{background:rgba(255,255,255,.25);}
+.p-header-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.p-child-detail-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.2);flex-wrap:wrap;}
+.p-child-detail-avatar{width:72px;height:72px;border-radius:999px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#fff;}
+.p-child-detail-info{flex:1;min-width:0;}
+.p-child-detail-name{font-size:28px;font-weight:800;color:#fff;margin-bottom:4px;}
+.p-child-detail-meta{font-size:15px;color:rgba(255,255,255,.75);}
+.p-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:24px;}
+.p-stat-box{background:rgba(255,255,255,.95);border-radius:16px;padding:18px 16px;color:var(--b0);box-shadow:0 4px 14px rgba(0,0,0,.1);}
+.p-stat-num{font-size:36px;font-weight:800;color:#764ba2;line-height:1;}
+.p-stat-lbl{font-size:13px;font-weight:700;color:var(--b3);margin-top:4px;}
+.p-tasks-list{display:flex;flex-direction:column;gap:10px;}
+.p-task-row{background:rgba(255,255,255,.95);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:14px;color:var(--b0);box-shadow:0 4px 12px rgba(0,0,0,.08);cursor:pointer;transition:box-shadow .15s;text-align:left;border:0;width:100%;}
+.p-task-row:hover{box-shadow:0 8px 20px rgba(0,0,0,.14);}
+.p-task-dot{width:12px;height:12px;border-radius:999px;background:var(--g4);flex:0 0 auto;}
+.p-task-dot.done{background:var(--b3);}
+.p-task-dot.overdue{background:#e74c3c;}
+.p-task-dot.pending{background:#f39c12;}
+.p-task-info{flex:1;min-width:0;}
+.p-task-title{font-size:15px;font-weight:800;margin-bottom:2px;}
+.p-task-meta{font-size:12px;color:var(--b3);}
+.p-task-date{font-size:13px;font-weight:700;color:var(--b2);white-space:nowrap;}
+.p-back-btn{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.2);border-radius:10px;padding:8px 14px;font-weight:700;font-size:14px;color:#fff;margin-bottom:16px;transition:background .15s;border:0;cursor:pointer;}
+.p-back-btn:hover{background:rgba(255,255,255,.35);}
+.p-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;}
+.p-calendar-day{min-height:70px;padding:8px;border-radius:14px;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:4px;background:rgba(255,255,255,.1);border:1px solid transparent;color:rgba(255,255,255,.85);text-align:left;cursor:pointer;}
+.p-calendar-day.empty{visibility:hidden;}
+.p-calendar-day.selected{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.4);}
+.p-calendar-day.today .p-day-number{color:#ffd700;font-weight:900;}
+.p-day-number{font-size:16px;font-weight:800;line-height:1;}
+.p-day-badge{min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#ffd700;color:#764ba2;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;align-self:flex-end;}
+.p-calendar-weekday{font-size:13px;font-weight:700;color:rgba(255,255,255,.7);padding-bottom:4px;text-align:center;}
+.p-calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;}
+.p-calendar-nav{display:flex;align-items:center;gap:14px;}
+.p-calendar-arrow{background:transparent;color:#ffd700;font-size:34px;padding:0 4px;border:0;cursor:pointer;}
+.p-calendar-month{font-size:22px;font-weight:800;color:#fff;}
+.p-calendar-action{background:#fff;color:#764ba2;padding:11px 16px;border-radius:12px;font-weight:800;transition:transform .15s;border:0;box-shadow:0 4px 14px rgba(0,0,0,.15);cursor:pointer;}
+.p-calendar-action:hover{transform:translateY(-2px);}
+.p-info-box{padding:18px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);}
+.p-info-title{font-size:18px;font-weight:800;color:#ffd700;margin-bottom:12px;}
+.p-day-tasks{display:flex;flex-direction:column;gap:10px;}
+.p-day-task{width:100%;padding:12px 14px;border-radius:13px;background:rgba(255,255,255,.95);color:var(--b0);display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start;text-align:left;border:0;cursor:pointer;}
+.p-day-time{padding:5px 9px;border-radius:999px;background:#667eea;color:#fff;font-size:12px;font-weight:800;white-space:nowrap;}
+.p-profile-card{background:rgba(255,255,255,.1);border-radius:18px;padding:22px;border:1px solid rgba(255,255,255,.2);}
+.p-profile-title{font-size:20px;font-weight:800;color:#ffd700;margin-bottom:16px;}
+.p-profile-table{display:grid;grid-template-columns:auto 1fr;gap:12px 22px;font-size:16px;color:#fff;}
+.p-profile-label{color:rgba(255,255,255,.6);}
+.p-profile-value{color:#fff;font-weight:600;}
+.p-invite-result{font-size:14px;font-weight:600;padding:10px 14px;border-radius:10px;display:none;margin-top:10px;}
+.p-child-remove{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,.9);color:#c0392b;border:0;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.p-child-remove:hover{background:#fff;}
+.p-card-wrap{position:relative;}
+@media(max-width:700px){
+  .p-layout{grid-template-columns:1fr;}
+  .p-stats-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
+  .p-screen{padding:16px 14px;}
+  .p-child-detail-header{flex-direction:column;align-items:flex-start;}
+  .p-header-bar{flex-direction:column;align-items:stretch;}
+  .p-card-stats{width:100%;justify-content:space-around;margin-left:0;margin-top:10px;}
+  .p-calendar-grid{gap:6px;}
+}
+</style>
+<base target="_blank">
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+
+<!-- ═══════ AUTH ═══════ -->
+<div id="authScreen" class="auth-wrap">
+<div class="auth-card">
+<div class="auth-brand">School<span>Plan</span></div>
+<div class="auth-sub">Планировщик для школьников</div>
+<div class="auth-tabs">
+	<button class="auth-tab active" id="tabLogin" type="button">Войти</button>
+	<button class="auth-tab" id="tabReg" type="button">Регистрация</button>
+</div>
+<div id="loginForm">
+	<div id="loginError" class="auth-error" hidden></div>
+	<div class="auth-field"><label>Логин</label><input id="loginUsername" type="text" placeholder="Ваш логин" autocomplete="username"/></div>
+	<div class="auth-field"><label>Пароль</label><input id="loginPassword" type="password" placeholder="Ваш пароль" autocomplete="current-password"/></div>
+	<button class="auth-submit" id="doLogin" type="button">Войти</button>
+</div>
+<div id="registerForm" hidden>
+	<div id="regError" class="auth-error" hidden></div>
+	<div class="auth-field"><label>Логин</label><input id="regUsername" type="text" placeholder="Придумайте логин" autocomplete="off"/></div>
+	<div class="auth-field"><label>Пароль</label><input id="regPassword" type="password" placeholder="Придумайте пароль" autocomplete="new-password"/></div>
+	<div class="auth-field"><label>Повторите пароль</label><input id="regPassword2" type="password" placeholder="Повторите пароль" autocomplete="new-password"/></div>
+	<div class="two-col">
+		<div class="auth-field"><label>Имя</label><input id="regName" type="text" placeholder="Ваше имя"/></div>
+		<div class="auth-field"><label>Фамилия</label><input id="regSurname" type="text" placeholder="Ваша фамилия"/></div>
+	</div>
+	<div class="auth-field" style="margin-bottom:8px"><label>Кто вы?</label></div>
+	<div class="role-grid">
+		<button class="role-btn" data-role="student" type="button"><span class="role-icon">🎒</span><span>Ученик</span></button>
+		<button class="role-btn" data-role="teacher" type="button"><span class="role-icon">📚</span><span>Учитель</span></button>
+		<button class="role-btn" data-role="parent"  type="button"><span class="role-icon">👨‍👩‍👧</span><span>Родитель</span></button>
+	</div>
+	<div id="schoolField" class="auth-field" hidden><label>Школа</label><input id="regSchool" type="text" placeholder="Например, Школа №42"/></div>
+	<button class="auth-submit" id="doRegister" type="button">Зарегистрироваться</button>
+</div>
+</div>
+</div>
+
+<!-- ═══════ STUDENT APP ═══════ -->
+<div id="appScreen" hidden class="app">
+<div class="shell">
+<header class="topbar">
+	<div class="brand">School<em>Plan</em></div>
+	<button class="topbar-btn" id="logoutBtn" type="button"><span>↪</span><span>Выход</span></button>
+</header>
+<div class="layout">
+	<main id="screen-tasks" class="screen tasks">
+		<h1>Задания</h1>
+		<div class="section-title">Ближайшие задания</div>
+		<div id="nearestTasks" class="tasks-group"></div>
+		<div class="add-box">
+			<div class="section-title">Добавить задачу</div>
+			<button class="add-trigger card-white" id="addTaskFromTasks" type="button">
+				<span class="add-icon">+</span>
+				<span class="add-text">Открыть календарь и создать задачу</span>
+			</button>
+		</div>
+	</main>
+	<main id="screen-calendar" class="screen calendar" hidden>
+		<h1>Календарь</h1>
+		<div class="calendar-layout">
+			<section>
+				<div class="calendar-toolbar">
+					<div class="calendar-nav">
+						<button class="calendar-arrow" id="prevMonth" type="button">‹</button>
+						<div id="calendarMonthLabel" class="calendar-month"></div>
+						<button class="calendar-arrow" id="nextMonth" type="button">›</button>
+					</div>
+					<button class="calendar-action" id="openCreateModal" type="button">+ Добавить задачу</button>
+				</div>
+				<div id="calendarGrid" class="calendar-grid"></div>
+			</section>
+			<div class="calendar-bottom">
+				<div class="info-box">
+					<div class="info-box-title">Задачи на день</div>
+					<div id="selectedDateLabel" class="section-title" style="margin-top:0;font-size:15px"></div>
+					<div id="selectedDayTasks" class="day-tasks"></div>
+				</div>
+				<div class="info-box">
+					<div class="info-box-title">Ближайшие события</div>
+					<div id="upcomingEvents" class="events"></div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<main id="screen-stats" class="screen stats" hidden>
+		<div class="stats-layout">
+			<section class="profile-card">
+				<div class="profile-title">Личный кабинет</div>
+				<div class="profile-table">
+					<div class="profile-label">Имя</div>       <div class="profile-value" id="profileName">—</div>
+					<div class="profile-label">Фамилия</div>   <div class="profile-value" id="profileSurname">—</div>
+					<div class="profile-label">Логин</div>     <div class="profile-value" id="profileLogin">—</div>
+					<div class="profile-label">Роль</div>      <div class="profile-value" id="profileRole">—</div>
+					<div class="profile-label">Школа</div>     <div class="profile-value" id="profileSchool">—</div>
+					<div class="profile-label">ID</div>        <div class="profile-value" id="profileId">—</div>
+				</div>
+				<!-- Приглашения -->
+				<div id="invitationsSection" style="margin-top:20px">
+					<div class="profile-title" style="font-size:17px;margin-bottom:10px">📬 Приглашения</div>
+					<div id="invitationsList"></div>
+				</div>
+				<!-- AI Советы -->
+				<div style="margin-top:24px">
+					<div class="profile-title" style="font-size:17px;margin-bottom:10px">🤖 ИИ-наставник</div>
+					<button id="aiAdviceBtn" type="button" style="width:100%;padding:12px 16px;border-radius:13px;background:linear-gradient(135deg,#1aa843,#0f7a30);color:#fff;font-weight:800;font-size:14px;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;">
+						<span>✨</span><span>Получить советы</span>
+					</button>
+					<div id="aiAdviceBlock" style="display:none;margin-top:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:14px 16px;max-height:240px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.25) transparent;">
+						<div id="aiAdviceContent" style="font-size:14px;line-height:1.7;color:#fff;"></div>
+					</div>
+				</div>
+			</section>
+			<section>
+				<div class="stats-title">Статистика</div>
+				<div class="stats-column">
+					<div class="stat-card card-white">
+						<div class="stat-card-title">✅ Выполненные задания</div>
+						<div class="stat-card-main"><div class="big-number" id="doneCount">0</div><div id="doneChart" class="real-chart"></div></div>
+					</div>
+					<div class="stat-card card-white">
+						<div class="stat-card-title">⏳ Задания в работе</div>
+						<div class="stat-card-main"><div class="big-number" id="workCount">0</div><div id="workChart" class="real-chart"></div></div>
+					</div>
+					<div class="stat-card card-white" style="border-left:4px solid #c0392b;">
+						<div class="stat-card-title">⚠️ Просроченные задания</div>
+						<div class="stat-card-main"><div class="big-number" id="overdueCount" style="color:#c0392b">0</div><div id="overdueChart" class="real-chart"></div></div>
+					</div>
+					<div class="stat-card card-white" style="border-left:4px solid #e67e22;">
+						<div class="stat-card-title">❌ Отклонённые задания</div>
+						<div class="stat-card-main"><div class="big-number" id="rejectedCount" style="color:#e67e22">0</div><div id="rejectedChart" class="real-chart"></div></div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</main>
+	<aside class="sidebar">
+		<div class="side-stack">
+			<button class="side-item" data-screen="calendar" type="button">
+				<span class="side-circle bk">🗓</span>
+				<span class="side-label">Календарь</span>
+			</button>
+			<button class="side-item active" data-screen="tasks" type="button">
+				<span class="side-circle g">📋</span>
+				<span class="side-label">Задания</span>
+			</button>
+			<button class="side-item" data-screen="stats" type="button" id="profileSideBtn">
+				<span class="side-circle dg">👤</span>
+				<span class="side-label">Кабинет</span>
+				<span class="side-badge" id="invBadge" hidden>!</span>
+			</button>
+		</div>
+		<div class="side-footer">
+			<button class="side-footer-btn" id="openAboutModal" type="button">О нас</button>
+			<button class="side-footer-btn" id="openTermsModal" type="button">Пользовательское соглашение</button>
+		</div>
+	</aside>
+</div>
+</div>
+</div>
+
+<!-- ═══════ TEACHER APP ═══════ -->
+<div id="teacherScreen" hidden class="app">
+<div class="shell">
+<header class="topbar">
+	<div class="brand">School<em>Plan</em> <span style="font-size:14px;font-weight:600;color:var(--g5);background:var(--g2);padding:3px 10px;border-radius:8px;margin-left:6px;">Учитель</span></div>
+	<button class="topbar-btn" id="teacherLogoutBtn" type="button"><span>↪</span><span>Выход</span></button>
+</header>
+<div class="layout">
+	<main id="t-screen-main" class="screen tasks" style="min-height:calc(100vh - 110px)">
+		<h1 id="teacherScreenTitle">Мои классы</h1>
+		<div id="teacherContent"></div>
+	</main>
+	<aside class="sidebar">
+		<div class="side-stack">
+			<button class="side-item active" data-tscreen="classes" type="button">
+				<span class="side-circle g">🏫</span>
+				<span class="side-label">Классы</span>
+			</button>
+			<button class="side-item" data-tscreen="review" type="button" id="reviewSideBtn">
+				<span class="side-circle bk">📥</span>
+				<span class="side-label">Проверка</span>
+				<span class="side-badge" id="reviewBadge" hidden>0</span>
+			</button>
+			<button class="side-item" data-tscreen="stats" type="button">
+				<span class="side-circle bk">📊</span>
+				<span class="side-label">Статистика</span>
+			</button>
+			<button class="side-item" data-tscreen="profile" type="button">
+				<span class="side-circle dg">👤</span>
+				<span class="side-label">Кабинет</span>
+			</button>
+		</div>
+		<div class="side-footer">
+			<div style="font-size:11px;font-weight:700;color:var(--b3);text-align:center;padding:4px 0" id="teacherSideId"></div>
+		</div>
+	</aside>
+</div>
+</div>
+</div>
+
+<!-- ═══════ PARENT SCREEN ═══════ -->
+<div id="parentScreen" hidden class="app">
+<div class="shell">
+<header class="topbar">
+    <div class="brand">School<em>Plan</em> <span style="font-size:14px;font-weight:600;color:#764ba2;background:rgba(118,75,162,.15);padding:3px 10px;border-radius:8px;margin-left:6px;">Родитель</span></div>
+    <button class="topbar-btn" id="parentLogoutBtn" type="button"><span>↪</span><span>Выход</span></button>
+</header>
+<div class="p-layout">
+    <main id="p-screen-main" class="p-screen" style="min-height:calc(100vh - 110px)">
+        <h1 id="parentScreenTitle">Мои дети</h1>
+        <div id="parentContent"></div>
+    </main>
+    <aside class="sidebar" style="background:linear-gradient(180deg,#667eea 0%,#764ba2 100%);">
+        <div class="side-stack">
+            <button class="side-item active" data-pscreen="children" type="button">
+                <span class="side-circle" style="background:#fff;color:#764ba2;">👨‍👩‍👧</span>
+                <span class="side-label" style="color:#fff;">Дети</span>
+            </button>
+            <button class="side-item" data-pscreen="calendar" type="button">
+                <span class="side-circle" style="background:rgba(255,255,255,.2);color:#fff;">🗓</span>
+                <span class="side-label" style="color:#fff;">Календарь</span>
+            </button>
+            <button class="side-item" data-pscreen="profile" type="button">
+                <span class="side-circle" style="background:rgba(255,255,255,.2);color:#fff;">👤</span>
+                <span class="side-label" style="color:#fff;">Кабинет</span>
+            </button>
+        </div>
+        <div class="side-footer">
+            <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.7);text-align:center;padding:4px 0" id="parentSideId"></div>
+        </div>
+    </aside>
+</div>
+</div>
+</div>
+
+<!-- Modal: Parent Add Child -->
+<div id="addChildModal" class="modal-backdrop" hidden>
+<div class="modal" role="dialog">
+<div class="modal-head"><div class="modal-title">Добавить ребёнка</div><button class="modal-close" id="closeAddChildModal" type="button">×</button></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+    <div style="font-size:13px;color:var(--b3);line-height:1.5">Введите ID ребёнка. Ребёнок найдёт свой ID в разделе «Кабинет» → поле «ID». После добавления вы сможете видеть его задания и создавать для него новые.</div>
+    <div class="modal-field"><label>ID ребёнка</label><input id="addChildId" placeholder="Например, 3847291" type="number"/></div>
+    <div id="addChildResult" class="p-invite-result"></div>
+    <div class="modal-actions">
+        <button class="modal-secondary" id="cancelAddChildModal" type="button">Отмена</button>
+        <button class="modal-primary" id="doAddChild" type="button">Добавить</button>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- Modal: Parent Create Task for Child -->
+<div id="parentTaskModal" class="modal-backdrop" hidden>
+<div class="modal" role="dialog" aria-modal="true">
+<div class="modal-head"><div class="modal-title">Задание для ребёнка</div><button class="modal-close" id="closeParentTaskModal" type="button">×</button></div>
+<form id="parentTaskForm" class="modal-form">
+    <div id="parentTaskError" class="auth-error full" hidden></div>
+    <div class="modal-field full"><label>Ребёнок</label><select id="parentTaskChildSelect"></select></div>
+    <div class="modal-field full"><label>Название</label><div class="voice-input-wrap"><input id="parentTaskName" name="title" placeholder="Например, прочитать книгу" required/><button type="button" class="voice-btn" data-target="parentTaskName" title="Голосовой ввод">🎤</button></div></div>
+    <div class="modal-field"><label>Дата</label><input id="parentTaskDate" name="date" type="date" required/></div>
+    <div class="modal-field time-field-wrap">
+        <label>Время (начало–конец)</label>
+        <div class="time-input-row">
+            <input class="time-seg" id="parentStartH" type="number" min="0" max="23" placeholder="ЧЧ"/>
+            <span class="time-sep">:</span>
+            <input class="time-seg" id="parentStartM" type="number" min="0" max="59" placeholder="ММ"/>
+            <span class="time-range-sep">–</span>
+            <input class="time-seg" id="parentEndH" type="number" min="0" max="23" placeholder="ЧЧ"/>
+            <span class="time-sep">:</span>
+            <input class="time-seg" id="parentEndM" type="number" min="0" max="59" placeholder="ММ"/>
+        </div>
+        <div class="time-ai-row">
+            <button class="time-ai-btn" type="button" id="predictParentBtn">🤖 AI — предсказать время</button>
+            <span id="predictParentHint" style="font-size:12px;color:var(--g5);font-weight:700;"></span>
+        </div>
+    </div>
+    <div class="modal-field full"><label>Описание</label><div class="voice-input-wrap"><textarea id="parentTaskDesc" name="desc" placeholder="Что нужно сделать" required></textarea><button type="button" class="voice-btn" data-target="parentTaskDesc" title="Голосовой ввод">🎤</button></div></div>
+    <div class="modal-actions full">
+        <button class="modal-secondary" id="cancelParentTaskModal" type="button">Отмена</button>
+        <button class="modal-primary" type="submit">Создать задание</button>
+    </div>
+</form>
+</div>
+</div>
+
+<!-- Modal: Parent View Child Task -->
+<div id="parentViewTaskModal" class="modal-backdrop" hidden>
+<div class="modal" role="dialog" aria-modal="true">
+<div class="modal-head"><div class="modal-title">Задание ребёнка</div><button class="modal-close" id="closeParentViewTaskModal" type="button">×</button></div>
+<div id="parentViewTaskContent" style="display:flex;flex-direction:column;gap:14px">
+    <div id="parentViewTaskStatus" style="margin-bottom:4px"></div>
+    <div class="modal-field full"><label>Название</label><input id="parentViewTaskName" readonly style="background:var(--g1)"/></div>
+    <div class="modal-field"><label>Дата</label><input id="parentViewTaskDate" readonly style="background:var(--g1)"/></div>
+    <div class="modal-field"><label>Время</label><input id="parentViewTaskTime" readonly style="background:var(--g1)"/></div>
+    <div class="modal-field full"><label>Описание</label><textarea id="parentViewTaskDesc" readonly style="background:var(--g1);min-height:80px"></textarea></div>
+    <div id="parentViewTaskFileRow" class="full" style="display:none">
+        <div style="font-size:13px;font-weight:700;color:var(--b2);margin-bottom:6px">📎 Файл от учителя</div>
+        <div class="file-attached">
+            <span>📄</span><span id="parentViewTaskFileName"></span>
+            <a id="parentViewTaskFileLink" href="#" target="_blank" style="margin-left:auto;color:var(--g5);font-weight:700;font-size:13px;text-decoration:none">⬇ Скачать</a>
+        </div>
+    </div>
+    <div id="parentViewStudentFileRow" class="full" style="display:none">
+        <div style="font-size:13px;font-weight:700;color:var(--b2);margin-bottom:6px">📤 Работа ребёнка</div>
+        <div class="file-attached">
+            <span>📄</span><span id="parentViewStudentFileName"></span>
+            <a id="parentViewStudentFileLink" href="#" target="_blank" style="margin-left:auto;color:var(--g5);font-weight:700;font-size:13px;text-decoration:none">⬇ Скачать</a>
+        </div>
+    </div>
+    <div class="modal-actions">
+        <div id="parentViewTaskActions" style="display:contents"></div>
+        <button class="modal-secondary" id="closeParentViewTaskModalBtn" type="button">Закрыть</button>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- Modal: Create Task -->
+<div id="createModal" class="modal-backdrop" hidden>
+<div class="modal" role="dialog" aria-modal="true">
+<div class="modal-head"><div class="modal-title">Новая задача</div><button class="modal-close" id="closeCreateModal" type="button">×</button></div>
+<form id="createTaskForm" class="modal-form">
+	<div id="createTaskError" class="auth-error full" hidden></div>
+	<div class="modal-field full"><label>Название</label><div class="voice-input-wrap"><input id="createTaskName" name="title" placeholder="Например, собрать рюкзак" required/><button type="button" class="voice-btn" data-target="createTaskName" title="Голосовой ввод">🎤</button></div></div>
+	<div class="modal-field"><label>Дата</label><input id="createTaskDate" name="date" type="date" required/></div>
+	<div class="modal-field time-field-wrap">
+		<label>Время (начало–конец)</label>
+		<div class="time-input-row">
+			<input class="time-seg" id="createStartH" type="number" min="0" max="23" placeholder="ЧЧ"/>
+			<span class="time-sep">:</span>
+			<input class="time-seg" id="createStartM" type="number" min="0" max="59" placeholder="ММ"/>
+			<span class="time-range-sep">–</span>
+			<input class="time-seg" id="createEndH" type="number" min="0" max="23" placeholder="ЧЧ"/>
+			<span class="time-sep">:</span>
+			<input class="time-seg" id="createEndM" type="number" min="0" max="59" placeholder="ММ"/>
+		</div>
+		<div class="time-ai-row">
+			<button class="time-ai-btn" type="button" id="predictCreateBtn">🤖 AI — предсказать время</button>
+			<span id="predictCreateHint" style="font-size:12px;color:var(--g5);font-weight:700;"></span>
+		</div>
+	</div>
+	<div class="modal-field full"><label>Описание</label><div class="voice-input-wrap"><textarea id="createTaskDesc" name="desc" placeholder="Что нужно сделать" required></textarea><button type="button" class="voice-btn" data-target="createTaskDesc" title="Голосовой ввод">🎤</button></div></div>
+	<div class="modal-actions full">
+		<button class="modal-secondary" id="cancelCreateModal" type="button">Отмена</button>
+		<button class="modal-primary" type="submit">Сохранить</button>
+	</div>
+</form>
+</div>
+</div>
+
+<!-- Modal: View/Edit Task -->
+<div id="viewModal" class="modal-backdrop" hidden>
+<div class="modal" role="dialog" aria-modal="true">
+<div class="modal-head"><div class="modal-title">Задача</div><button class="modal-close" id="closeViewModal" type="button">×</button></div>
+<div class="modal-actions-top" id="viewTaskActions" style="justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;"></div>
+<form id="editTaskForm" class="modal-form">
+	<div id="editTaskError" class="auth-error full" hidden></div>
+	<div class="modal-field full"><label>Название</label><div class="voice-input-wrap"><input id="editTaskName" name="title" required/><button type="button" class="voice-btn" data-target="editTaskName" title="Голосовой ввод">🎤</button></div></div>
+	<div class="modal-field"><label>Дата</label><input id="editTaskDate" name="date" type="date" required/></div>
+	<div class="modal-field time-field-wrap">
+		<label>Время (начало–конец)</label>
+		<div class="time-input-row">
+			<input class="time-seg" id="editStartH" type="number" min="0" max="23" placeholder="ЧЧ"/>
+			<span class="time-sep">:</span>
+			<input class="time-seg" id="editStartM" type="number" min="0" max="59" placeholder="ММ"/>
+			<span class="time-range-sep">–</span>
+			<input class="time-seg" id="editEndH" type="number" min="0" max="23" placeholder="ЧЧ"/>
+			<span class="time-sep">:</span>
+			<input class="time-seg" id="editEndM" type="number" min="0" max="59" placeholder="ММ"/>
+		</div>
+		<div class="time-ai-row">
+			<button class="time-ai-btn" type="button" id="predictEditBtn">🤖 AI — предсказать время</button>
+			<span id="predictEditHint" style="font-size:12px;color:var(--g5);font-weight:700;"></span>
+		</div>
+	</div>
+	<div class="modal-field full"><label>Описание</label><div class="voice-input-wrap"><textarea id="editTaskDesc" name="desc" required></textarea><button type="button" class="voice-btn" data-target="editTaskDesc" title="Голосовой ввод">🎤</button></div></div>
+	<!-- Файл учителя — ссылка для скачивания -->
+	<div id="teacherFileRow" class="full" style="display:none">
+		<div style="font-size:13px;font-weight:700;color:var(--b2);margin-bottom:6px">📎 Файл от учителя</div>
+		<div class="file-attached">
+			<span>📄</span><span id="teacherFileName"></span>
+			<a id="teacherFileLink" href="#" target="_blank" style="margin-left:auto;color:var(--g5);font-weight:700;font-size:13px;text-decoration:none">⬇ Скачать</a>
+		</div>
+	</div>
+	<!-- Файл ученика -->
+	<div id="fileUploadSection" class="modal-field full" style="display:none">
+		<label>Прикрепить выполненную работу</label>
+		<div id="fileDropZone" class="file-upload-zone">
+			<input type="file" id="taskFileInput" accept="*/*"/>
+			<div class="file-upload-label">📎 <strong>Выберите файл</strong> или перетащите сюда</div>
+		</div>
+		<div id="fileAttachedInfo" style="display:none" class="file-attached">
+			<span>📄</span><span id="fileAttachedName"></span>
+			<button class="file-attached-remove" id="fileRemoveBtn" type="button">×</button>
+		</div>
+	</div>
+	<!-- Файл ученика уже загружен -->
+	<div id="studentFileDownloadRow" class="full" style="display:none">
+		<div style="font-size:13px;font-weight:700;color:var(--b2);margin-bottom:6px">📤 Ваша работа</div>
+		<div class="file-attached">
+			<span>📄</span><span id="studentFileDownloadName"></span>
+			<a id="studentFileDownloadLink" href="#" target="_blank" style="margin-left:auto;color:var(--g5);font-weight:700;font-size:13px;text-decoration:none">⬇ Скачать</a>
+		</div>
+	</div>
+	<div class="modal-actions full">
+		<button class="modal-secondary" id="cancelViewModal" type="button">Закрыть</button>
+		<button class="modal-primary" type="submit">Сохранить изменения</button>
+	</div>
+</form>
+</div>
+</div>
+
+<!-- Modal: Teacher Create Class -->
+<div id="createClassModal" class="modal-backdrop" hidden>
+<div class="modal" role="dialog">
+<div class="modal-head"><div class="modal-title">Создать класс</div><button class="modal-close" id="closeCreateClassModal" type="button">×</button></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+	<div class="modal-field"><label>Название класса</label><input id="newClassName" placeholder="Например, 7Б или 10А"/></div>
+	<div class="modal-field"><label>Предмет (необязательно)</label><input id="newClassSubject" placeholder="Математика, Физика…"/></div>
+	<div id="createClassError" class="auth-error" hidden></div>
+	<div class="modal-actions">
+		<button class="modal-secondary" id="cancelCreateClassModal" type="button">Отмена</button>
+		<button class="modal-primary" id="doCreateClass" type="button">Создать</button>
+	</div>
+</div>
+</div>
+</div>
+
+<!-- Modal: Teacher Invite Student -->
+<div id="inviteModal" class="modal-backdrop" hidden>
+<div class="modal" role="dialog">
+<div class="modal-head"><div class="modal-title">Добавить ученика</div><button class="modal-close" id="closeInviteModal" type="button">×</button></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+	<div style="font-size:13px;color:var(--b3);line-height:1.5">Введите ID ученика. Ученик найдёт свой ID в разделе «Кабинет» → поле «ID». После добавления ученику придёт приглашение в его кабинете.</div>
+	<div class="modal-field"><label>ID ученика</label><input id="inviteStudentId" placeholder="Например, 3847291" type="number"/></div>
+	<div id="inviteResult" style="font-size:14px;font-weight:600;padding:10px 14px;border-radius:10px;display:none"></div>
+	<div class="modal-actions">
+		<button class="modal-secondary" id="cancelInviteModal" type="button">Отмена</button>
+		<button class="modal-primary" id="doInvite" type="button">Отправить приглашение</button>
+	</div>
+</div>
+</div>
+</div>
+
+<!-- Modal: Teacher Assign Task -->
+<div id="assignModal" class="modal-backdrop" hidden>
+<div class="modal" style="width:min(100%,600px)" role="dialog">
+<div class="modal-head"><div class="modal-title">Задать задание</div><button class="modal-close" id="closeAssignModal" type="button">×</button></div>
+<div class="modal-form" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+	<div class="modal-field">
+		<label>Кому</label>
+		<select id="assignTarget">
+			<option value="class">Всему классу</option>
+			<option value="student">Одному ученику</option>
+		</select>
+	</div>
+	<div id="assignStudentRow" class="modal-field" style="display:none">
+		<label>Выберите ученика</label>
+		<select id="assignStudentSelect"></select>
+	</div>
+	<div class="modal-field full"><label>Название задания</label><div class="voice-input-wrap"><input id="assignTitle" placeholder="Например, Контрольная работа"/><button type="button" class="voice-btn" data-target="assignTitle" title="Голосовой ввод">🎤</button></div></div>
+	<div class="modal-field"><label>Дата</label><input id="assignDate" type="date"/></div>
+	<div class="modal-field time-field-wrap">
+		<label>Время (начало–конец)</label>
+		<div class="time-input-row">
+			<input class="time-seg" id="assignStartH" type="number" min="0" max="23" placeholder="ЧЧ"/>
+			<span class="time-sep">:</span>
+			<input class="time-seg" id="assignStartM" type="number" min="0" max="59" placeholder="ММ"/>
+			<span class="time-range-sep">–</span>
+			<input class="time-seg" id="assignEndH" type="number" min="0" max="23" placeholder="ЧЧ"/>
+			<span class="time-sep">:</span>
+			<input class="time-seg" id="assignEndM" type="number" min="0" max="59" placeholder="ММ"/>
+		</div>
+		<div class="time-ai-row">
+			<button class="time-ai-btn" type="button" id="predictAssignBtn">🤖 AI — предсказать время</button>
+			<span id="predictAssignHint" style="font-size:12px;color:var(--g5);font-weight:700;"></span>
+		</div>
+	</div>
+	<div class="modal-field full"><label>Описание</label><div class="voice-input-wrap"><textarea id="assignDesc" style="min-height:80px" placeholder="Что нужно сделать"></textarea><button type="button" class="voice-btn" data-target="assignDesc" title="Голосовой ввод">🎤</button></div></div>
+	<!-- Файл учителя -->
+	<div class="modal-field full">
+		<label>Прикрепить файл (необязательно)</label>
+		<div id="assignFileDropZone" class="file-upload-zone">
+			<input type="file" id="assignFileInput" accept="*/*"/>
+			<div class="file-upload-label">📎 <strong>Выберите файл</strong> или перетащите сюда</div>
+		</div>
+		<div id="assignFileAttachedInfo" style="display:none" class="file-attached">
+			<span>📄</span><span id="assignFileAttachedName"></span>
+			<button class="file-attached-remove" id="assignFileRemoveBtn" type="button">×</button>
+		</div>
+	</div>
+	<div id="assignError" class="auth-error full" hidden></div>
+	<div class="modal-actions full">
+		<button class="modal-secondary" id="cancelAssignModal" type="button">Отмена</button>
+		<button class="modal-primary" id="doAssign" type="button">Отправить задание</button>
+	</div>
+</div>
+</div>
+</div>
+
+
+<!-- ═══════ Modal: AI Test Generator ═══════ -->
+<div id="aiTestModal" class="modal-backdrop" hidden>
+<div class="modal ai-test-modal" role="dialog" aria-modal="true">
+<div class="modal-head">
+<div class="ai-test-header" style="margin:0;padding:0;border:0">
+<span class="ai-test-icon">🧠</span>
+<div>
+<div class="ai-test-title">AI Тест</div>
+<div class="ai-test-sub" id="aiTestSubtitle">Генерация вопросов...</div>
+</div>
+</div>
+<button class="modal-close" id="closeAiTestModal" type="button">×</button>
+</div>
+<div id="aiTestContent">
+<!-- Loading state -->
+<div class="ai-loading" id="aiTestLoading">
+<div class="ai-spinner"></div>
+<div class="ai-loading-text">Нейросеть анализирует материал...</div>
+<div class="ai-loading-sub">Создаём тест на основе прикреплённого файла. Это займёт 10-30 секунд.</div>
+</div>
+<!-- Questions container -->
+<div id="aiTestQuestions" style="display:none"></div>
+<!-- Results container -->
+<div id="aiTestResults" style="display:none"></div>
+</div>
+<div class="modal-actions" id="aiTestActions" style="margin-top:16px">
+<button class="modal-secondary" id="aiTestCloseBtn" type="button">Закрыть</button>
+<button class="modal-primary" id="aiTestFinishBtn" type="button" style="display:none">Завершить тест</button>
+</div>
+</div>
+</div>
+
+<!-- ═══════ Modal: AI Explain Topic ═══════ -->
+<div id="aiExplainModal" class="modal-backdrop" hidden>
+<div class="modal ai-explain-modal" role="dialog" aria-modal="true">
+<div class="modal-head">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-size:28px">💡</span>
+<div class="modal-title" id="aiExplainTitle">Объяснение темы</div>
+</div>
+<button class="modal-close" id="closeAiExplainModal" type="button">×</button>
+</div>
+<div id="aiExplainContent">
+<!-- Loading -->
+<div class="ai-loading" id="aiExplainLoading">
+<div class="ai-spinner"></div>
+<div class="ai-loading-text">Нейросеть изучает тему...</div>
+<div class="ai-loading-sub">Подготавливаем развёрнутое объяснение по вашему заданию.</div>
+</div>
+<!-- Content -->
+<div id="aiExplainBody" style="display:none">
+<div class="ai-explain-content" id="aiExplainText"></div>
+<div class="ai-chat-box">
+<div class="ai-chat-history" id="aiExplainChat"></div>
+<div class="ai-chat-input-row">
+<input type="text" class="ai-chat-input" id="aiExplainQuestion" placeholder="Уточните что-нибудь..."/>
+<button class="ai-chat-send" id="aiExplainAskBtn" type="button">Спросить</button>
+</div>
+</div>
+</div>
+<!-- Error (not a topic) -->
+<div id="aiExplainError" style="display:none" class="ai-error-box">
+<div class="ai-error-icon">🤷</div>
+<div class="ai-error-title">Это не учебная тема</div>
+<div class="ai-error-text">Похоже, в задании нет конкретной темы для объяснения — это просто инструкция (например, «прочитать параграф» или «сделать дз»). Попробуйте прикрепить файл и воспользоваться кнопкой «Тест».</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Modal: Teacher Student Profile -->
+<div id="studentProfileModal" class="modal-backdrop" hidden>
+<div class="modal" style="width:min(100%,640px);max-height:85vh;overflow-y:auto" role="dialog">
+<div class="modal-head"><div class="modal-title" id="studentProfileTitle">Ученик</div><button class="modal-close" id="closeStudentProfileModal" type="button">×</button></div>
+<div id="studentProfileContent"></div>
+</div>
+</div>
+
+<!-- Modal: About -->
+<div id="aboutModal" class="modal-backdrop" hidden>
+<div class="modal info-modal" role="dialog" aria-modal="true">
+<div class="modal-head"><div class="modal-title">О нас</div><button class="modal-close" id="closeAboutModal" type="button">×</button></div>
+<h2>Что такое SchoolPlan?</h2>
+<p>SchoolPlan — современный цифровой планировщик для школьников, учителей и родителей.</p>
+<h2>Наша команда</h2>
+<p>Проект разработан командой молодых энтузиастов в рамках школьного хакатона.</p>
+<ul><li>Удобный интерфейс для управления заданиями</li><li>Интерактивный календарь</li><li>Статистика прогресса</li><li>Поддержка ролей: ученик, учитель, родитель</li></ul>
+<h2>Контакты</h2><p>По всем вопросам: <strong>support@schoolplan.ru</strong></p>
+<div class="modal-actions"><button class="modal-primary" id="closeAboutModalBtn" type="button">Понятно</button></div>
+</div>
+</div>
+
+<!-- Modal: Terms -->
+<div id="termsModal" class="modal-backdrop" hidden>
+<div class="modal info-modal" role="dialog" aria-modal="true">
+<div class="modal-head"><div class="modal-title">Пользовательское соглашение</div><button class="modal-close" id="closeTermsModal" type="button">×</button></div>
+<h2>1. Общие положения</h2><p>Настоящее Соглашение регулирует отношения между сервисом SchoolPlan и пользователем.</p>
+<h2>2. Регистрация</h2><p>Логин — не менее 3 символов, пароль — не менее 4 символов.</p>
+<h2>3. Правила</h2><p>Запрещается размещать материалы, нарушающие законодательство.</p>
+<h2>4. Данные</h2><p>SchoolPlan обрабатывает данные исключительно для работы сервиса.</p>
+<div class="modal-actions"><button class="modal-primary" id="closeTermsModalBtn" type="button">Принимаю</button></div>
+</div>
+</div>
+
+<script>
+const API = "http://localhost:5000/api"
+
+async function apiPost(path,body){const r=await fetch(API+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok){const j=await r.json().catch(()=>({}));return{ok:false,error:j.error||`HTTP ${r.status}`}}return r.json()}
+async function apiGet(path){const r=await fetch(API+path);if(!r.ok){const j=await r.json().catch(()=>({}));return{ok:false,error:j.error||`HTTP ${r.status}`}}return r.json()}
+async function apiPut(path,body){const r=await fetch(API+path,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok){const j=await r.json().catch(()=>({}));return{ok:false,error:j.error||`HTTP ${r.status}`}}return r.json()}
+async function apiDelete(path){const r=await fetch(API+path,{method:"DELETE"});if(!r.ok){const j=await r.json().catch(()=>({}));return{ok:false,error:j.error||`HTTP ${r.status}`}}return r.json()}
+
+function esc(t){return String(t||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;")}
+function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.hidden=false}
+function hideErr(id){document.getElementById(id).hidden=true}
+function openModal(id){document.getElementById(id).hidden=false}
+function closeModal(id){document.getElementById(id).hidden=true}
+
+/* ── AUTH ── */
+let currentUser=null, selectedRole=null
+
+document.getElementById("tabLogin").addEventListener("click",()=>{
+	document.getElementById("tabLogin").classList.add("active")
+	document.getElementById("tabReg").classList.remove("active")
+	document.getElementById("loginForm").hidden=false
+	document.getElementById("registerForm").hidden=true
+})
+document.getElementById("tabReg").addEventListener("click",()=>{
+	document.getElementById("tabReg").classList.add("active")
+	document.getElementById("tabLogin").classList.remove("active")
+	document.getElementById("registerForm").hidden=false
+	document.getElementById("loginForm").hidden=true
+})
+document.querySelectorAll(".role-btn").forEach(btn=>{
+	btn.addEventListener("click",()=>{
+		selectedRole=btn.dataset.role
+		document.querySelectorAll(".role-btn").forEach(b=>b.classList.remove("selected"))
+		btn.classList.add("selected")
+		document.getElementById("schoolField").hidden=!(selectedRole==="student"||selectedRole==="teacher")
+	})
+})
+
+document.getElementById("doLogin").addEventListener("click",async()=>{
+	hideErr("loginError")
+	const username=document.getElementById("loginUsername").value.trim()
+	const password=document.getElementById("loginPassword").value
+	if(!username||!password){showErr("loginError","Введите логин и пароль.");return}
+	const btn=document.getElementById("doLogin")
+	btn.disabled=true;btn.textContent="Входим..."
+	try{
+		const res=await apiPost("/login",{username,password})
+		if(!res.ok){showErr("loginError",res.error);return}
+		await doLogin(res.user)
+	}catch(e){showErr("loginError","Не удалось подключиться к серверу. Убедитесь что запущен app.py.")}
+	finally{btn.disabled=false;btn.textContent="Войти"}
+})
+
+document.getElementById("doRegister").addEventListener("click",async()=>{
+	hideErr("regError")
+	const username=document.getElementById("regUsername").value.trim()
+	const password=document.getElementById("regPassword").value
+	const password2=document.getElementById("regPassword2").value
+	const name=document.getElementById("regName").value.trim()
+	const surname=document.getElementById("regSurname").value.trim()
+	const school=document.getElementById("regSchool").value.trim()
+	if(!username||username.length<3){showErr("regError","Логин — не менее 3 символов.");return}
+	if(!password||password.length<4){showErr("regError","Пароль — не менее 4 символов.");return}
+	if(password!==password2){showErr("regError","Пароли не совпадают.");return}
+	if(!name){showErr("regError","Введите имя.");return}
+	if(!surname){showErr("regError","Введите фамилию.");return}
+	if(!selectedRole){showErr("regError","Выберите роль.");return}
+	if((selectedRole==="student"||selectedRole==="teacher")&&!school){showErr("regError","Введите название школы.");return}
+	const btn=document.getElementById("doRegister")
+	btn.disabled=true;btn.textContent="Регистрируем..."
+	try{
+		const res=await apiPost("/register",{username,password,name,surname,school:school||null,role:selectedRole})
+		if(!res.ok){showErr("regError",res.error);return}
+		await doLogin(res.user)
+	}catch(e){showErr("regError","Не удалось подключиться к серверу.")}
+	finally{btn.disabled=false;btn.textContent="Зарегистрироваться"}
+})
+
+async function doLogin(user){
+	currentUser=user
+	document.getElementById("authScreen").hidden=true
+	if(user.role==="student"){
+		const res=await apiGet(`/tasks/${user.username}`)
+		tasks.length=0
+		tasks.push(...(res.tasks||[]))
+		nextTaskId=tasks.length?Math.max(...tasks.map(t=>t.id))+1:1
+		initApp(user)
+		document.getElementById("appScreen").hidden=false
+		loadInvitations()
+	} else if(user.role==="teacher"){
+		initTeacherApp(user)
+		document.getElementById("teacherScreen").hidden=false
+	} else if(user.role==="parent"){
+		initParentApp(user)
+		document.getElementById("parentScreen").hidden=false
+	}
+}
+
+function doLogout(){
+	currentUser=null
+	document.getElementById("appScreen").hidden=true
+	document.getElementById("teacherScreen").hidden=true
+	document.getElementById("parentScreen").hidden=true
+	document.getElementById("authScreen").hidden=false
+	document.getElementById("loginUsername").value=""
+	document.getElementById("loginPassword").value=""
+	hideErr("loginError")
+	teacherScreen="classes"; openClassId=null; teacherListenersBound=false
+	parentScreen="children"; parentOpenChildId=null; parentChildren=[]; parentChildTasks=new Map()
+}
+
+document.getElementById("logoutBtn").addEventListener("click",doLogout)
+document.getElementById("teacherLogoutBtn").addEventListener("click",doLogout)
+// parent logout is bound in initParentApp
+
+/* ── INFO MODALS ── */
+;[
+	["openAboutModal","aboutModal"],["closeAboutModal","aboutModal"],["closeAboutModalBtn","aboutModal"],
+	["openTermsModal","termsModal"],["closeTermsModal","termsModal"],["closeTermsModalBtn","termsModal"],
+].forEach(([btnId,modalId])=>{
+	document.getElementById(btnId)?.addEventListener("click",()=>{
+		const el=document.getElementById(modalId); el.hidden?openModal(modalId):closeModal(modalId)
+	})
+})
+;["aboutModal","termsModal"].forEach(id=>{
+	document.getElementById(id).addEventListener("click",e=>{if(e.target===document.getElementById(id))closeModal(id)})
+})
+
+/* ══════════════════════════════════════════
+   STUDENT: INVITATIONS
+══════════════════════════════════════════ */
+let studentInvitations=[]
+
+async function loadInvitations(){
+	if(!currentUser||currentUser.role!=="student") return
+	try{
+		const res=await apiGet(`/invitations/${currentUser.username}`)
+		if(!res.ok) return
+		studentInvitations=res.invitations||[]
+		renderInvitations()
+		updateInvBadge()
+	}catch{}
+}
+
+function updateInvBadge(){
+	const pending=studentInvitations.filter(i=>i.status==="pending")
+	const badge=document.getElementById("invBadge")
+	if(pending.length>0){badge.textContent="!";badge.hidden=false}else{badge.hidden=true}
+}
+
+function renderInvitations(){
+	const el=document.getElementById("invitationsList")
+	if(!el) return
+	const pending=studentInvitations.filter(i=>i.status==="pending")
+	if(!pending.length){
+		el.innerHTML=`<div style="font-size:13px;color:rgba(255,255,255,.5);padding:8px 0">Нет новых приглашений</div>`
+		return
+	}
+	el.innerHTML=pending.map(inv=>`
+	<div class="inv-card" data-inv-id="${inv.id}">
+		<div class="inv-card-title">📬 Приглашение в класс «${esc(inv.class_name)}»</div>
+		<div class="inv-card-sub">От учителя: ${esc(inv.from_teacher_name)}</div>
+		<div class="inv-card-actions">
+			<button class="inv-accept" data-inv="${inv.id}" data-action="accept">✓ Принять</button>
+			<button class="inv-reject" data-inv="${inv.id}" data-action="reject">✕ Отклонить</button>
+		</div>
+	</div>`).join("")
+	el.querySelectorAll("[data-inv]").forEach(btn=>{
+		btn.addEventListener("click",async()=>{
+			const invId=btn.dataset.inv, action=btn.dataset.action
+			btn.disabled=true
+			try{
+				const res=await apiPut(`/invitations/${currentUser.username}/${invId}`,{action})
+				if(!res.ok){console.error("Ошибка: "+res.error);btn.disabled=false;return}
+				const inv=studentInvitations.find(i=>i.id===invId)
+				if(inv) inv.status=res.invitation.status
+				renderInvitations(); updateInvBadge()
+			}catch{btn.disabled=false}
+		})
+	})
+}
+
+/* ══════════════════════════════════════════
+   STUDENT: APP INIT
+══════════════════════════════════════════ */
+function initApp(user){
+	const rl={student:"Ученик",teacher:"Учитель",parent:"Родитель"}
+	document.getElementById("profileName").textContent=user.name
+	document.getElementById("profileSurname").textContent=user.surname||"—"
+	document.getElementById("profileLogin").textContent=user.username
+	document.getElementById("profileRole").textContent=rl[user.role]||user.role
+	document.getElementById("profileSchool").textContent=user.school||"—"
+	document.getElementById("profileId").textContent=String(user.id)
+	currentScreen="tasks"; viewMonth=new Date().getMonth(); viewYear=new Date().getFullYear()
+	selectedDate=new Date().toISOString().slice(0,10); editingTaskId=null
+	render()
+}
+
+async function syncTask(method,taskData,taskId){
+	if(!currentUser) return
+	if(method==="POST")   return apiPost(`/tasks/${currentUser.username}`,taskData)
+	if(method==="PUT")    return apiPut(`/tasks/${currentUser.username}/${taskId}`,taskData)
+	if(method==="DELETE") return apiDelete(`/tasks/${currentUser.username}/${taskId}`)
+}
+
+/* ── TASKS & CALENDAR ── */
+const monthNames=["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"]
+const weekDays=["Пн","Вт","Ср","Чт","Пт","Сб","Вс"]
+const tasks=[]
+let currentScreen="tasks",viewMonth=new Date().getMonth(),viewYear=new Date().getFullYear()
+let selectedDate=new Date().toISOString().slice(0,10),nextTaskId=1,editingTaskId=null
+
+const nearestTasksNode=document.getElementById("nearestTasks")
+const calendarGridNode=document.getElementById("calendarGrid")
+const calMonthLabel=document.getElementById("calendarMonthLabel")
+const upcomingEventsNode=document.getElementById("upcomingEvents")
+const selectedDateLabel=document.getElementById("selectedDateLabel")
+const selectedDayTasksNode=document.getElementById("selectedDayTasks")
+const createModalNode=document.getElementById("createModal")
+const viewModalNode=document.getElementById("viewModal")
+
+document.querySelectorAll("[data-screen]").forEach(btn=>{
+	btn.addEventListener("click",()=>{
+		currentScreen=btn.dataset.screen
+		render()
+		if(currentScreen==="stats") loadInvitations()
+	})
+})
+
+document.getElementById("prevMonth").addEventListener("click",()=>{if(--viewMonth<0){viewMonth=11;viewYear--}renderCalendar()})
+document.getElementById("nextMonth").addEventListener("click",()=>{if(++viewMonth>11){viewMonth=0;viewYear++}renderCalendar()})
+document.getElementById("addTaskFromTasks").addEventListener("click",()=>{currentScreen="calendar";render();openCreateModal(selectedDate)})
+document.getElementById("openCreateModal").addEventListener("click",()=>openCreateModal(selectedDate))
+document.getElementById("closeCreateModal").addEventListener("click",closeCreateModal)
+document.getElementById("cancelCreateModal").addEventListener("click",closeCreateModal)
+document.getElementById("closeViewModal").addEventListener("click",closeViewModal)
+document.getElementById("cancelViewModal").addEventListener("click",closeViewModal)
+createModalNode.addEventListener("click",e=>{if(e.target===createModalNode)closeCreateModal()})
+viewModalNode.addEventListener("click",e=>{if(e.target===viewModalNode)closeViewModal()})
+
+document.getElementById("createTaskForm").addEventListener("submit",async e=>{
+	e.preventDefault()
+	const errEl=document.getElementById("createTaskError");errEl.hidden=true
+	const d=new FormData(e.currentTarget)
+	const title=String(d.get("title")||"").trim(),desc=String(d.get("desc")||"").trim()
+	const date=String(d.get("date")||"").trim()
+	const sh=document.getElementById("createStartH").value,sm=document.getElementById("createStartM").value
+	const eh=document.getElementById("createEndH").value,em=document.getElementById("createEndM").value
+	const fmtT=(h,m)=>h!=""?`${String(h).padStart(2,"0")}:${String(m||0).padStart(2,"0")}`:""
+	const ts=fmtT(sh,sm),te=fmtT(eh,em)
+	const time=(ts&&te)?`${ts}–${te}`:(ts||te||"—")
+	if(!title||!desc||!date){errEl.textContent="Заполните название, описание и дату.";errEl.hidden=false;return}
+	const btn=e.currentTarget.querySelector('[type="submit"]')
+	btn.disabled=true;btn.textContent="Сохраняем..."
+	const form=e.currentTarget
+	try{
+		const res=await syncTask("POST",{title,desc,date,time,source:"self",done:false})
+		if(!res){errEl.textContent="Ошибка: пустой ответ от сервера";errEl.hidden=false;return}
+		if(!res.ok){errEl.textContent="Ошибка: "+(res.error||"сервер недоступен");errEl.hidden=false;return}
+		const task=res.task
+		if(!task){errEl.textContent="Ошибка: сервер не вернул задачу";errEl.hidden=false;return}
+		tasks.push(task); selectedDate=task.date
+		nextTaskId=Math.max(nextTaskId,task.id+1)
+		const c=new Date(task.date+"T12:00:00"); viewMonth=c.getMonth(); viewYear=c.getFullYear()
+		if(form) form.reset(); closeCreateModal(); render()
+	}catch(err){errEl.textContent="Ошибка: "+err.message;errEl.hidden=false}
+	finally{btn.disabled=false;btn.textContent="Сохранить"}
+})
+
+document.getElementById("editTaskForm").addEventListener("submit",async e=>{
+	e.preventDefault()
+	if(editingTaskId==null) return
+	const task=tasks.find(t=>t.id===editingTaskId); if(!task) return
+	const errEl=document.getElementById("editTaskError");errEl.hidden=true
+	const d=new FormData(e.currentTarget)
+	const title=String(d.get("title")||"").trim(),desc=String(d.get("desc")||"").trim()
+	const date=String(d.get("date")||"").trim()
+	const sh=document.getElementById("editStartH").value,sm=document.getElementById("editStartM").value
+	const eh=document.getElementById("editEndH").value,em=document.getElementById("editEndM").value
+	const fmtT=(h,m)=>h!=""?`${String(h).padStart(2,"0")}:${String(m||0).padStart(2,"0")}`:""
+	const ts=fmtT(sh,sm),te=fmtT(eh,em)
+	const time=(ts&&te)?`${ts}–${te}`:(ts||te||task.time||"—")
+	if(!title||!desc||!date){errEl.textContent="Заполните название, описание и дату.";errEl.hidden=false;return}
+	const btn=e.currentTarget.querySelector('[type="submit"]')
+	btn.disabled=true;btn.textContent="Сохраняем..."
+	try{
+		const res=await syncTask("PUT",{title,desc,date,time},editingTaskId)
+		if(!res||!res.ok){errEl.textContent="Ошибка: "+(res&&res.error||"сервер недоступен");errEl.hidden=false;return}
+		Object.assign(task,res.task)
+		selectedDate=task.date; const c=new Date(task.date+"T12:00:00"); viewMonth=c.getMonth(); viewYear=c.getFullYear()
+		closeViewModal(); render()
+	}catch(err){errEl.textContent="Не удалось подключиться к серверу.";errEl.hidden=false}
+	finally{btn.disabled=false;btn.textContent="Сохранить изменения"}
+})
+
+function openCreateModal(date){
+	const now=new Date()
+	const endH=(now.getHours()+1)%24
+	document.getElementById("createTaskDate").value=date||selectedDate
+	document.getElementById("createStartH").value=String(now.getHours())
+	document.getElementById("createStartM").value=String(now.getMinutes()).padStart(2,"0")
+	document.getElementById("createEndH").value=String(endH)
+	document.getElementById("createEndM").value=String(now.getMinutes()).padStart(2,"0")
+	document.getElementById("createTaskName").value=""
+	document.getElementById("createTaskDesc").value=""
+	createModalNode.hidden=false; document.getElementById("createTaskName").focus()
+}
+function closeCreateModal(){createModalNode.hidden=true}
+
+let attachedFile=null
+
+function openViewModal(taskId){
+	const task=tasks.find(t=>t.id===taskId); if(!task) return
+	editingTaskId=taskId; attachedFile=null
+	const st=getStatus(task)
+	const vtsEl=document.getElementById("viewTaskSource"); if(vtsEl) vtsEl.textContent=srcLabel(task.source)
+	document.getElementById("editTaskName").value=task.title
+	document.getElementById("editTaskDate").value=task.date
+	const taskTimeParts=(task.time||"").split(/[–\-]/)
+	const parseT=s=>{const p=(s||"").trim().split(":");return[p[0]||"",p[1]||""]}
+	const[sh,sm]=parseT(taskTimeParts[0]);const[eh,em]=parseT(taskTimeParts[1])
+	document.getElementById("editStartH").value=sh
+	document.getElementById("editStartM").value=sm
+	document.getElementById("editEndH").value=eh
+	document.getElementById("editEndM").value=em
+	document.getElementById("editTaskDesc").value=task.desc
+
+	// Сброс файловых зон
+	document.getElementById("taskFileInput").value=""
+	document.getElementById("fileDropZone").style.display=""
+	document.getElementById("fileAttachedInfo").style.display="none"
+
+	// Файл учителя
+	const teacherFileRow=document.getElementById("teacherFileRow")
+	if(task.teacher_file){
+		document.getElementById("teacherFileName").textContent=task.teacher_file
+		document.getElementById("teacherFileLink").href=`${API}/teacher/task_file/${currentUser.username}/${task.id}`
+		teacherFileRow.style.display=""
+	} else {teacherFileRow.style.display="none"}
+
+	// Зона загрузки файла ученика (только при выполнении задания от учителя/родителя)
+	const showUpload=(task.source==="teacher"||task.source==="parent")&&st==="progress"
+	document.getElementById("fileUploadSection").style.display=showUpload?"":"none"
+
+	// Файл ученика уже загружен
+	const studentRow=document.getElementById("studentFileDownloadRow")
+	if(task.student_file&&["review","done","rejected"].includes(st)){
+		document.getElementById("studentFileDownloadName").textContent=task.student_file
+		document.getElementById("studentFileDownloadLink").href=`${API}/tasks/${currentUser.username}/${task.id}/file`
+		studentRow.style.display=""
+	} else {studentRow.style.display="none"}
+
+	const actionsEl=document.getElementById("viewTaskActions")
+	const action=nextAction(task)
+	const srcSpan=`<span class="modal-meta" style="margin:0">${srcLabel(task.source)}</span>`
+
+	// Top actions: status + source + delete button only
+	const deleteHtml=`<button class="action-btn" id="taskDeleteBtn" type="button" style="margin-left:auto;background:#ffeaea;color:#c0392b;font-size:13px;padding:9px 14px;border-radius:10px;font-weight:700">🗑 Удалить</button>`
+	actionsEl.innerHTML=`<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%">${statusBadge(task)}${srcSpan}${deleteHtml}</div>`
+	document.getElementById("taskDeleteBtn").addEventListener("click",async()=>{
+		const btn=document.getElementById("taskDeleteBtn"); btn.disabled=true
+		try{
+			const res=await syncTask("DELETE",null,task.id)
+			if(res&&res.ok){const idx=tasks.findIndex(t=>t.id===task.id);if(idx!==-1)tasks.splice(idx,1);closeViewModal();render()}
+		}catch{}finally{if(btn)btn.disabled=false}
+	})
+
+	// AI action buttons (Тест / Объяснить) — placed AFTER description, before file sections
+	let aiButtonsHtml = ""
+	const hasFile = !!(task.teacher_file || task.student_file || task.attachment)
+	const isTeacherTask = task.source === "teacher"
+
+	if (hasFile) {
+		aiButtonsHtml += `<button class="ai-action-btn" id="aiTestBtn" type="button">🧠 Тест</button>`
+	}
+	if (isTeacherTask && !hasFile) {
+		aiButtonsHtml += `<button class="ai-action-btn" id="aiExplainBtn" type="button">💡 Объяснить</button>`
+		aiButtonsHtml += `<button class="ai-action-btn" id="aiTestBtn" type="button">🧠 Тест</button>`
+	}
+
+	// Insert AI buttons after the description field, before file sections
+	const descField = document.querySelector('#editTaskForm .modal-field.full:has(textarea#editTaskDesc)')
+	let aiContainer = document.getElementById('aiActionsContainer')
+	if (!aiContainer) {
+		aiContainer = document.createElement('div')
+		aiContainer.id = 'aiActionsContainer'
+		aiContainer.className = 'full'
+		aiContainer.style.cssText = 'margin-top:4px;margin-bottom:8px;'
+	}
+	if (aiButtonsHtml) {
+		aiContainer.innerHTML = `<div style="font-size:13px;font-weight:700;color:var(--b2);margin-bottom:6px">🤖 AI-помощник</div><div class="ai-actions-row">${aiButtonsHtml}</div>`
+		aiContainer.style.display = ''
+		// Insert after description field
+		if (descField && descField.nextSibling) {
+			descField.parentNode.insertBefore(aiContainer, descField.nextSibling)
+		}
+	} else {
+		aiContainer.style.display = 'none'
+	}
+
+	// Bind AI buttons using event delegation to avoid duplicates
+	const testBtn = document.getElementById("aiTestBtn")
+	if(testBtn){
+		testBtn.onclick = () => openAiTestModal(task)
+	}
+	const explainBtn = document.getElementById("aiExplainBtn")
+	if(explainBtn){
+		explainBtn.onclick = () => openAiExplainModal(task)
+	}
+
+	// Bottom-left action button (Приступить / Завершить / Сдать)
+	const modalActions = document.querySelector('#editTaskForm .modal-actions.full')
+	modalActions.querySelectorAll('.modal-action-btn').forEach(b=>b.remove())
+	if(action){
+		const actBtn=document.createElement('button')
+		actBtn.className='modal-primary modal-action-btn'
+		actBtn.type='button'
+		actBtn.textContent=action.label
+		actBtn.style.marginRight='auto'
+		actBtn.addEventListener('click',async()=>{
+			actBtn.disabled=true;actBtn.textContent="..."
+			try{
+				if(attachedFile&&action.next==="review"){
+					const fd=new FormData(); fd.append("file",attachedFile)
+					await fetch(`${API}/tasks/${currentUser.username}/${task.id}/file`,{method:"POST",body:fd})
+				}
+				const res=await syncTask("PUT",{status:action.next},task.id)
+				if(!res||!res.ok){
+					const errEl=document.getElementById("editTaskError")
+					errEl.textContent="Ошибка подключения к серверу.";errEl.hidden=false
+					actBtn.disabled=false;actBtn.textContent=action.label;return
+				}
+				Object.assign(task,res.task); closeViewModal(); render()
+			}catch(err){
+				const errEl=document.getElementById("editTaskError")
+				errEl.textContent="Ошибка подключения к серверу.";errEl.hidden=false
+				actBtn.disabled=false;actBtn.textContent=action.label
+			}
+		})
+		modalActions.insertBefore(actBtn, modalActions.firstChild)
+	}
+
+	viewModalNode.hidden=false; document.getElementById("editTaskName").focus()
+}
+function closeViewModal(){editingTaskId=null;attachedFile=null;viewModalNode.hidden=true}
+
+// Drag-drop file
+document.getElementById("taskFileInput").addEventListener("change",e=>{
+	const file=e.target.files[0]; if(!file) return
+	attachedFile=file
+	document.getElementById("fileDropZone").style.display="none"
+	document.getElementById("fileAttachedName").textContent=file.name
+	document.getElementById("fileAttachedInfo").style.display=""
+})
+document.getElementById("fileRemoveBtn").addEventListener("click",()=>{
+	attachedFile=null; document.getElementById("taskFileInput").value=""
+	document.getElementById("fileDropZone").style.display=""
+	document.getElementById("fileAttachedInfo").style.display="none"
+})
+const dz=document.getElementById("fileDropZone")
+dz.addEventListener("dragover",e=>{e.preventDefault();dz.classList.add("drag")})
+dz.addEventListener("dragleave",()=>dz.classList.remove("drag"))
+dz.addEventListener("drop",e=>{
+	e.preventDefault();dz.classList.remove("drag")
+	const file=e.dataTransfer.files[0]; if(!file) return
+	attachedFile=file
+	document.getElementById("fileDropZone").style.display="none"
+	document.getElementById("fileAttachedName").textContent=file.name
+	document.getElementById("fileAttachedInfo").style.display=""
+})
+
+/* ── HELPERS ── */
+function taskDT(t){const tm=((t.time||"").split(/[–\-]/)[0]||"").trim();return `${t.date}T${/^\d{2}:\d{2}$/.test(tm)?tm:"00:00"}:00`}
+function fmtDate(ds){return new Date(ds+"T12:00:00").toLocaleDateString("ru-RU",{day:"numeric",month:"long",weekday:"long"})}
+function fmtDeadline(t){const d=new Date(t.date+"T12:00:00");return `${t.time||"—"} · ${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}`}
+function srcLabel(s){return s==="teacher"?"От учителя":s==="parent"?"От родителя":"Задача"}
+function srcBadgeClass(s){return s==="teacher"?"src-teacher":s==="parent"?"src-parent":"src-self"}
+function srcBadge(s){return `<span class="src-badge ${srcBadgeClass(s)}">${srcLabel(s)}</span>`}
+
+const STATUS_META={
+	pending: {label:"Ожидает",        cls:"status-pending"},
+	progress:{label:"Выполняется",    cls:"status-progress"},
+	review:  {label:"На проверке",    cls:"status-review"},
+	done:    {label:"Выполнено",      cls:"status-done"},
+	rejected:{label:"Непринято",      cls:"status-rejected"},
+	overdue: {label:"Просрочено",     cls:"status-overdue"},
+}
+function getStatus(t){
+	const st=t.status||"pending"
+	if(st==="done"||st==="rejected"||st==="review"||st==="progress") return st
+	const today=new Date().toISOString().slice(0,10)
+	if(t.date<today) return "overdue"
+	return st
+}
+function statusBadge(t){const s=STATUS_META[getStatus(t)]||STATUS_META.pending;return `<span class="status-badge ${s.cls}">${s.label}</span>`}
+
+function nextAction(t){
+	const st=getStatus(t)
+	if(st==="pending")  return {label:"▶ Приступить",         next:"progress",cls:"action-btn action-start"}
+	if(st==="progress"){
+		if(t.source==="self") return {label:"✓ Завершить",    next:"done",    cls:"action-btn action-finish"}
+		                 return {label:"✓ Сдать на проверку",  next:"review",  cls:"action-btn action-finish"}
+	}
+	return null
+}
+
+function renderTaskCard(t){
+	const clip=t.teacher_file||t.attachment?" 📎":""
+	return `<button class="task-card card-white" type="button" data-open-task="${t.id}">
+		<div class="task-bullet"></div>
+		<div class="task-card-inner">
+			<div class="task-name">${esc(t.title)}${clip}</div>
+			<div class="task-desc">${esc(t.desc)}</div>
+			<div class="task-meta-row" style="margin-top:4px">${srcBadge(t.source)}${statusBadge(t)}</div>
+		</div>
+		<div class="task-deadline">${fmtDeadline(t)}</div>
+	</button>`
+}
+
+function bindOpeners(root){
+	root.querySelectorAll("[data-open-task]").forEach(btn=>{
+		btn.addEventListener("click",e=>{
+			openViewModal(Number(btn.dataset.openTask))
+		})
+	})
+}
+
+function renderTasks(){
+	nearestTasksNode.innerHTML=tasks.slice().sort((a,b)=>taskDT(a).localeCompare(taskDT(b))).slice(0,5).map(renderTaskCard).join("")
+	bindOpeners(nearestTasksNode)
+}
+
+function tasksByDate(){
+	const m=new Map()
+	for(const t of tasks){if(!m.has(t.date))m.set(t.date,[]);m.get(t.date).push(t)}
+	return m
+}
+
+function renderCalendar(){
+	calMonthLabel.textContent=`${monthNames[viewMonth]} ${viewYear}`
+	const first=new Date(viewYear,viewMonth,1)
+	const offset=(first.getDay()+6)%7
+	const days=new Date(viewYear,viewMonth+1,0).getDate()
+	const map=tasksByDate(),today=new Date().toISOString().slice(0,10)
+	const cells=[]
+	weekDays.forEach(d=>cells.push(`<div class="calendar-weekday">${d}</div>`))
+	for(let i=0;i<offset;i++) cells.push(`<div class="calendar-day empty"></div>`)
+	for(let day=1;day<=days;day++){
+		const dateId=`${viewYear}-${String(viewMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`
+		const dt=map.get(dateId)||[]
+		const cls=["calendar-day",dateId===selectedDate?"selected":"",dateId===today?"today":""].filter(Boolean).join(" ")
+		cells.push(`<button class="${cls}" type="button" data-date="${dateId}">
+			<div class="day-number">${day}</div>
+			${dt.length?`<div class="day-badge">${dt.length}</div>`:`<div></div>`}
+		</button>`)
+	}
+	calendarGridNode.innerHTML=cells.join("")
+	calendarGridNode.querySelectorAll("[data-date]").forEach(btn=>{
+		btn.addEventListener("click",()=>{selectedDate=btn.dataset.date;renderCalendarDay();renderCalendar()})
+	})
+	renderCalendarDay(); renderUpcoming()
+}
+
+function renderCalendarDay(){
+	selectedDateLabel.textContent=fmtDate(selectedDate)
+	const dt=tasks.filter(t=>t.date===selectedDate).sort((a,b)=>a.time.localeCompare(b.time))
+	if(!dt.length){selectedDayTasksNode.innerHTML=`<div class="empty-note">На выбранный день задач нет.</div>`;return}
+	selectedDayTasksNode.innerHTML=dt.map(t=>`<button class="day-task" type="button" data-open-task="${t.id}">
+		<div class="day-time">${t.time}</div>
+		<div><div class="day-task-title">${esc(t.title)}</div><div class="day-task-meta">${esc(t.desc)} · ${srcLabel(t.source)}</div></div>
+	</button>`).join("")
+	bindOpeners(selectedDayTasksNode)
+}
+
+function renderUpcoming(){
+	const up=tasks.slice().sort((a,b)=>taskDT(a).localeCompare(taskDT(b))).slice(0,6)
+	upcomingEventsNode.innerHTML=up.map(t=>`<div class="event-row">
+		<div class="event-dot"></div>
+		<div>${new Date(t.date+"T12:00:00").toLocaleDateString("ru-RU",{day:"numeric",month:"short"})} · ${t.time} — <button type="button" data-open-task="${t.id}" style="background:transparent;color:inherit;padding:0;font:inherit;text-align:left;">${esc(t.title)}</button></div>
+	</div>`).join("")
+	bindOpeners(upcomingEventsNode)
+}
+
+function buildCum(fn){
+	const now=new Date(),y=now.getFullYear(),mo=now.getMonth(),td=now.getDate()
+	const dim=new Date(y,mo+1,0).getDate(),pd=new Array(dim+1).fill(0)
+	for(const t of tasks){const d=new Date(t.date+"T12:00:00");if(d.getFullYear()===y&&d.getMonth()===mo&&fn(t))pd[d.getDate()]++}
+	const pts=[];let cum=0
+	for(let d=1;d<=td;d++){cum+=pd[d];pts.push({day:d,value:cum})}
+	return pts
+}
+
+function renderChart(nodeId,points,color){
+	const el=document.getElementById(nodeId)
+	if(!el) return
+	const W=400,H=90,padL=10,padR=10,padT=12,padB=18
+	const innerW=W-padL-padR, innerH=H-padT-padB
+	const baseline=padT+innerH
+
+	const hasData=points.length>0&&points.some(p=>p.value>0)
+	if(!hasData){
+		el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:${H}px;display:block">
+			<line x1="${padL}" y1="${baseline}" x2="${W-padR}" y2="${baseline}" stroke="rgba(0,0,0,.08)" stroke-width="1.5" stroke-linecap="round"/>
+			<text x="${W/2}" y="${padT+innerH/2+5}" font-size="11" fill="#ccc" font-family="inherit" text-anchor="middle" font-weight="600">нет данных</text>
+		</svg>`
+		return
+	}
+
+	const n=points.length
+	const maxVal=Math.max(...points.map(p=>p.value),1)
+	// Map index → screen X, value → screen Y
+	const sx=i=>padL+i/(Math.max(n-1,1))*innerW
+	const sy=v=>baseline-Math.max(0,Math.min(1,v/maxVal))*innerH  // clamp [0,1]
+
+	const px=points.map((_,i)=>sx(i))
+	const py=points.map(p=>sy(p.value))
+
+	// ── Monotone cubic (Fritsch-Carlson) ──────────────────────────────
+	// Guarantees no overshoot — the line NEVER goes below/above the data points.
+	// Perfect for cumulative step-up charts.
+	const m=new Array(n).fill(0)  // tangent slopes in screen space
+	// Step 1: secant slopes
+	const delta=[]
+	for(let i=0;i<n-1;i++) delta.push((py[i+1]-py[i])/(px[i+1]-px[i]))
+	// Step 2: initial tangents (average of neighbours)
+	m[0]=delta[0]
+	for(let i=1;i<n-1;i++) m[i]=(delta[i-1]+delta[i])/2
+	m[n-1]=delta[n-2]
+	// Step 3: monotonicity condition
+	for(let i=0;i<n-1;i++){
+		if(Math.abs(delta[i])<1e-10){m[i]=m[i+1]=0;continue}
+		const a=m[i]/delta[i], b=m[i+1]/delta[i]
+		const h=Math.sqrt(a*a+b*b)
+		if(h>3){m[i]=3*a/h*delta[i];m[i+1]=3*b/h*delta[i]}
+	}
+	// Step 4: build cubic bezier path
+	let linePath=`M${px[0].toFixed(2)},${py[0].toFixed(2)}`
+	for(let i=0;i<n-1;i++){
+		const dx=(px[i+1]-px[i])/3
+		const cp1x=px[i]+dx, cp1y=py[i]+m[i]*dx
+		const cp2x=px[i+1]-dx, cp2y=py[i+1]-m[i+1]*dx
+		linePath+=` C${cp1x.toFixed(2)},${cp1y.toFixed(2)} ${cp2x.toFixed(2)},${cp2y.toFixed(2)} ${px[i+1].toFixed(2)},${py[i+1].toFixed(2)}`
+	}
+	const fillPath=`${linePath} L${px[n-1].toFixed(2)},${baseline} L${px[0].toFixed(2)},${baseline} Z`
+
+	// X-axis labels: start, ~middle, end
+	const tickIdxs=[0,Math.round((n-1)/2),n-1].filter((v,i,a)=>a.indexOf(v)===i)
+	const ticks=tickIdxs.map(i=>`<text x="${sx(i).toFixed(1)}" y="${H-2}" font-size="9" fill="rgba(0,0,0,.3)" text-anchor="middle" font-family="inherit">${points[i].day}</text>`)
+
+	// Final value label — above the last point, avoid clipping
+	const lastX=px[n-1], lastY=py[n-1]
+	const lblY=Math.max(padT+10, lastY-7)
+	const lblAnchor=lastX>W-50?'end':'start'
+	const lblX=lastX+(lblAnchor==='end'?-7:7)
+
+	// Dots only where value actually changes + last point
+	const dots=points.map((p,i)=>{
+		const isLast=i===n-1
+		const jumped=i>0&&p.value!==points[i-1].value
+		if(!isLast&&!jumped) return ''
+		return `<circle cx="${px[i].toFixed(2)}" cy="${py[i].toFixed(2)}" r="${isLast?4.5:3}" fill="${isLast?color:'#fff'}" stroke="${color}" stroke-width="2"/>`
+	}).join('')
+
+	el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:${H}px;display:block">
+		<defs>
+			<linearGradient id="gr_${nodeId}" x1="0" y1="0" x2="0" y2="1">
+				<stop offset="0%" stop-color="${color}" stop-opacity=".2"/>
+				<stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+			</linearGradient>
+		</defs>
+		<line x1="${padL}" y1="${baseline}" x2="${W-padR}" y2="${baseline}" stroke="rgba(0,0,0,.07)" stroke-width="1.5" stroke-linecap="round"/>
+		<path d="${fillPath}" fill="url(#gr_${nodeId})"/>
+		<path d="${linePath}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+		${dots}
+		<text x="${lblX.toFixed(1)}" y="${lblY.toFixed(1)}" font-size="12" font-weight="800" fill="${color}" font-family="inherit" text-anchor="${lblAnchor}">${points[n-1].value}</text>
+		${ticks.join('')}
+	</svg>`
+}
+
+function renderStats(){
+	const isDone=t=>getStatus(t)==="done"
+	const isWork=t=>{const s=getStatus(t);return s!=="done"&&s!=="rejected"&&s!=="overdue"}
+	const isOver=t=>getStatus(t)==="overdue"
+	const isRejected=t=>getStatus(t)==="rejected"||t.status==="rejected"
+	document.getElementById("doneCount").textContent=String(tasks.filter(isDone).length)
+	document.getElementById("workCount").textContent=String(tasks.filter(isWork).length)
+	document.getElementById("overdueCount").textContent=String(tasks.filter(isOver).length)
+	document.getElementById("rejectedCount").textContent=String(tasks.filter(isRejected).length)
+	renderChart("doneChart",buildCum(isDone),"#1aa843")
+	renderChart("workChart",buildCum(isWork),"#111111")
+	renderChart("overdueChart",buildCum(isOver),"#c0392b")
+	renderChart("rejectedChart",buildCum(isRejected),"#e67e22")
+	// Wire AI advice button (idempotent)
+	const btn=document.getElementById("aiAdviceBtn")
+	if(btn&&!btn._wired){
+		btn._wired=true
+		btn.addEventListener("click",async()=>{
+			const overdueList=tasks.filter(isOver).map(t=>({title:t.title,desc:t.desc,date:t.date}))
+			const rejectedList=tasks.filter(isRejected).map(t=>({title:t.title,desc:t.desc,date:t.date}))
+			const block=document.getElementById("aiAdviceBlock")
+			const content=document.getElementById("aiAdviceContent")
+			block.style.display="block"
+			content.innerHTML=`<span style="opacity:.5;font-size:13px">✨ Генерирую советы...</span>`
+			btn.disabled=true
+			btn.innerHTML=`<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:aiSpin 1s linear infinite;"></span><span>Анализирую...</span>`
+			let rawText=""
+			try{
+				const r=await fetch(`${API}/ai/stats_advice`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+					overdue:overdueList,
+					rejected:rejectedList,
+					done_count:tasks.filter(isDone).length,
+					total_count:tasks.length
+				})})
+				if(!r.ok||!r.body){throw new Error("HTTP "+r.status)}
+				const reader=r.body.getReader()
+				const decoder=new TextDecoder()
+				let buf=""
+				content.innerHTML=""  // очищаем "генерирую..."
+				while(true){
+					const {done,value}=await reader.read()
+					if(done) break
+					buf+=decoder.decode(value,{stream:true})
+					// SSE: разбиваем по строкам "data: ..."
+					const lines=buf.split("\n")
+					buf=lines.pop()  // последняя неполная строка обратно в буфер
+					for(const line of lines){
+						if(!line.startsWith("data:")) continue
+						const payload=line.slice(5).trim()
+						if(payload==="[DONE]") break
+						try{
+							const obj=JSON.parse(payload)
+							if(obj.error){
+								content.innerHTML=`<span style="color:#ffaaaa">⚠ ${esc(obj.error)}</span>`
+								return
+							}
+							if(obj.token){
+								rawText+=obj.token
+								// Рендерим накопленный текст на каждый токен
+								content.innerHTML=markdownToHtml(rawText)
+								// Автоскролл вниз во время генерации
+								block.scrollTop=block.scrollHeight
+							}
+						}catch(_){}
+					}
+				}
+				if(!rawText) content.innerHTML=`<span style="opacity:.5">Нет ответа от модели</span>`
+			}catch(e){
+				content.innerHTML=`<span style="color:#ffaaaa">Ошибка: ${esc(e.message||String(e))}</span>`
+			}finally{
+				btn.disabled=false
+				btn.innerHTML=`<span>✨</span><span>Обновить советы</span>`
+			}
+		})
+	}
+}
+
+// Simple markdown renderer for AI advice output
+function markdownToHtml(md){
+	return md
+		.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+		.replace(/### (.+)/g,'<h4 style="margin:14px 0 6px;font-size:15px;color:#a3ffbe;font-weight:800">$1</h4>')
+		.replace(/## (.+)/g,'<h3 style="margin:14px 0 6px;font-size:16px;color:#a3ffbe;font-weight:800">$1</h3>')
+		.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+		.replace(/\*(.+?)\*/g,'<em>$1</em>')
+		.replace(/^[-•] (.+)/gm,'<li style="margin-bottom:4px">$1</li>')
+		.replace(/(<li[^>]*>.*<\/li>\n?)+/g,m=>`<ul style="padding-left:18px;margin:6px 0">${m}</ul>`)
+		.replace(/\n{2,}/g,'</p><p style="margin:0 0 8px">')
+		.replace(/\n/g,'<br>')
+		.replace(/^(.)/,'<p style="margin:0 0 8px">$1')
+		.replace(/(.)$/,'$1</p>')
+}
+
+function renderScreen(){
+	document.getElementById("screen-tasks").hidden=currentScreen!=="tasks"
+	document.getElementById("screen-calendar").hidden=currentScreen!=="calendar"
+	document.getElementById("screen-stats").hidden=currentScreen!=="stats"
+	document.querySelectorAll("[data-screen]").forEach(btn=>btn.classList.toggle("active",btn.dataset.screen===currentScreen))
+}
+
+function render(){renderScreen();renderTasks();renderCalendar();renderStats()}
+
+/* ── ML PREDICTION ── */
+async function runPrediction(descGetter,titleGetter,startHId,startMId,endHId,endMId,hintId,btnId){
+	const desc=typeof descGetter==="function"?descGetter():descGetter
+	const title=typeof titleGetter==="function"?titleGetter():titleGetter
+	const text=[title,desc].filter(Boolean).join(". ").trim()
+	if(!text){alert("Сначала введите название или описание задачи.");return}
+	const btn=document.getElementById(btnId),hint=document.getElementById(hintId)
+	const originalText=btn.textContent
+	btn.disabled=true;btn.textContent="⏳...";if(hint)hint.textContent=""
+	try{
+		const r=await fetch(`${API}/predict_time`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})})
+		if(!r.ok){
+			const err=await r.json().catch(()=>({error:"HTTP "+r.status}))
+			alert("ML недоступна: "+(err.error||"Неизвестная ошибка"))
+			return
+		}
+		const data=await r.json()
+		if(!data.ok){alert("ML недоступна: "+(data.error||"Неизвестная ошибка"));return}
+		const mins=data.minutes
+		const h=mins>=60?`${Math.floor(mins/60)} ч ${mins%60>0?(mins%60)+" мин":""}`.trim():`${mins} мин`
+		const sh=parseInt(document.getElementById(startHId)?.value||"0")
+		const sm=parseInt(document.getElementById(startMId)?.value||"0")
+		const startMins=isNaN(sh)?0:sh*60+(isNaN(sm)?0:sm)
+		const endMins=(startMins+mins)%(24*60)
+		const eh=String(Math.floor(endMins/60)).padStart(2,"0")
+		const em=String(endMins%60).padStart(2,"0")
+		document.getElementById(endHId).value=eh
+		document.getElementById(endMId).value=em
+		if(hint)hint.textContent=`✓ ~${h}`
+	}catch(e){alert("Не удалось подключиться к серверу. Ошибка: "+e.message)}
+	finally{btn.disabled=false;btn.textContent=originalText}
+}
+// Prediction buttons
+function setupPrediction(btnId,hintId,descId,titleId,startHId,startMId,endHId,endMId){
+	const btn=document.getElementById(btnId)
+	if(!btn) return
+	btn.addEventListener("click",()=>{
+		const desc=document.getElementById(descId).value
+		const title=document.getElementById(titleId).value
+		runPrediction(desc,title,startHId,startMId,endHId,endMId,hintId,btnId)
+	})
+}
+// Setup for create modal
+setupPrediction("predictCreateBtn","predictCreateHint","createTaskDesc","createTaskName","createStartH","createStartM","createEndH","createEndM")
+// Setup for edit modal
+setupPrediction("predictEditBtn","predictEditHint","editTaskDesc","editTaskName","editStartH","editStartM","editEndH","editEndM")
+// Setup for teacher assign modal
+setupPrediction("predictAssignBtn","predictAssignHint","assignDesc","assignTitle","assignStartH","assignStartM","assignEndH","assignEndM")
+// Выделять всё содержимое при фокусе на полях времени (как у даты)
+document.querySelectorAll(".time-seg").forEach(inp=>{
+	inp.addEventListener("focus",()=>inp.select())
+})
+
+/* ══════════════════════════════════════════
+   AI TEST & EXPLAIN (Ollama Integration)
+══════════════════════════════════════════ */
+
+let currentAiTask = null
+let currentQuizData = null
+let currentQuizAnswers = {}
+let explainChatHistory = []
+
+// ── Call Backend AI ──
+async function apiAiPost(path, body){
+	const r = await fetch(API + path, {
+		method: "POST",
+		headers: {"Content-Type": "application/json"},
+		body: JSON.stringify(body)
+	})
+	if(!r.ok){
+		const j = await r.json().catch(() => ({}))
+		return {ok: false, error: j.error || `HTTP ${r.status}`}
+	}
+	return r.json()
+}
+
+// ── Parse quiz from AI response ──
+function parseQuizResponse(text){
+	const questions=[]
+	// Clean up the text - remove common preamble phrases
+	let cleanText = text
+		.replace(/^(?:Вот тест|Тест|Вот ваш тест|Вот задания|Задания|Ответ|Отвечаю)[\s:]*/im, '')
+		.replace(/^(?:Конечно|Разумеется|Безусловно)[,\s]*/im, '')
+		.trim()
+
+	// Match pattern: Q1. Question? A) ... B) ... C) ... D) ... Правильный: X
+	const qRegex=/(?:^|\n)(?:Q?\d+[.):\s]+|\d+[.\s]+)\s*(.+?)(?=\n[A-Da-d][).\s])((?:\n[A-Da-d][).\s]*.+?)+)?\s*(?:\n)?(?:Правильный|Correct|Ответ|Answer|Правильный ответ)[\s:)*]+([A-Da-d])/gim
+	let m
+	while((m=qRegex.exec(cleanText))!==null){
+		const qText=m[1].trim().replace(/\n+/g,' ')
+		const optsBlock=m[2]||''
+		const correct=m[3].toUpperCase()
+		const opts=[]
+		const optRegex=/^([A-Da-d])[).\s]*\s*(.+)$/gm
+		let om
+		while((om=optRegex.exec(optsBlock))!==null){
+			opts.push({letter:om[1].toUpperCase(),text:om[2].trim().replace(/\n+/g,' ')})
+		}
+		if(opts.length>=2){
+			questions.push({question:qText,options:opts,correct:correct})
+		}
+	}
+	// Fallback 1: split by question numbers
+	if(questions.length===0){
+		const qBlocks = cleanText.split(/\n(?=\s*(?:Q?\d+[.):\s]+|\d+[.\s]+))/im).filter(b=>b.trim())
+		for(const block of qBlocks){
+			const lines = block.split('\n').map(l=>l.trim()).filter(l=>l)
+			let currentQ=null
+			for(const line of lines){
+				const qMatch=line.match(/^(?:Q?\d+[.):\s]+|\d+[.\s]+)\s*(.+)/i)
+				if(qMatch){
+					if(currentQ&&currentQ.options.length>=2) questions.push(currentQ)
+					currentQ={question:qMatch[1].trim(),options:[],correct:''}
+				}
+				const oMatch=line.match(/^([A-Da-d])[).\s]*\s*(.+)/)
+				if(oMatch&&currentQ){
+					currentQ.options.push({letter:oMatch[1].toUpperCase(),text:oMatch[2].trim()})
+				}
+				const cMatch=line.match(/(?:Правильный|Correct|Ответ|Answer|Правильный ответ)[\s:)*]+([A-Da-d])/i)
+				if(cMatch&&currentQ) currentQ.correct=cMatch[1].toUpperCase()
+			}
+			if(currentQ&&currentQ.options.length>=2) questions.push(currentQ)
+		}
+	}
+	// Fallback 2: simple line-by-line
+	if(questions.length===0){
+		const lines=cleanText.split('\n').map(l=>l.trim()).filter(l=>l)
+		let currentQ=null
+		for(const line of lines){
+			const qMatch=line.match(/^(?:Q?\d+[.):\s]+|\d+[.\s]+)\s*(.+)/i)
+			if(qMatch){
+				if(currentQ&&currentQ.options.length>=2) questions.push(currentQ)
+				currentQ={question:qMatch[1].trim(),options:[],correct:''}
+			}
+			const oMatch=line.match(/^([A-Da-d])[).\s]*\s*(.+)/)
+			if(oMatch&&currentQ){
+				currentQ.options.push({letter:oMatch[1].toUpperCase(),text:oMatch[2].trim()})
+			}
+			const cMatch=line.match(/(?:Правильный|Correct|Ответ|Answer|Правильный ответ)[\s:)*]+([A-Da-d])/i)
+			if(cMatch&&currentQ) currentQ.correct=cMatch[1].toUpperCase()
+		}
+		if(currentQ&&currentQ.options.length>=2) questions.push(currentQ)
+	}
+	return questions
+}
+
+// ── Open AI Test Modal ──
+function openAiTestModal(task){
+	currentAiTask=task; currentQuizAnswers={}
+	document.getElementById('aiTestSubtitle').textContent='Генерация вопросов...'
+	document.getElementById('aiTestLoading').style.display='flex'
+	document.getElementById('aiTestQuestions').style.display='none'
+	document.getElementById('aiTestResults').style.display='none'
+	document.getElementById('aiTestFinishBtn').style.display='none'
+	document.getElementById('aiTestModal').hidden=false
+	generateQuiz(task)
+}
+
+async function generateQuiz(task){
+	const fileName=task.teacher_file||task.student_file||task.attachment||''
+	const desc=task.desc||''
+	const title=task.title||''
+
+	try{
+		const res=await apiAiPost('/ai/generate_test',{title,desc,file_name:fileName})
+		if(!res.ok){
+			document.getElementById('aiTestQuestions').innerHTML=`<div class="ai-error-box"><div class="ai-error-icon">⚠️</div><div class="ai-error-title">Ошибка</div><div class="ai-error-text">${esc(res.error)}</div></div>`
+			document.getElementById('aiTestLoading').style.display='none'
+			document.getElementById('aiTestQuestions').style.display='block'
+			return
+		}
+		const questions=parseQuizResponse(res.content)
+		if(questions.length===0){
+			document.getElementById('aiTestQuestions').innerHTML=`<div class="ai-error-box"><div class="ai-error-icon">😕</div><div class="ai-error-title">Не удалось создать тест</div><div class="ai-error-text">Нейросеть не смогла распознать формат. Попробуйте ещё раз или используйте другой материал.</div></div>`
+			document.getElementById('aiTestLoading').style.display='none'
+			document.getElementById('aiTestQuestions').style.display='block'
+			return
+		}
+		currentQuizData=questions
+		renderQuiz()
+	}catch(e){
+		document.getElementById('aiTestQuestions').innerHTML=`<div class="ai-error-box"><div class="ai-error-icon">⚠️</div><div class="ai-error-title">Ошибка подключения</div><div class="ai-error-text">Не удалось связаться с сервером. Убедитесь, что бэкенд запущен.</div></div>`
+		document.getElementById('aiTestLoading').style.display='none'
+		document.getElementById('aiTestQuestions').style.display='block'
+	}
+}
+
+function renderQuiz(){
+	document.getElementById('aiTestLoading').style.display='none'
+	const container=document.getElementById('aiTestQuestions')
+	container.style.display='block'
+	document.getElementById('aiTestFinishBtn').style.display='inline-block'
+
+	container.innerHTML=currentQuizData.map((q,i)=>`
+		<div class="ai-question-card" data-qidx="${i}">
+			<div class="ai-question-num">Вопрос ${i+1} / ${currentQuizData.length}</div>
+			<div class="ai-question-text">${esc(q.question)}</div>
+			<div class="ai-options">
+				${q.options.map(o=>`
+					<div class="ai-option" data-letter="${o.letter}" onclick="selectQuizOption(${i},'${o.letter}')">
+						<div class="ai-option-letter">${o.letter}</div>
+						<div>${esc(o.text)}</div>
+					</div>
+				`).join('')}
+			</div>
+		</div>
+	`).join('')
+}
+
+function selectQuizOption(qIdx,letter){
+	currentQuizAnswers[qIdx]=letter
+	const card=document.querySelector(`[data-qidx="${qIdx}"]`)
+	card.querySelectorAll('.ai-option').forEach(opt=>{
+		opt.classList.toggle('selected',opt.dataset.letter===letter)
+	})
+}
+
+function finishQuiz(){
+	if(Object.keys(currentQuizAnswers).length<currentQuizData.length){
+		alert(`Отвечено ${Object.keys(currentQuizAnswers).length} из ${currentQuizData.length} вопросов`)
+		return
+	}
+	let correct=0
+	const mistakes=[]
+	currentQuizData.forEach((q,i)=>{
+		const userAns=currentQuizAnswers[i]
+		const isCorrect=userAns===q.correct
+		if(isCorrect) correct++
+		else {
+			const correctOpt=q.options.find(o=>o.letter===q.correct)
+			mistakes.push({question:q.question,userAnswer:userAns,correctAnswer:q.correct,correctText:correctOpt?.text||''})
+		}
+		const card=document.querySelector(`[data-qidx="${i}"]`)
+		card.querySelectorAll('.ai-option').forEach(opt=>{
+			const l=opt.dataset.letter
+			if(l===q.correct) opt.classList.add('correct')
+			else if(l===userAns && !isCorrect) opt.classList.add('wrong')
+		})
+	})
+
+	document.getElementById('aiTestQuestions').style.display='none'
+	document.getElementById('aiTestFinishBtn').style.display='none'
+	const results=document.getElementById('aiTestResults')
+	results.style.display='block'
+
+	const pct=Math.round(correct/currentQuizData.length*100)
+	results.innerHTML=`
+		<div class="ai-results">
+			<div class="ai-results-score">${correct}/${currentQuizData.length}</div>
+			<div class="ai-results-label">${pct>=80?'Отлично! 🎉':pct>=60?'Хорошо 👍':'Попробуй ещё 💪'}</div>
+			<div class="ai-results-detail">Правильных ответов: ${pct}%</div>
+			${mistakes.length?`
+			<div class="ai-mistakes">
+				<div style="font-size:16px;font-weight:800;color:var(--b0);margin-bottom:12px">Ошибки:</div>
+				${mistakes.map(m=>`
+					<div class="ai-mistake-item">
+						<div class="ai-mistake-q">${esc(m.question)}</div>
+						<div class="ai-mistake-a">Твой ответ: <strong>${m.userAnswer}</strong><br>Правильный: <span class="ai-mistake-correct">${m.correctAnswer}) ${esc(m.correctText)}</span></div>
+					</div>
+				`).join('')}
+			</div>
+			`:'<div style="margin-top:16px;font-size:15px;color:var(--g5);font-weight:700">🎉 Все ответы верны!</div>'}
+		</div>
+	`
+}
+
+// ── Open AI Explain Modal ──
+function openAiExplainModal(task){
+	currentAiTask=task
+	explainChatHistory=[]
+	document.getElementById('aiExplainTitle').textContent=`💡 ${esc(task.title)}`
+	document.getElementById('aiExplainLoading').style.display='flex'
+	document.getElementById('aiExplainBody').style.display='none'
+	document.getElementById('aiExplainError').style.display='none'
+	document.getElementById('aiExplainChat').innerHTML=''
+	document.getElementById('aiExplainModal').hidden=false
+	generateExplanation(task)
+}
+
+async function generateExplanation(task){
+    // ИСПРАВЛЕНИЕ: Передаём только desc, title игнорируем
+    const desc = task.desc || ''
+
+    if (!desc.trim()) {
+        document.getElementById('aiExplainLoading').style.display='none'
+        document.getElementById('aiExplainError').style.display='block'
+        return
+    }
+
+    try{
+        const res=await apiAiPost('/ai/explain',{title: desc, desc: ''})
+        if(!res.ok){
+            document.getElementById('aiExplainLoading').style.display='none'
+            document.getElementById('aiExplainText').innerHTML=`<div class="ai-error-box"><div class="ai-error-icon">⚠️</div><div class="ai-error-title">Ошибка</div><div class="ai-error-text">${esc(res.error)}</div></div>`
+            document.getElementById('aiExplainBody').style.display='block'
+            return
+        }
+        if(!res.is_topic){
+            document.getElementById('aiExplainLoading').style.display='none'
+            document.getElementById('aiExplainError').style.display='block'
+            return
+        }
+        document.getElementById('aiExplainLoading').style.display='none'
+        document.getElementById('aiExplainBody').style.display='block'
+        // Convert markdown-like to HTML
+        let htmlText=res.content
+            .replace(/^###\s*(.+)$/gm,'<h3>$1</h3>')
+            .replace(/^##\s*(.+)$/gm,'<h3>$1</h3>')
+            .replace(/^#\s*(.+)$/gm,'<h3>$1</h3>')
+            .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+            .replace(/\*(.+?)\*/g,'<em>$1</em>')
+            .replace(/`(.+?)`/g,'<code>$1</code>')
+            .replace(/\n\n/g,'</p><p>')
+            .replace(/\n/g,'<br>')
+        htmlText='<p>'+htmlText+'</p>'
+        document.getElementById('aiExplainText').innerHTML=htmlText
+    }catch(e){
+        document.getElementById('aiExplainLoading').style.display='none'
+        document.getElementById('aiExplainText').innerHTML=`<div class="ai-error-box"><div class="ai-error-icon">⚠️</div><div class="ai-error-title">Ошибка подключения</div><div class="ai-error-text">Не удалось связаться с сервером.</div></div>`
+        document.getElementById('aiExplainBody').style.display='block'
+    }
+}
+
+async function askExplainFollowup(){
+	const input=document.getElementById('aiExplainQuestion')
+	const q=input.value.trim()
+	if(!q) return
+	input.value=''
+
+	const chatBox=document.getElementById('aiExplainChat')
+	chatBox.innerHTML+=`<div class="ai-chat-msg user">${esc(q)}</div>`
+	chatBox.scrollTop=chatBox.scrollHeight
+
+	const history=[]
+	chatBox.querySelectorAll('.ai-chat-msg').forEach((msg,i)=>{
+		if(i<chatBox.querySelectorAll('.ai-chat-msg').length-1){
+			history.push({
+				role: msg.classList.contains('user')?'user':'assistant',
+				content: msg.textContent
+			})
+		}
+	})
+
+	try{
+		const res=await apiAiPost('/ai/ask',{
+			topic: currentAiTask?.title||'',
+			question: q,
+			history: history
+		})
+		if(!res.ok){
+			chatBox.innerHTML+=`<div class="ai-chat-msg bot" style="color:#c0392b">Ошибка: ${esc(res.error)}</div>`
+			return
+		}
+		chatBox.innerHTML+=`<div class="ai-chat-msg bot">${esc(res.answer)}</div>`
+		chatBox.scrollTop=chatBox.scrollHeight
+	}catch{
+		chatBox.innerHTML+=`<div class="ai-chat-msg bot" style="color:#c0392b">Ошибка подключения к серверу</div>`
+	}
+}
+
+// ── Modal event bindings ──
+document.getElementById('closeAiTestModal').addEventListener('click',()=>{document.getElementById('aiTestModal').hidden=true})
+document.getElementById('aiTestCloseBtn').addEventListener('click',()=>{document.getElementById('aiTestModal').hidden=true})
+document.getElementById('aiTestFinishBtn').addEventListener('click',finishQuiz)
+document.getElementById('aiTestModal').addEventListener('click',e=>{if(e.target===document.getElementById('aiTestModal'))document.getElementById('aiTestModal').hidden=true})
+
+document.getElementById('closeAiExplainModal').addEventListener('click',()=>{document.getElementById('aiExplainModal').hidden=true})
+document.getElementById('aiExplainModal').addEventListener('click',e=>{if(e.target===document.getElementById('aiExplainModal'))document.getElementById('aiExplainModal').hidden=true})
+document.getElementById('aiExplainAskBtn').addEventListener('click',askExplainFollowup)
+document.getElementById('aiExplainQuestion').addEventListener('keydown',e=>{if(e.key==='Enter')askExplainFollowup()})
+
+
+
+/* ══════════════════════════════════════════
+   TEACHER APP
+══════════════════════════════════════════ */
+let teacherScreen="classes", openClassId=null, openClassTab="students"
+let inviteTargetClassId=null, teacherListenersBound=false
+let teacherClasses=[], teacherReviewTasks=[]
+
+function initTeacherApp(user){
+	document.getElementById("teacherSideId").textContent="ID: "+user.id
+	teacherScreen="classes"; openClassId=null
+	document.querySelectorAll("[data-tscreen]").forEach(b=>{
+		b.classList.toggle("active",b.dataset.tscreen==="classes")
+	})
+	if(!teacherListenersBound){
+		teacherListenersBound=true
+		document.querySelectorAll("[data-tscreen]").forEach(btn=>{
+			btn.addEventListener("click",async()=>{
+				teacherScreen=btn.dataset.tscreen; openClassId=null
+				document.querySelectorAll("[data-tscreen]").forEach(b=>b.classList.toggle("active",b===btn))
+				await loadTeacherData()
+				renderTeacher()
+			})
+		})
+	}
+	loadTeacherData().then(()=>renderTeacher())
+}
+
+async function loadTeacherData(){
+	if(!currentUser) return
+	try{
+		const res=await apiGet(`/classes/teacher/${currentUser.id}`)
+		if(res.ok) teacherClasses=res.classes||[]
+	}catch{}
+	try{
+		const res=await apiGet(`/teacher/review_tasks/${currentUser.id}`)
+		if(res.ok){
+			teacherReviewTasks=res.tasks||[]
+			const cnt=teacherReviewTasks.length
+			const badge=document.getElementById("reviewBadge")
+			if(cnt>0){badge.textContent=cnt;badge.hidden=false}else{badge.hidden=true}
+		}
+	}catch{}
+}
+
+function classDB_byTeacher(){return teacherClasses.filter(c=>c.teacher_id===currentUser.id)}
+function classDB_getById(id){return teacherClasses.find(c=>c.id===id)||null}
+
+function renderTeacher(){
+	const titles={classes:"Мои классы",review:"Задания на проверку",stats:"Общая статистика",profile:"Личный кабинет"}
+	document.getElementById("teacherScreenTitle").textContent=openClassId
+		?classDB_getById(openClassId)?.name||"Класс"
+		:titles[teacherScreen]||""
+	const cont=document.getElementById("teacherContent")
+	if(openClassId){cont.innerHTML=renderClassDetail(openClassId);bindClassDetail();return}
+	if(teacherScreen==="classes"){cont.innerHTML=renderClassesList();bindClassesList();return}
+	if(teacherScreen==="review"){cont.innerHTML=renderReviewTasks();bindReviewTasks();return}
+	if(teacherScreen==="stats"){cont.innerHTML=renderTeacherStats();return}
+	if(teacherScreen==="profile"){cont.innerHTML=renderTeacherProfile();return}
+}
+
+/* ── CLASSES LIST ── */
+function renderClassesList(){
+	const classes=classDB_byTeacher()
+	const cards=classes.map(c=>{
+		const count=c.student_ids?.length||0
+		return `<button class="t-class-card" type="button" data-open-class="${c.id}">
+			<div class="t-class-icon">🏫</div>
+			<div class="t-class-name">${esc(c.name)}</div>
+			<div class="t-class-subject">${c.subject?esc(c.subject):"Без предмета"}</div>
+			<div class="t-class-meta">
+				<span class="t-class-badge">👥 ${count} уч.</span>
+				<span class="t-class-badge">ID: ${c.id.slice(-6)}</span>
+			</div>
+		</button>`
+	}).join("")
+	const empty=`<div class="t-empty"><div class="t-empty-icon">🏫</div><div class="t-empty-text">Классов пока нет</div><div class="t-empty-sub">Создайте первый класс</div></div>`
+	return `<div class="t-section-header">
+		<div style="font-size:15px;font-weight:600;color:rgba(0,0,0,.55)">${classes.length} кл.</div>
+		<button class="t-btn-primary" id="openCreateClass">+ Создать класс</button>
+	</div>
+	<div class="t-class-grid">${classes.length?cards:empty}</div>`
+}
+function bindClassesList(){
+	document.getElementById("openCreateClass")?.addEventListener("click",()=>{
+		document.getElementById("newClassName").value=""
+		document.getElementById("newClassSubject").value=""
+		document.getElementById("createClassError").hidden=true
+		document.getElementById("createClassModal").hidden=false
+	})
+	document.querySelectorAll("[data-open-class]").forEach(btn=>{
+		btn.addEventListener("click",()=>{openClassId=btn.dataset.openClass;renderTeacher()})
+	})
+}
+
+/* ── CLASS DETAIL ── */
+function renderClassDetail(classId){
+	const cls=classDB_getById(classId)
+	if(!cls) return "<div>Класс не найден</div>"
+	const students=cls.student_ids||[]
+
+	const header=`<button class="t-back-btn" id="tBackBtn">← Назад к классам</button>
+	<div class="t-class-header">
+		<div style="font-size:42px">🏫</div>
+		<div style="flex:1">
+			<div style="font-size:24px;font-weight:800">${esc(cls.name)}</div>
+			<div style="font-size:14px;color:var(--b3);font-weight:600">${cls.subject?esc(cls.subject):"Без предмета"} · ${students.length} учеников</div>
+		</div>
+		<div style="display:flex;gap:8px;flex-wrap:wrap">
+			<button class="t-btn-primary" id="openAssignBtn">📝 Задать задание</button>
+			<button class="t-btn-green" id="openInviteBtn">+ Добавить ученика</button>
+			<button class="t-btn-danger" id="deleteClassBtn">🗑 Удалить класс</button>
+		</div>
+	</div>`
+
+	const tabs=`<div class="t-tab-row">
+		<button class="t-tab ${openClassTab==="students"?"active":""}" data-ctab="students">Ученики</button>
+		<button class="t-tab ${openClassTab==="stats"?"active":""}" data-ctab="stats">Статистика класса</button>
+	</div>`
+
+	let body=""
+	if(openClassTab==="students"){
+		if(!students.length){
+			body=`<div class="t-empty"><div class="t-empty-icon">👥</div><div class="t-empty-text">Учеников пока нет</div><div class="t-empty-sub">Нажмите «Добавить ученика» и введите его ID</div></div>`
+		} else {
+			// Показываем учеников по student_ids — данные о них хранятся на сервере
+			body=`<div style="font-size:14px;color:var(--b2);margin-bottom:10px">ID учеников в классе:</div>
+			<div class="t-student-list">${students.map(sid=>`<div class="t-student-row" style="cursor:default">
+				<div class="t-student-avatar" style="font-size:14px">👤</div>
+				<div style="flex:1">
+					<div class="t-student-name">ID: ${sid}</div>
+					<div class="t-student-meta">Ученик</div>
+				</div>
+				<button class="t-btn-danger" style="font-size:12px;padding:6px 10px" data-remove-student="${sid}">Удалить</button>
+			</div>`).join("")}</div>`
+		}
+	} else {
+		body=`<div class="t-stats-grid">
+			<div class="t-stat-box"><div class="t-stat-num">${students.length}</div><div class="t-stat-lbl">Учеников</div></div>
+		</div>`
+	}
+	return header+tabs+body
+}
+
+function bindClassDetail(){
+	document.getElementById("tBackBtn")?.addEventListener("click",()=>{openClassId=null;renderTeacher()})
+	document.getElementById("openInviteBtn")?.addEventListener("click",()=>{
+		inviteTargetClassId=openClassId
+		document.getElementById("inviteStudentId").value=""
+		const r=document.getElementById("inviteResult"); r.style.display="none"; r.textContent=""
+		document.getElementById("inviteModal").hidden=false
+	})
+	document.getElementById("openAssignBtn")?.addEventListener("click",()=>{
+		openAssignModal(openClassId)
+	})
+	document.getElementById("deleteClassBtn")?.addEventListener("click",async()=>{
+		if(!confirm(`Удалить класс «${classDB_getById(openClassId)?.name}»?`)) return
+		try{
+			const res=await apiDelete(`/classes/${openClassId}`)
+			if(res.ok){teacherClasses=teacherClasses.filter(c=>c.id!==openClassId);openClassId=null;renderTeacher()}
+		}catch{}
+	})
+	document.querySelectorAll("[data-ctab]").forEach(btn=>{
+		btn.addEventListener("click",()=>{openClassTab=btn.dataset.ctab;renderTeacher()})
+	})
+	document.querySelectorAll("[data-remove-student]").forEach(btn=>{
+		btn.addEventListener("click",async()=>{
+			const sid=Number(btn.dataset.removeStudent)
+			if(!confirm("Удалить ученика из класса?")) return
+			// Локальное обновление (в реальном приложении — запрос к серверу)
+			const cls=classDB_getById(openClassId)
+			if(cls) cls.student_ids=(cls.student_ids||[]).filter(id=>id!==sid)
+			renderTeacher()
+		})
+	})
+}
+
+/* ── REVIEW TASKS ── */
+function renderReviewTasks(){
+	if(!teacherReviewTasks.length){
+		return `<div class="t-empty"><div class="t-empty-icon">📥</div><div class="t-empty-text">Нет работ на проверку</div><div class="t-empty-sub">Когда ученик сдаст задание, оно появится здесь</div></div>`
+	}
+	const cards=teacherReviewTasks.map(t=>`
+	<div class="review-card">
+		<div class="review-card-info">
+			<div class="review-card-title">${esc(t.title)}</div>
+			<div class="review-card-meta">👤 ${esc(t.student_name)} ${esc(t.student_surname)} · @${esc(t.student_username)} · Срок: ${t.date}</div>
+			<div class="review-card-meta">${esc(t.desc)}</div>
+			${t.student_file?`<a href="${API}/tasks/${t.student_username}/${t.id}/file" target="_blank" class="file-attached" style="display:inline-flex;margin-top:8px;text-decoration:none">
+				<span>📄</span><span>${esc(t.student_file)}</span>
+				<span style="margin-left:auto;color:var(--g5);font-weight:700;font-size:13px">⬇ Скачать работу</span>
+			</a>`:`<div style="font-size:12px;color:var(--b3);margin-top:6px">Файл не прикреплён</div>`}
+			<div class="review-card-actions">
+				<button class="t-btn-green" data-review-accept data-uname="${t.student_username}" data-tid="${t.id}">✓ Принять</button>
+				<button class="t-btn-danger" data-review-reject data-uname="${t.student_username}" data-tid="${t.id}">✕ Отклонить</button>
+			</div>
+		</div>
+	</div>`).join("")
+	return `<div style="margin-bottom:14px;font-size:15px;font-weight:700;color:rgba(0,0,0,.6)">${teacherReviewTasks.length} работ ожидают проверки</div>${cards}`
+}
+
+function bindReviewTasks(){
+	document.querySelectorAll("[data-review-accept]").forEach(btn=>{
+		btn.addEventListener("click",async()=>{
+			const uname=btn.dataset.uname, tid=Number(btn.dataset.tid)
+			btn.disabled=true
+			try{
+				const res=await apiPut(`/teacher/review_tasks/${uname}/${tid}`,{status:"done"})
+				if(res.ok){teacherReviewTasks=teacherReviewTasks.filter(t=>!(t.student_username===uname&&t.id===tid));renderTeacher();await loadTeacherData()}
+			}catch{btn.disabled=false}
+		})
+	})
+	document.querySelectorAll("[data-review-reject]").forEach(btn=>{
+		btn.addEventListener("click",async()=>{
+			const uname=btn.dataset.uname, tid=Number(btn.dataset.tid)
+			btn.disabled=true
+			try{
+				const res=await apiPut(`/teacher/review_tasks/${uname}/${tid}`,{status:"rejected"})
+				if(res.ok){teacherReviewTasks=teacherReviewTasks.filter(t=>!(t.student_username===uname&&t.id===tid));renderTeacher();await loadTeacherData()}
+			}catch{btn.disabled=false}
+		})
+	})
+}
+
+/* ── TEACHER STATS ── */
+function renderTeacherStats(){
+	const classes=classDB_byTeacher()
+	if(!classes.length) return `<div class="t-empty"><div class="t-empty-icon">📊</div><div class="t-empty-text">Нет классов</div><div class="t-empty-sub">Создайте классы, чтобы видеть статистику</div></div>`
+	return classes.map(cls=>`
+	<div style="background:#fff;border-radius:18px;padding:22px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:18px">
+		<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+			<div style="font-size:28px">🏫</div>
+			<div>
+				<div style="font-size:20px;font-weight:800">${esc(cls.name)}</div>
+				<div style="font-size:13px;color:var(--b3)">${cls.student_ids?.length||0} учеников · ${cls.subject||"Без предмета"}</div>
+			</div>
+		</div>
+		<div style="font-size:13px;color:var(--b3)">Данные о выполнении заданий будут показаны здесь</div>
+	</div>`).join("")
+}
+
+/* ── TEACHER PROFILE ── */
+function renderTeacherProfile(){
+	const u=currentUser
+	return `<div style="background:#fff;border-radius:18px;padding:26px;box-shadow:0 6px 18px rgba(0,0,0,.08);max-width:600px">
+		<div style="font-size:22px;font-weight:800;margin-bottom:20px;color:var(--g5)">Личный кабинет</div>
+		<div class="t-profile-grid">
+			<div class="t-profile-box"><div class="t-profile-lbl">Имя</div><div class="t-profile-val">${esc(u.name)}</div></div>
+			<div class="t-profile-box"><div class="t-profile-lbl">Фамилия</div><div class="t-profile-val">${esc(u.surname||"—")}</div></div>
+			<div class="t-profile-box"><div class="t-profile-lbl">Логин</div><div class="t-profile-val">@${esc(u.username)}</div></div>
+			<div class="t-profile-box"><div class="t-profile-lbl">Роль</div><div class="t-profile-val">📚 Учитель</div></div>
+			<div class="t-profile-box"><div class="t-profile-lbl">Школа</div><div class="t-profile-val">${esc(u.school||"—")}</div></div>
+			<div class="t-profile-box" style="background:var(--g4)">
+				<div class="t-profile-lbl" style="color:rgba(0,0,0,.5)">Мой ID</div>
+				<div class="t-profile-val" style="font-size:22px">${u.id}</div>
+			</div>
+		</div>
+		<div style="font-size:13px;color:var(--b3);margin-top:6px;line-height:1.6">Ваш ID используется учениками для записи к вам. Классов создано: <strong>${classDB_byTeacher().length}</strong></div>
+	</div>`
+}
+
+/* ── ASSIGN TASK MODAL ── */
+let assignFile=null
+
+function openAssignModal(classId){
+	const cls=classDB_getById(classId)
+	if(!cls) return
+	// Populate student select
+	const sel=document.getElementById("assignStudentSelect")
+	sel.innerHTML=(cls.student_ids||[]).map(sid=>`<option value="${sid}">ID: ${sid}</option>`).join("")||`<option value="">Нет учеников</option>`
+	document.getElementById("assignTarget").value="class"
+	document.getElementById("assignStudentRow").style.display="none"
+	document.getElementById("assignTitle").value=""
+	document.getElementById("assignDesc").value=""
+	document.getElementById("assignDate").value=new Date().toISOString().slice(0,10)
+	document.getElementById("assignStartH").value=""
+	document.getElementById("assignStartM").value=""
+	document.getElementById("assignEndH").value=""
+	document.getElementById("assignEndM").value=""
+	document.getElementById("assignFileDropZone").style.display=""
+	document.getElementById("assignFileAttachedInfo").style.display="none"
+	document.getElementById("assignFileInput").value=""
+	document.getElementById("assignError").hidden=true
+	assignFile=null
+	document.getElementById("assignModal").hidden=false
+	// Store classId
+	document.getElementById("assignModal").dataset.classId=classId
+}
+
+document.getElementById("assignTarget").addEventListener("change",e=>{
+	document.getElementById("assignStudentRow").style.display=e.target.value==="student"?"":"none"
+})
+;["closeAssignModal","cancelAssignModal"].forEach(id=>{
+	document.getElementById(id).addEventListener("click",()=>{document.getElementById("assignModal").hidden=true})
+})
+document.getElementById("assignModal").addEventListener("click",e=>{if(e.target===document.getElementById("assignModal"))document.getElementById("assignModal").hidden=true})
+
+document.getElementById("assignFileInput").addEventListener("change",e=>{
+	const file=e.target.files[0]; if(!file) return
+	assignFile=file
+	document.getElementById("assignFileDropZone").style.display="none"
+	document.getElementById("assignFileAttachedName").textContent=file.name
+	document.getElementById("assignFileAttachedInfo").style.display=""
+})
+document.getElementById("assignFileRemoveBtn").addEventListener("click",()=>{
+	assignFile=null; document.getElementById("assignFileInput").value=""
+	document.getElementById("assignFileDropZone").style.display=""
+	document.getElementById("assignFileAttachedInfo").style.display="none"
+})
+const adz=document.getElementById("assignFileDropZone")
+adz.addEventListener("dragover",e=>{e.preventDefault();adz.classList.add("drag")})
+adz.addEventListener("dragleave",()=>adz.classList.remove("drag"))
+adz.addEventListener("drop",e=>{
+	e.preventDefault();adz.classList.remove("drag")
+	const file=e.dataTransfer.files[0]; if(!file) return
+	assignFile=file
+	document.getElementById("assignFileDropZone").style.display="none"
+	document.getElementById("assignFileAttachedName").textContent=file.name
+	document.getElementById("assignFileAttachedInfo").style.display=""
+})
+
+document.getElementById("doAssign").addEventListener("click",async()=>{
+	const errEl=document.getElementById("assignError")
+	errEl.hidden=true
+	const target=document.getElementById("assignTarget").value
+	const classId=document.getElementById("assignModal").dataset.classId
+	const title=document.getElementById("assignTitle").value.trim()
+	const desc=document.getElementById("assignDesc").value.trim()
+	const date=document.getElementById("assignDate").value
+	const sh=document.getElementById("assignStartH").value,sm=document.getElementById("assignStartM").value
+	const eh=document.getElementById("assignEndH").value,em=document.getElementById("assignEndM").value
+	const fmtT=(h,m)=>h!=""?`${String(h).padStart(2,"0")}:${String(m||0).padStart(2,"0")}`:""
+	const ts=fmtT(sh,sm),te=fmtT(eh,em)
+	const time=(ts&&te)?`${ts}–${te}`:(ts||te||"—")
+	const cls=classDB_getById(classId)
+	if(!title){errEl.textContent="Введите название задания";errEl.hidden=false;return}
+	if(!date){errEl.textContent="Укажите дату";errEl.hidden=false;return}
+
+	let targetId=classId, targetLabel="class"
+	if(target==="student"){
+		const sel=document.getElementById("assignStudentSelect")
+		if(!sel.value){errEl.textContent="Выберите ученика";errEl.hidden=false;return}
+		targetId=Number(sel.value); targetLabel="student"
+	}
+
+	const btn=document.getElementById("doAssign"); btn.disabled=true; btn.textContent="Отправляем..."
+	try{
+		const body={
+			target:targetLabel, target_id:targetId,
+			title, desc, date, time,
+			teacher_id:currentUser.id, class_id:classId
+		}
+		const res=await apiPost("/teacher/assign",body)
+		if(!res.ok){errEl.textContent=res.error;errEl.hidden=false;return}
+
+		// Если есть файл — загружаем для каждого назначенного ученика
+		if(assignFile&&res.assigned){
+			for(const a of res.assigned){
+				const fd=new FormData()
+				fd.append("file",assignFile)
+				fd.append("task_id",String(a.task_id))
+				fd.append("username",a.username)
+				await fetch(`${API}/teacher/task_file`,{method:"POST",body:fd})
+			}
+		}
+		document.getElementById("assignModal").hidden=true
+		alert(`✅ Задание назначено ${res.assigned?.length||0} ученику(-ам)`)
+	}catch(e){errEl.textContent="Ошибка подключения к серверу";errEl.hidden=false}
+	finally{btn.disabled=false;btn.textContent="Отправить задание"}
+})
+
+/* ── CREATE CLASS MODAL ── */
+document.getElementById("doCreateClass").addEventListener("click",async()=>{
+	const name=document.getElementById("newClassName").value.trim()
+	const subject=document.getElementById("newClassSubject").value.trim()
+	const errEl=document.getElementById("createClassError")
+	if(!name){errEl.textContent="Введите название класса";errEl.hidden=false;return}
+	errEl.hidden=true
+	try{
+		const res=await apiPost("/classes",{name,subject,teacher_id:currentUser.id})
+		if(!res.ok){errEl.textContent=res.error;errEl.hidden=false;return}
+		teacherClasses.push(res.class)
+		document.getElementById("createClassModal").hidden=true
+		openClassId=res.class.id; renderTeacher()
+	}catch{errEl.textContent="Ошибка подключения";errEl.hidden=false}
+})
+;["closeCreateClassModal","cancelCreateClassModal"].forEach(id=>{
+	document.getElementById(id).addEventListener("click",()=>document.getElementById("createClassModal").hidden=true)
+})
+document.getElementById("createClassModal").addEventListener("click",e=>{
+	if(e.target===document.getElementById("createClassModal"))document.getElementById("createClassModal").hidden=true
+})
+
+/* ── INVITE MODAL ── */
+document.getElementById("doInvite").addEventListener("click",async()=>{
+	const rawId=document.getElementById("inviteStudentId").value.trim()
+	const res=document.getElementById("inviteResult"); res.style.display="block"
+	if(!rawId){showInviteResult("error","Введите ID ученика");return}
+	const numId=Number(rawId)
+	const cls=classDB_getById(inviteTargetClassId)
+	if(!cls){showInviteResult("error","Класс не найден");return}
+	if((cls.student_ids||[]).includes(numId)){showInviteResult("warn","Этот ученик уже в классе");return}
+
+	const btn=document.getElementById("doInvite"); btn.disabled=true; btn.textContent="Отправляем..."
+	try{
+		const r=await apiPost("/invitations/send",{
+			student_id:numId, class_id:inviteTargetClassId, class_name:cls.name,
+			teacher_id:currentUser.id,
+			teacher_name:`${currentUser.name} ${currentUser.surname||""}`
+		})
+		if(!r.ok){showInviteResult("error",r.error);return}
+		showInviteResult("ok",`✅ Приглашение отправлено ученику ${r.user?.name||""} ${r.user?.surname||""} (@${r.user?.username||""})`)
+		// Оптимистично добавим ученика в классе после принятия
+		setTimeout(()=>{document.getElementById("inviteModal").hidden=true;renderTeacher()},1500)
+	}catch{showInviteResult("error","Ошибка подключения к серверу")}
+	finally{btn.disabled=false;btn.textContent="Отправить приглашение"}
+})
+
+function showInviteResult(type,msg){
+	const el=document.getElementById("inviteResult"); el.style.display="block"
+	const styles={ok:"background:#e4f7eb;color:#0f7a30",error:"background:#fff0f0;color:#c0392b",warn:"background:#fff8e1;color:#b7770d"}
+	el.style.cssText+=";"+styles[type]; el.textContent=msg
+}
+;["closeInviteModal","cancelInviteModal"].forEach(id=>{
+	document.getElementById(id).addEventListener("click",()=>document.getElementById("inviteModal").hidden=true)
+})
+document.getElementById("inviteModal").addEventListener("click",e=>{
+	if(e.target===document.getElementById("inviteModal"))document.getElementById("inviteModal").hidden=true
+})
+
+/* ── STUDENT PROFILE MODAL ── */
+document.getElementById("closeStudentProfileModal")?.addEventListener("click",()=>{document.getElementById("studentProfileModal").hidden=true})
+document.getElementById("studentProfileModal")?.addEventListener("click",e=>{
+	if(e.target===document.getElementById("studentProfileModal"))document.getElementById("studentProfileModal").hidden=true
+})
+
+/* ═══════════════════════════════════════
+   PARENT INTERFACE
+════════════════════════════════════════ */
+let parentScreen="children", parentOpenChildId=null
+let parentChildren=[], parentChildTasks=new Map()
+let parentViewMonth=new Date().getMonth(), parentViewYear=new Date().getFullYear()
+let parentSelectedDate=new Date().toISOString().slice(0,10)
+
+function getParentChildrenKey(){return "sp_children_"+(currentUser?.username||"")}
+function loadParentChildren(){
+    try{
+        const raw=localStorage.getItem(getParentChildrenKey())
+        parentChildren=raw?JSON.parse(raw):[]
+    }catch{parentChildren=[]}
+}
+function saveParentChildren(){
+    localStorage.setItem(getParentChildrenKey(),JSON.stringify(parentChildren))
+}
+
+async function initParentApp(user){
+    document.getElementById("parentSideId").textContent="ID: "+user.id
+    loadParentChildren()
+    parentScreen="children"; parentOpenChildId=null
+    document.querySelectorAll("[data-pscreen]").forEach(b=>{
+        b.classList.toggle("active",b.dataset.pscreen==="children")
+    })
+    if(!window._parentListenersBound){
+        window._parentListenersBound=true
+        document.querySelectorAll("[data-pscreen]").forEach(btn=>{
+            btn.addEventListener("click",async()=>{
+                parentScreen=btn.dataset.pscreen; parentOpenChildId=null
+                document.querySelectorAll("[data-pscreen]").forEach(b=>b.classList.toggle("active",b===btn))
+                await renderParent()
+            })
+        })
+        document.getElementById("parentLogoutBtn").addEventListener("click",doLogout)
+        // Add child modal
+        document.getElementById("closeAddChildModal").addEventListener("click",()=>document.getElementById("addChildModal").hidden=true)
+        document.getElementById("cancelAddChildModal").addEventListener("click",()=>document.getElementById("addChildModal").hidden=true)
+        document.getElementById("addChildModal").addEventListener("click",e=>{if(e.target===document.getElementById("addChildModal"))document.getElementById("addChildModal").hidden=true})
+        document.getElementById("doAddChild").addEventListener("click",async()=>{
+            const rawId=document.getElementById("addChildId").value.trim()
+            const resEl=document.getElementById("addChildResult")
+            if(!rawId){showParentResult(resEl,"error","Введите ID ребёнка");return}
+            const numId=Number(rawId)
+            if(parentChildren.some(c=>c.id===numId)){showParentResult(resEl,"warn","Этот ребёнок уже добавлен");return}
+            const btn=document.getElementById("doAddChild"); btn.disabled=true; btn.textContent="Ищем..."
+            try{
+                const r=await apiGet(`/user_by_id/${numId}`)
+                if(!r.ok){showParentResult(resEl,"error",r.error||"Пользователь не найден");return}
+                const child=r.user
+                if(child.role!=="student"){showParentResult(resEl,"error","Пользователь не является учеником");return}
+                parentChildren.push({id:child.id,username:child.username,name:child.name,surname:child.surname||"",school:child.school||""})
+                saveParentChildren()
+                showParentResult(resEl,"ok",`✅ Добавлен: ${child.name} ${child.surname||""} (@${child.username})`)
+                setTimeout(()=>{document.getElementById("addChildModal").hidden=true;renderParent()},1200)
+            }catch{showParentResult(resEl,"error","Ошибка подключения к серверу")}
+            finally{btn.disabled=false;btn.textContent="Добавить"}
+        })
+        // Parent task modal
+        document.getElementById("closeParentTaskModal").addEventListener("click",closeParentTaskModal)
+        document.getElementById("cancelParentTaskModal").addEventListener("click",closeParentTaskModal)
+        document.getElementById("parentTaskModal").addEventListener("click",e=>{if(e.target===document.getElementById("parentTaskModal"))closeParentTaskModal()})
+        document.getElementById("parentTaskForm").addEventListener("submit",async e=>{
+            e.preventDefault()
+            const errEl=document.getElementById("parentTaskError");errEl.hidden=true
+            const childUsername=document.getElementById("parentTaskChildSelect").value
+            const title=document.getElementById("parentTaskName").value.trim()
+            const desc=document.getElementById("parentTaskDesc").value.trim()
+            const date=document.getElementById("parentTaskDate").value
+            const sh=document.getElementById("parentStartH").value,sm=document.getElementById("parentStartM").value
+            const eh=document.getElementById("parentEndH").value,em=document.getElementById("parentEndM").value
+            const fmtT=(h,m)=>h!=""?`${String(h).padStart(2,"0")}:${String(m||0).padStart(2,"0")}`:""
+            const ts=fmtT(sh,sm),te=fmtT(eh,em)
+            const time=(ts&&te)?`${ts}–${te}`:(ts||te||"—")
+            if(!title||!desc||!date||!childUsername){errEl.textContent="Заполните все обязательные поля.";errEl.hidden=false;return}
+            const btn=e.currentTarget.querySelector('[type="submit"]')
+            btn.disabled=true;btn.textContent="Создаём..."
+            try{
+                const res=await apiPost(`/tasks/${childUsername}`,{title,desc,date,time,source:"parent",done:false})
+                if(!res||!res.ok){errEl.textContent="Ошибка: "+(res&&res.error||"сервер недоступен");errEl.hidden=false;return}
+                // Refresh cache for this child
+                parentChildTasks.delete(childUsername)
+                closeParentTaskModal(); renderParent()
+            }catch(err){errEl.textContent="Ошибка подключения.";errEl.hidden=false}
+            finally{btn.disabled=false;btn.textContent="Создать задание"}
+        })
+        // AI prediction for parent task
+        setupPrediction("predictParentBtn","predictParentHint","parentTaskDesc","parentTaskName","parentStartH","parentStartM","parentEndH","parentEndM")
+        // View task modal close
+        document.getElementById("closeParentViewTaskModal").addEventListener("click",()=>document.getElementById("parentViewTaskModal").hidden=true)
+        document.getElementById("closeParentViewTaskModalBtn").addEventListener("click",()=>document.getElementById("parentViewTaskModal").hidden=true)
+        document.getElementById("parentViewTaskModal").addEventListener("click",e=>{if(e.target===document.getElementById("parentViewTaskModal"))document.getElementById("parentViewTaskModal").hidden=true})
+    }
+    await renderParent()
+}
+
+function showParentResult(el,type,msg){
+    el.style.display="block"
+    const styles={ok:"background:#e4f7eb;color:#0f7a30",error:"background:#fff0f0;color:#c0392b",warn:"background:#fff8e1;color:#b7770d"}
+    el.style.cssText="display:block;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:600;"+styles[type]
+    el.textContent=msg
+}
+
+async function fetchChildTasks(username){
+    try{
+        const res=await apiGet(`/tasks/${username}`)
+        if(res.ok) return res.tasks||[]
+    }catch{}
+    return []
+}
+
+async function renderParent(){
+    const titles={children:"Мои дети",calendar:"Календарь заданий",profile:"Личный кабинет"}
+    document.getElementById("parentScreenTitle").textContent=parentOpenChildId
+        ?(()=>{const c=parentChildren.find(ch=>ch.id===parentOpenChildId);return c?`${c.name} ${c.surname||""}` :"Ребёнок"})()
+        :titles[parentScreen]||""
+    const cont=document.getElementById("parentContent")
+    if(parentOpenChildId){cont.innerHTML=await renderChildDetail(parentOpenChildId);bindChildDetail();return}
+    if(parentScreen==="children"){cont.innerHTML=renderChildrenList();bindChildrenList();return}
+    if(parentScreen==="calendar"){
+        // Pre-load tasks for all children if not cached
+        await Promise.all(parentChildren.map(async c=>{
+            if(!parentChildTasks.has(c.username)){
+                const t=await fetchChildTasks(c.username)
+                parentChildTasks.set(c.username,t)
+            }
+        }))
+        cont.innerHTML=renderParentCalendarScreen()
+        renderParentCalendar()
+        // bind calendar nav after render
+        document.getElementById("parentPrevMonth")?.addEventListener("click",()=>{if(--parentViewMonth<0){parentViewMonth=11;parentViewYear--}renderParentCalendar()})
+        document.getElementById("parentNextMonth")?.addEventListener("click",()=>{if(++parentViewMonth>11){parentViewMonth=0;parentViewYear++}renderParentCalendar()})
+        return
+    }
+    if(parentScreen==="profile"){
+        cont.innerHTML=renderParentProfile()
+        document.getElementById("profileAddChildBtn")?.addEventListener("click",()=>{
+            document.getElementById("addChildId").value=""
+            document.getElementById("addChildResult").style.display="none"
+            document.getElementById("addChildModal").hidden=false
+        })
+        document.querySelectorAll("[data-remove-child]").forEach(btn=>{
+            btn.addEventListener("click",()=>{
+                const id=Number(btn.dataset.removeChild)
+                if(!confirm("Удалить ребёнка из списка?")) return
+                parentChildren=parentChildren.filter(c=>c.id!==id)
+                saveParentChildren()
+                renderParent()
+            })
+        })
+        return
+    }
+}
+
+function renderChildrenList(){
+    if(!parentChildren.length){
+        return `<div class="p-empty">
+            <div class="p-empty-icon">👨‍👩‍👧</div>
+            <div class="p-empty-text">Детей пока нет</div>
+            <div class="p-empty-sub">Добавьте ребёнка по его ID, чтобы видеть задания и статистику</div>
+            <button class="p-btn-primary" id="openAddChildModal" style="margin-top:20px">+ Добавить ребёнка</button>
+        </div>`
+    }
+    return `<div class="p-header-bar">
+        <div style="font-size:15px;font-weight:600;color:rgba(255,255,255,.7)">${parentChildren.length} ${parentChildren.length===1?"ребёнок":parentChildren.length<5?"ребёнка":"детей"}</div>
+        <button class="p-btn-primary" id="openAddChildModal">+ Добавить ребёнка</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+    ${parentChildren.map(child=>`
+    <div class="p-card-wrap">
+        <button class="p-card" type="button" data-open-child="${child.id}">
+            <div style="display:flex;align-items:center;gap:14px;">
+                <div class="p-card-avatar">${child.name[0]}</div>
+                <div class="p-card-info">
+                    <div class="p-card-name">${esc(child.name)} ${esc(child.surname)}</div>
+                    <div class="p-card-meta">@${esc(child.username)} · ${esc(child.school||"—")}</div>
+                </div>
+            </div>
+        </button>
+        <button class="p-child-remove" data-remove-child="${child.id}" title="Удалить">×</button>
+    </div>
+    `).join("")}
+    </div>`
+}
+
+function bindChildrenList(){
+    document.getElementById("openAddChildModal")?.addEventListener("click",()=>{
+        document.getElementById("addChildId").value=""
+        document.getElementById("addChildResult").style.display="none"
+        document.getElementById("addChildModal").hidden=false
+    })
+    document.querySelectorAll("[data-open-child]").forEach(btn=>{
+        btn.addEventListener("click",async()=>{
+            parentOpenChildId=Number(btn.dataset.openChild)
+            await renderParent()
+        })
+    })
+    document.querySelectorAll("[data-remove-child]").forEach(btn=>{
+        btn.addEventListener("click",e=>{
+            e.stopPropagation()
+            const id=Number(btn.dataset.removeChild)
+            if(!confirm("Удалить ребёнка из списка?")) return
+            parentChildren=parentChildren.filter(c=>c.id!==id)
+            saveParentChildren()
+            renderParent()
+        })
+    })
+}
+
+async function renderChildDetail(childId){
+    const child=parentChildren.find(c=>c.id===childId)
+    if(!child) return "<div>Ребёнок не найден</div>"
+    const tasks=await fetchChildTasks(child.username)
+    parentChildTasks.set(child.username,tasks)
+    const done=tasks.filter(t=>getStatus(t)==="done").length
+    const pending=tasks.filter(t=>getStatus(t)==="pending").length
+    const progress=tasks.filter(t=>getStatus(t)==="progress").length
+    const review=tasks.filter(t=>getStatus(t)==="review").length
+    const overdue=tasks.filter(t=>getStatus(t)==="overdue").length
+    const sorted=tasks.slice().sort((a,b)=>taskDT(a).localeCompare(taskDT(b)))
+    return `<button class="p-back-btn" id="pBackBtn">← Назад к детям</button>
+    <div class="p-child-detail-header">
+        <div class="p-child-detail-avatar">${child.name[0]}</div>
+        <div class="p-child-detail-info">
+            <div class="p-child-detail-name">${esc(child.name)} ${esc(child.surname)}</div>
+            <div class="p-child-detail-meta">@${esc(child.username)} · ID: ${child.id} · ${esc(child.school||"—")}</div>
+        </div>
+        <button class="p-btn-primary" id="pCreateTaskBtn">+ Задание</button>
+    </div>
+    <div class="p-stats-grid">
+        <div class="p-stat-box"><div class="p-stat-num">${tasks.length}</div><div class="p-stat-lbl">Всего заданий</div></div>
+        <div class="p-stat-box"><div class="p-stat-num" style="color:var(--g5)">${done}</div><div class="p-stat-lbl">Выполнено</div></div>
+        <div class="p-stat-box"><div class="p-stat-num" style="color:#0a58ca">${progress}</div><div class="p-stat-lbl">В работе</div></div>
+        <div class="p-stat-box"><div class="p-stat-num" style="color:#b85c00">${review}</div><div class="p-stat-lbl">На проверке</div></div>
+        <div class="p-stat-box"><div class="p-stat-num" style="color:#c0392b">${overdue}</div><div class="p-stat-lbl">Просрочено</div></div>
+        <div class="p-stat-box"><div class="p-stat-num" style="color:#f39c12">${pending}</div><div class="p-stat-lbl">Ожидают</div></div>
+    </div>
+    <div class="p-section-title">Задания ребёнка</div>
+    <div class="p-tasks-list">
+    ${sorted.length?sorted.map(t=>{
+        const st=getStatus(t)
+        const dotClass=st==="done"?"done":st==="overdue"?"overdue":st==="pending"?"pending":""
+        return `<button class="p-task-row" type="button" data-view-child-task="${child.username}" data-task-id="${t.id}">
+            <div class="p-task-dot ${dotClass}"></div>
+            <div class="p-task-info">
+                <div class="p-task-title">${esc(t.title)}</div>
+                <div class="p-task-meta">${esc(t.desc)} · ${srcLabel(t.source)}</div>
+            </div>
+            <div class="p-task-date">${fmtDeadline(t)}</div>
+        </button>`
+    }).join(""):`<div class="p-empty" style="padding:28px"><div class="p-empty-sub">У ребёнка пока нет заданий</div></div>`}
+    </div>`
+}
+
+function bindChildDetail(){
+    document.getElementById("pBackBtn")?.addEventListener("click",()=>{parentOpenChildId=null;renderParent()})
+    document.getElementById("pCreateTaskBtn")?.addEventListener("click",()=>openParentTaskModal(parentOpenChildId))
+    document.querySelectorAll("[data-view-child-task]").forEach(btn=>{
+        btn.addEventListener("click",()=>openParentViewTaskModal(btn.dataset.viewChildTask,Number(btn.dataset.taskId)))
+    })
+}
+
+function openParentTaskModal(childId){
+    const sel=document.getElementById("parentTaskChildSelect")
+    sel.innerHTML=parentChildren.map(c=>`<option value="${esc(c.username)}" ${c.id===childId?"selected":""}>${esc(c.name)} ${esc(c.surname)}</option>`).join("")
+    const now=new Date()
+    const endH=(now.getHours()+1)%24
+    document.getElementById("parentTaskDate").value=new Date().toISOString().slice(0,10)
+    document.getElementById("parentStartH").value=String(now.getHours())
+    document.getElementById("parentStartM").value=String(now.getMinutes()).padStart(2,"0")
+    document.getElementById("parentEndH").value=String(endH)
+    document.getElementById("parentEndM").value=String(now.getMinutes()).padStart(2,"0")
+    document.getElementById("parentTaskName").value=""
+    document.getElementById("parentTaskDesc").value=""
+    document.getElementById("parentTaskError").hidden=true
+    document.getElementById("parentTaskModal").hidden=false
+    document.getElementById("parentTaskName").focus()
+}
+function closeParentTaskModal(){document.getElementById("parentTaskModal").hidden=true}
+
+async function openParentViewTaskModal(username,taskId){
+    const tasks=parentChildTasks.get(username)||await fetchChildTasks(username)
+    parentChildTasks.set(username,tasks)
+    const task=tasks.find(t=>t.id===taskId)
+    if(!task) return
+    document.getElementById("parentViewTaskName").value=task.title
+    document.getElementById("parentViewTaskDate").value=task.date
+    document.getElementById("parentViewTaskTime").value=task.time||"—"
+    document.getElementById("parentViewTaskDesc").value=task.desc
+    document.getElementById("parentViewTaskStatus").innerHTML=statusBadge(task)
+    const tfr=document.getElementById("parentViewTaskFileRow")
+    if(task.teacher_file){
+        document.getElementById("parentViewTaskFileName").textContent=task.teacher_file
+        document.getElementById("parentViewTaskFileLink").href=`${API}/teacher/task_file/${username}/${task.id}`
+        tfr.style.display=""
+    }else{tfr.style.display="none"}
+    const sfr=document.getElementById("parentViewStudentFileRow")
+    if(task.student_file){
+        document.getElementById("parentViewStudentFileName").textContent=task.student_file
+        document.getElementById("parentViewStudentFileLink").href=`${API}/tasks/${username}/${task.id}/file`
+        sfr.style.display=""
+    }else{sfr.style.display="none"}
+
+    // Accept button: shown when task is from parent AND status is review
+    const actionsRow=document.getElementById("parentViewTaskActions")
+    actionsRow.innerHTML=""
+    if(task.source==="parent"&&getStatus(task)==="review"){
+        const acceptBtn=document.createElement("button")
+        acceptBtn.className="modal-primary"
+        acceptBtn.textContent="✓ Принять"
+        acceptBtn.style.cssText="padding:10px 22px;font-size:15px"
+        acceptBtn.addEventListener("click",async()=>{
+            acceptBtn.disabled=true; acceptBtn.textContent="..."
+            try{
+                const res=await apiPut(`/tasks/${username}/${task.id}`,{status:"done"})
+                if(res&&res.ok){
+                    // Update cached tasks
+                    const cached=parentChildTasks.get(username)||[]
+                    const idx=cached.findIndex(t=>t.id===taskId)
+                    if(idx!==-1) cached[idx]={...cached[idx],status:"done",done:true}
+                    parentChildTasks.set(username,cached)
+                    // Сбрасываем кэш чтобы статистика обновилась корректно
+                    parentChildTasks.delete(username)
+                    document.getElementById("parentViewTaskModal").hidden=true
+                    renderParent()
+                }
+            }catch{}
+            finally{if(!acceptBtn.disabled)return; acceptBtn.disabled=false; acceptBtn.textContent="✓ Принять"}
+        })
+        actionsRow.appendChild(acceptBtn)
+    }
+
+    document.getElementById("parentViewTaskModal").hidden=false
+}
+
+/* ── PARENT CALENDAR ── */
+function renderParentCalendarScreen(){
+    return `<div class="calendar-layout">
+        <section>
+            <div class="p-calendar-toolbar">
+                <div class="p-calendar-nav">
+                    <button class="p-calendar-arrow" id="parentPrevMonth" type="button">‹</button>
+                    <div id="parentCalendarMonthLabel" class="p-calendar-month"></div>
+                    <button class="p-calendar-arrow" id="parentNextMonth" type="button">›</button>
+                </div>
+                <button class="p-calendar-action" id="parentOpenTaskModal" type="button">+ Задание</button>
+            </div>
+            <div id="parentCalendarGrid" class="p-calendar-grid"></div>
+        </section>
+        <div class="calendar-bottom">
+            <div class="p-info-box">
+                <div class="p-info-title">Задания на день</div>
+                <div id="parentSelectedDateLabel" class="section-title" style="margin-top:0;font-size:15px;color:rgba(255,255,255,.8)"></div>
+                <div id="parentSelectedDayTasks" class="p-day-tasks"></div>
+            </div>
+            <div class="p-info-box">
+                <div class="p-info-title">Ближайшие события</div>
+                <div id="parentUpcomingEvents" class="events"></div>
+            </div>
+        </div>
+    </div>`
+}
+
+function renderParentCalendar(){
+    const monthNames=["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"]
+    const weekDays=["Пн","Вт","Ср","Чт","Пт","Сб","Вс"]
+    document.getElementById("parentCalendarMonthLabel").textContent=`${monthNames[parentViewMonth]} ${parentViewYear}`
+    const first=new Date(parentViewYear,parentViewMonth,1)
+    const offset=(first.getDay()+6)%7
+    const days=new Date(parentViewYear,parentViewMonth+1,0).getDate()
+    const today=new Date().toISOString().slice(0,10)
+    const allTasks=[]
+    parentChildren.forEach(c=>{
+        const t=parentChildTasks.get(c.username)||[]
+        allTasks.push(...t.map(task=>({...task,childName:c.name,childUsername:c.username})))
+    })
+    const map=new Map()
+    for(const t of allTasks){if(!map.has(t.date))map.set(t.date,[]);map.get(t.date).push(t)}
+    const cells=[]
+    weekDays.forEach(d=>cells.push(`<div class="p-calendar-weekday">${d}</div>`))
+    for(let i=0;i<offset;i++) cells.push(`<div class="p-calendar-day empty"></div>`)
+    for(let day=1;day<=days;day++){
+        const dateId=`${parentViewYear}-${String(parentViewMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`
+        const dt=map.get(dateId)||[]
+        const cls=["p-calendar-day",dateId===parentSelectedDate?"selected":"",dateId===today?"today":""].filter(Boolean).join(" ")
+        cells.push(`<button class="${cls}" type="button" data-pdate="${dateId}">
+            <div class="p-day-number">${day}</div>
+            ${dt.length?`<div class="p-day-badge">${dt.length}</div>`:`<div></div>`}
+        </button>`)
+    }
+    const grid=document.getElementById("parentCalendarGrid")
+    if(grid){
+        grid.innerHTML=cells.join("")
+        grid.querySelectorAll("[data-pdate]").forEach(btn=>{
+            btn.addEventListener("click",()=>{parentSelectedDate=btn.dataset.pdate;renderParentCalendarDay();renderParentCalendar()})
+        })
+    }
+    renderParentCalendarDay()
+    renderParentUpcoming()
+    document.getElementById("parentOpenTaskModal")?.addEventListener("click",()=>openParentTaskModal(parentChildren[0]?.id||null))
+}
+
+function renderParentCalendarDay(){
+    const label=document.getElementById("parentSelectedDateLabel")
+    const node=document.getElementById("parentSelectedDayTasks")
+    if(!label||!node) return
+    label.textContent=fmtDate(parentSelectedDate)
+    const allTasks=[]
+    parentChildren.forEach(c=>{
+        const t=parentChildTasks.get(c.username)||[]
+        allTasks.push(...t.filter(task=>task.date===parentSelectedDate).map(task=>({...task,childName:c.name,childUsername:c.username})))
+    })
+    allTasks.sort((a,b)=>(a.time||"").localeCompare(b.time||""))
+    if(!allTasks.length){node.innerHTML=`<div style="padding:14px;border-radius:12px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.65);font-size:14px;">На выбранный день задач нет.</div>`;return}
+    node.innerHTML=allTasks.map(t=>`<button class="p-day-task" type="button" data-view-child-task="${t.childUsername}" data-task-id="${t.id}">
+        <div class="p-day-time">${t.time||"—"}</div>
+        <div><div class="day-task-title">${esc(t.title)}</div><div class="day-task-meta">${esc(t.desc)} · ${esc(t.childName)} · ${srcLabel(t.source)}</div></div>
+    </button>`).join("")
+    node.querySelectorAll("[data-view-child-task]").forEach(btn=>{
+        btn.addEventListener("click",()=>openParentViewTaskModal(btn.dataset.viewChildTask,Number(btn.dataset.taskId)))
+    })
+}
+
+function renderParentUpcoming(){
+    const node=document.getElementById("parentUpcomingEvents")
+    if(!node) return
+    const allTasks=[]
+    parentChildren.forEach(c=>{
+        const t=parentChildTasks.get(c.username)||[]
+        allTasks.push(...t.map(task=>({...task,childName:c.name,childUsername:c.username})))
+    })
+    const up=allTasks.slice().sort((a,b)=>taskDT(a).localeCompare(taskDT(b))).slice(0,6)
+    if(!up.length){node.innerHTML=`<div style="padding:10px;color:rgba(255,255,255,.5);font-size:14px">Нет предстоящих заданий</div>`;return}
+    node.innerHTML=up.map(t=>`<div class="event-row">
+        <div class="event-dot"></div>
+        <div>${new Date(t.date+"T12:00:00").toLocaleDateString("ru-RU",{day:"numeric",month:"short"})} · ${t.time||"—"} — <button type="button" data-view-child-task="${t.childUsername}" data-task-id="${t.id}" style="background:transparent;color:inherit;padding:0;font:inherit;text-align:left;">${esc(t.title)}</button> <span style="opacity:.6">(${esc(t.childName)})</span></div>
+    </div>`).join("")
+    node.querySelectorAll("[data-view-child-task]").forEach(btn=>{
+        btn.addEventListener("click",()=>openParentViewTaskModal(btn.dataset.viewChildTask,Number(btn.dataset.taskId)))
+    })
+}
+
+/* ── PARENT PROFILE ── */
+function renderParentProfile(){
+    const u=currentUser
+    return `<div style="max-width:600px">
+        <div class="p-profile-card">
+            <div class="p-profile-title">Личный кабинет</div>
+            <div class="p-profile-table">
+                <div class="p-profile-label">Имя</div><div class="p-profile-value">${esc(u.name)}</div>
+                <div class="p-profile-label">Фамилия</div><div class="p-profile-value">${esc(u.surname||"—")}</div>
+                <div class="p-profile-label">Логин</div><div class="p-profile-value">@${esc(u.username)}</div>
+                <div class="p-profile-label">Роль</div><div class="p-profile-value">👨‍👩‍👧 Родитель</div>
+                <div class="p-profile-label">ID</div><div class="p-profile-value">${u.id}</div>
+            </div>
+        </div>
+        <div style="margin-top:20px">
+            <div class="p-section-title">Управление детьми</div>
+            ${parentChildren.length?`<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+                ${parentChildren.map(c=>`<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,255,255,.1);border-radius:12px">
+                    <div style="width:36px;height:36px;border-radius:999px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff">${c.name[0]}</div>
+                    <div style="flex:1"><div style="font-weight:700">${esc(c.name)} ${esc(c.surname)}</div><div style="font-size:12px;opacity:.7">@${esc(c.username)} · ID: ${c.id}</div></div>
+                    <button class="p-btn-ghost" data-remove-child="${c.id}" style="font-size:12px;padding:6px 12px">Удалить</button>
+                </div>`).join("")}
+            </div>`:`<div style="opacity:.7;margin-bottom:16px">Нет добавленных детей</div>`}
+            <button class="p-btn-primary" id="profileAddChildBtn">+ Добавить ребёнка</button>
+        </div>
+    </div>`
+}
+
+// ──────────────────────────────────────────
+// ГОЛОСОВОЙ ВВОД — офлайн через Vosk (/api/speech)
+// ──────────────────────────────────────────
+(function() {
+  let mediaRecorder = null;
+  let audioChunks   = [];
+  let activeBtn     = null;
+  let activeTarget  = null;
+
+  function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+    }
+  }
+
+  function setBtn(btn, listening) {
+    if (!btn) return;
+    btn.classList.toggle('listening', listening);
+    btn.title = listening ? 'Нажмите, чтобы остановить' : 'Голосовой ввод';
+  }
+
+  async function startRecording(btn, targetEl) {
+    // Если уже пишем — останавливаем
+    if (activeBtn === btn) {
+      stopRecording();
+      return;
+    }
+    // Останавливаем предыдущую запись если есть
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+      return;
+    }
+
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch(e) {
+      alert('Нет доступа к микрофону: ' + e.message);
+      return;
+    }
+
+    audioChunks = [];
+    activeBtn    = btn;
+    activeTarget = targetEl;
+
+    // Предпочитаем audio/webm — браузеры обычно поддерживают.
+    // Бэкенд конвертирует в WAV через ffmpeg или wave если нужно.
+    const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+      ? 'audio/webm;codecs=opus'
+      : 'audio/webm';
+
+    mediaRecorder = new MediaRecorder(stream, { mimeType });
+
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) audioChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      setBtn(activeBtn, false);
+
+      const blob   = new Blob(audioChunks, { type: mimeType });
+      const formData = new FormData();
+      formData.append('audio', blob, 'voice.webm');
+
+      // Показываем статус на кнопке
+      if (activeBtn) {
+        activeBtn.textContent = '⏳';
+        activeBtn.disabled    = true;
+      }
+
+      try {
+        const resp = await fetch('/api/speech', { method: 'POST', body: formData });
+        const data = await resp.json();
+        if (data.ok && data.text && activeTarget) {
+          const cur = activeTarget.value;
+          activeTarget.value = cur
+            ? cur + (cur.endsWith(' ') ? '' : ' ') + data.text
+            : data.text;
+          // Авторазмер для textarea
+          if (activeTarget.tagName === 'TEXTAREA') {
+            activeTarget.style.height = 'auto';
+            activeTarget.style.height = activeTarget.scrollHeight + 'px';
+          }
+          activeTarget.focus();
+        } else if (!data.ok) {
+          alert('Ошибка распознавания: ' + (data.error || 'неизвестная ошибка'));
+        }
+      } catch(e) {
+        alert('Ошибка связи с сервером: ' + e.message);
+      } finally {
+        if (activeBtn) {
+          activeBtn.textContent = '🎤';
+          activeBtn.disabled    = false;
+        }
+        activeBtn    = null;
+        activeTarget = null;
+      }
+    };
+
+    mediaRecorder.start();
+    setBtn(btn, true);
+    targetEl.focus();
+  }
+
+  // Делегирование кликов по .voice-btn
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.voice-btn');
+    if (!btn) return;
+    const targetId = btn.dataset.target;
+    const targetEl = targetId ? document.getElementById(targetId) : null;
+    if (!targetEl || targetEl.readOnly) return;
+    startRecording(btn, targetEl);
+  });
+
+  // Остановка при закрытии модала
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal-close') ||
+        e.target.classList.contains('modal-secondary') ||
+        e.target.classList.contains('modal-backdrop')) {
+      stopRecording();
+    }
+  });
+})();
+</script>
+</body>
+</html>

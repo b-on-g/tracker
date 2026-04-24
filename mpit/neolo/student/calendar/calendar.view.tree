@@ -1,0 +1,184 @@
+$bog_tracker_mpit_neolo_student_calendar $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	title_label @ \Календарь
+	month_label \
+	view_month? 0
+	view_year? 0
+	selected_date? \
+	add_label \+ Добавить задачу
+	today_label @ \Задачи на день
+	upcoming_label @ \Ближайшие события
+	empty_note @ \На выбранный день задач нет.
+	prev_month? null
+	next_month? null
+	create_click? null
+	select_day*? null
+	open_task*? null
+	weekday_ids /
+		\Пн
+		\Вт
+		\Ср
+		\Чт
+		\Пт
+		\Сб
+		\Вс
+	cell_ids /string
+	cell_day* \
+	cell_count* \
+	cell_has_count* false
+	cell_is_selected* false
+	cell_is_today* false
+	cell_is_empty* false
+	day_is_empty false
+	selected_label \
+	day_task_ids /string
+	upcoming_ids /string
+	day_task_time* \
+	day_task_title* \
+	day_task_meta* \
+	upcoming_date* \
+	upcoming_time* \
+	upcoming_title* \
+	grid_cells /
+	day_tasks /
+	upcoming /
+	Cell* $bog_tracker_mpit_neolo_student_calendar_cell
+		date_id* <= cell_date_id* \
+		day_number <= cell_day* \
+		count <= cell_count* \
+		has_count <= cell_has_count* false
+		is_selected <= cell_is_selected* false
+		is_today <= cell_is_today* false
+		is_empty <= cell_is_empty* false
+		click? <=> select_day*? null
+	Weekday* $mol_view
+		sub /
+			<= weekday_label* \
+	Day_task* $bog_tracker_mpit_neolo_student_calendar_day_task
+		task_id* <= day_task_id* \
+		time <= day_task_time* \
+		task_title <= day_task_title* \
+		meta <= day_task_meta* \
+		click? <=> open_task*? null
+	Upcoming_row* $bog_tracker_mpit_neolo_student_calendar_upcoming_row
+		task_id* <= upcoming_id* \
+		upcoming_date <= upcoming_date* \
+		upcoming_time <= upcoming_time* \
+		upcoming_title <= upcoming_title* \
+		click? <=> open_task*? null
+	sub /
+		<= Title $mol_view
+			sub /
+				<= title_label
+		<= Calendar_layout $mol_view
+			sub /
+				<= Toolbar $mol_view
+					sub /
+						<= Nav $mol_view
+							sub /
+								<= Prev_btn $mol_button_minor
+									click? <=> prev_month? null
+									sub /
+										\‹
+								<= Month_label $mol_view
+									sub /
+										<= month_label
+								<= Next_btn $mol_button_minor
+									click? <=> next_month? null
+									sub /
+										\›
+						<= Create_btn $mol_button_minor
+							click? <=> create_click? null
+							sub /
+								<= add_label
+				<= Grid $mol_view
+					sub <= grid_cells
+				<= Bottom $mol_view
+					sub /
+						<= Day_box $mol_view
+							sub /
+								<= Day_box_title $mol_view
+									sub /
+										<= today_label
+								<= Selected_label $mol_view
+									sub /
+										<= selected_label
+								<= Day_list $mol_list
+									rows <= day_tasks
+								<= Empty_note $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_student_calendar_empty <= day_is_empty false
+									sub /
+										<= empty_note
+						<= Upcoming_box $mol_view
+							sub /
+								<= Upcoming_title $mol_view
+									sub /
+										<= upcoming_label
+								<= Upcoming_list $mol_list
+									rows <= upcoming
+
+$bog_tracker_mpit_neolo_student_calendar_cell $mol_button_minor
+	date_id \
+	day_number \
+	count \
+	has_count false
+	is_selected false
+	is_today false
+	is_empty false
+	click? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_student_calendar_cell_selected <= is_selected false
+		bog_tracker_mpit_neolo_student_calendar_cell_today <= is_today false
+		bog_tracker_mpit_neolo_student_calendar_cell_empty <= is_empty false
+		bog_tracker_mpit_neolo_student_calendar_cell_has_count <= has_count false
+	sub /
+		<= Day_number $mol_view
+			sub /
+				<= day_number
+		<= Badge $mol_view
+			attr *
+				^
+			sub /
+				<= count
+
+$bog_tracker_mpit_neolo_student_calendar_day_task $mol_button_minor
+	task_id \
+	time \
+	task_title \
+	meta \
+	click? null
+	sub /
+		<= Time_chip $mol_view
+			sub /
+				<= time
+		<= Inner $mol_view
+			sub /
+				<= Title_row $mol_view
+					sub /
+						<= task_title
+				<= Meta_row $mol_view
+					sub /
+						<= meta
+
+$bog_tracker_mpit_neolo_student_calendar_upcoming_row $mol_view
+	task_id \
+	upcoming_date \
+	upcoming_time \
+	upcoming_title \
+	click? null
+	sub /
+		<= Dot $mol_view
+		<= Text $mol_view
+			sub /
+				<= upcoming_date
+				\ ·
+				<= upcoming_time
+				\ —
+				<= Title_btn $mol_button_minor
+					click? <=> click? null
+					sub /
+						<= upcoming_title

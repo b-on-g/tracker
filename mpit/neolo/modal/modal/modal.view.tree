@@ -1,0 +1,28 @@
+$bog_tracker_mpit_neolo_modal_modal $mol_view
+	title \
+	body /
+	hidden? true
+	close? null
+	close_label \×
+	backdrop_click? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_modal_modal_hidden <= hidden true
+	sub /
+		<= Backdrop $mol_view
+			event *
+				click? <=> backdrop_click? null
+			sub /
+				<= Card $mol_view
+					sub /
+						<= Head $mol_view
+							sub /
+								<= Title $mol_view
+									sub /
+										<= title
+								<= Close $mol_button_minor
+									click? <=> close? null
+									sub /
+										<= close_label
+						<= Body $mol_view
+							sub <= body /

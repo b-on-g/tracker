@@ -1,0 +1,91 @@
+$bog_tracker_mpit_neolo_student_tasks $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	title_label @ \Задания
+	nearest_label @ \Ближайшие задания
+	add_label @ \Добавить задачу
+	add_trigger_label @ \Открыть календарь и создать задачу
+	task_ids /string
+	add_task_click? null
+	open_task*? null
+	task_title* \
+	task_desc* \
+	task_source_label* \
+	task_source_cls* \src-self
+	task_status_label* \
+	task_status_cls* \status-pending
+	task_deadline* \
+	task_rows /
+	Card* $bog_tracker_mpit_neolo_student_tasks_card
+		task_id* <= task_id_value* \
+		task_title <= task_title* \
+		task_desc <= task_desc* \
+		source_label <= task_source_label* \
+		source_cls <= task_source_cls* \src-self
+		status_label <= task_status_label* \
+		status_cls <= task_status_cls* \status-pending
+		deadline <= task_deadline* \
+		click? <=> open_task*? null
+	sub /
+		<= Title $mol_view
+			sub /
+				<= title_label
+		<= Section_title $mol_view
+			sub /
+				<= nearest_label
+		<= Tasks_group $mol_list
+			rows <= task_rows
+		<= Add_box $mol_view
+			sub /
+				<= Add_title $mol_view
+					sub /
+						<= add_label
+				<= Add_trigger $mol_button_minor
+					click? <=> add_task_click? null
+					sub /
+						<= Add_icon $mol_view
+							sub /
+								\+
+						<= Add_text $mol_view
+							sub /
+								<= add_trigger_label
+
+$bog_tracker_mpit_neolo_student_tasks_card $mol_button_minor
+	task_id \
+	task_title \
+	task_desc \
+	source_label \
+	source_cls \src-self
+	status_label \
+	status_cls \status-pending
+	deadline \
+	click? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_student_tasks_card_source <= source_cls \src-self
+		bog_tracker_mpit_neolo_student_tasks_card_status <= status_cls \status-pending
+	sub /
+		<= Bullet $mol_view
+		<= Inner $mol_view
+			sub /
+				<= Name $mol_view
+					sub /
+						<= task_title
+				<= Desc $mol_view
+					sub /
+						<= task_desc
+				<= Meta_row $mol_view
+					sub /
+						<= Source_badge $mol_view
+							attr *
+								^
+							sub /
+								<= source_label
+						<= Status_badge $mol_view
+							attr *
+								^
+							sub /
+								<= status_label
+		<= Deadline $mol_view
+			sub /
+				<= deadline

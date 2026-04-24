@@ -1,0 +1,104 @@
+$bog_tracker_mpit_neolo_ai_explain $mol_view
+	api $bog_tracker_mpit_neolo_api
+	hidden true
+	task_title \
+	task_desc \
+	on_close? null
+	close_click? null
+	question_input? \
+	ask? null
+	is_loading true
+	is_content false
+	is_error false
+	is_topic_error false
+	error_text \
+	explain_html \
+	chat_ids /string
+	attr *
+		^
+		bog_tracker_mpit_neolo_ai_explain_hidden <= hidden true
+	sub /
+		<= Backdrop $mol_view
+			event *
+				click? <=> backdrop_click? null
+			sub /
+				<= Card $mol_view
+					sub /
+						<= Head $mol_view
+							sub /
+								<= Header_left $mol_view
+									sub /
+										<= Icon $mol_view
+											sub / \💡
+										<= Title $mol_view
+											sub /
+												<= task_title
+								<= Close $mol_button_minor
+									click? <=> close_click? null
+									sub / <= close_label \×
+						<= Body $mol_view
+							sub /
+								<= Loading $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_ai_explain_loading_visible <= is_loading true
+									sub /
+										<= Spinner $mol_view
+										<= Loading_text $mol_view
+											sub / \Нейросеть изучает тему...
+										<= Loading_sub $mol_view
+											sub / \Подготавливаем развёрнутое объяснение по вашему заданию.
+								<= Content $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_ai_explain_content_visible <= is_content false
+									sub /
+										<= Explain_text $mol_view
+										<= Chat_box $mol_view
+											sub /
+												<= Chat_history $mol_view
+													sub <= chat_rows /
+												<= Chat_input_row $mol_view
+													sub /
+														<= Question_input $mol_string
+															hint @ \Уточните что-нибудь...
+															value? <=> question_input? \
+															submit? <=> ask? null
+														<= Ask_btn $mol_button_major
+															click? <=> ask? null
+															sub / <= ask_label \Спросить
+								<= Topic_error $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_ai_explain_topic_error_visible <= is_topic_error false
+									sub /
+										<= Err_icon $mol_view
+											sub / \🤷
+										<= Err_title $mol_view
+											sub / \Это не учебная тема
+										<= Err_text $mol_view
+											sub / \Похоже, в задании нет конкретной темы для объяснения. Попробуйте прикрепить файл и воспользоваться кнопкой «Тест».
+								<= Error $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_ai_explain_error_visible <= is_error false
+									sub /
+										<= Error_icon $mol_view
+											sub / \⚠️
+										<= Error_title $mol_view
+											sub / \Ошибка
+										<= Error_text $mol_view
+											sub /
+												<= error_text
+	Chat_row* $bog_tracker_mpit_neolo_ai_explain_chat_msg
+		role <= chat_role* \user
+		text <= chat_text* \
+
+$bog_tracker_mpit_neolo_ai_explain_chat_msg $mol_view
+	role \user
+	text \
+	attr *
+		^
+		bog_tracker_mpit_neolo_ai_explain_chat_msg_role <= role \user
+	sub /
+		<= text

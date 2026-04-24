@@ -1,0 +1,54 @@
+$bog_tracker_mpit_neolo_modal_file_drop $mol_view
+	file? null
+	label @ \📎 Выберите файл или перетащите сюда
+	has_file false
+	file_name \
+	drag? false
+	input_change? null
+	drop? null
+	drag_over? null
+	drag_leave? null
+	remove? null
+	sub /
+		<= Zone_container null
+		<= Attached_container null
+
+$bog_tracker_mpit_neolo_modal_file_drop_zone $mol_view
+	label \
+	drag false
+	input_change? null
+	drop? null
+	drag_over? null
+	drag_leave? null
+	event *
+		dragover? <=> drag_over? null
+		dragleave? <=> drag_leave? null
+		drop? <=> drop? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_modal_file_drop_zone_drag <= drag false
+	sub /
+		<= Input $mol_view
+			dom_name \input
+			attr *
+				type \file
+				accept \*/*
+			event *
+				change? <=> input_change? null
+		<= Label_view $mol_view
+			sub /
+				<= label
+
+$bog_tracker_mpit_neolo_modal_file_drop_attached $mol_view
+	file_name \
+	remove? null
+	sub /
+		<= Icon $mol_view
+			sub / \📄
+		<= Name $mol_view
+			sub /
+				<= file_name
+		<= Remove_btn $mol_button_minor
+			click? <=> remove? null
+			sub /
+				<= remove_label \×

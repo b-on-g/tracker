@@ -1,0 +1,8 @@
+@keyframes bog_tracker_mpit_neolo_ai_test_spin {
+	to { transform: rotate(360deg); }
+}
+
+[bog_tracker_mpit_neolo_ai_test_Spinner] {
+	border-top-color: var(--mol_theme_focus, #2ecc5a) !important;
+	animation: bog_tracker_mpit_neolo_ai_test_spin 1s linear infinite;
+}

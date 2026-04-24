@@ -1,0 +1,158 @@
+$bog_tracker_mpit_neolo_auth $mol_view
+	store $bog_tracker_mpit_neolo_store
+	mode? \login
+	mode_options *
+		login @ \Войти
+		register @ \Регистрация
+	role? \
+	error? \
+	busy? false
+	has_error false
+	is_login_mode true
+	is_register_mode false
+	needs_school_field false
+	login_username? \
+	login_password? \
+	reg_username? \
+	reg_password? \
+	reg_password2? \
+	reg_name? \
+	reg_surname? \
+	reg_school? \
+	attr *
+		^
+		bog_tracker_mpit_neolo_auth_busy <= busy
+	sub /
+		<= Card $mol_view
+			sub /
+				<= Brand $mol_view
+					sub /
+						\School
+						<= Brand_accent $mol_view
+							sub /
+								\Plan
+				<= Sub $mol_view
+					sub /
+						\Планировщик для школьников
+				<= Tabs $mol_switch
+					value? <=> mode? \login
+					options <= mode_options
+				<= Error_view $mol_view
+					attr *
+						^
+						bog_tracker_mpit_neolo_auth_error_visible <= has_error false
+					sub /
+						<= error
+				<= Login_form $mol_view
+					attr *
+						^
+						bog_tracker_mpit_neolo_auth_form_visible <= is_login_mode true
+					sub /
+						<= Login_username_field $mol_labeler
+							title @ \Логин
+							content /
+								<= Login_username_input $mol_string
+									hint @ \Ваш логин
+									value? <=> login_username? \
+						<= Login_password_field $mol_labeler
+							title @ \Пароль
+							content /
+								<= Login_password_input $mol_string
+									hint @ \Ваш пароль
+									type \password
+									value? <=> login_password? \
+						<= Login_submit $mol_button_major
+							click? <=> login_click? null
+							enabled <= login_enabled true
+							sub /
+								<= login_label \Войти
+				<= Register_form $mol_view
+					attr *
+						^
+						bog_tracker_mpit_neolo_auth_form_visible <= is_register_mode false
+					sub /
+						<= Reg_username_field $mol_labeler
+							title @ \Логин
+							content /
+								<= Reg_username_input $mol_string
+									hint @ \Придумайте логин
+									value? <=> reg_username? \
+						<= Reg_password_field $mol_labeler
+							title @ \Пароль
+							content /
+								<= Reg_password_input $mol_string
+									hint @ \Придумайте пароль
+									type \password
+									value? <=> reg_password? \
+						<= Reg_password2_field $mol_labeler
+							title @ \Повторите пароль
+							content /
+								<= Reg_password2_input $mol_string
+									hint @ \Повторите пароль
+									type \password
+									value? <=> reg_password2? \
+						<= Reg_two_col $mol_view
+							sub /
+								<= Reg_name_field $mol_labeler
+									title @ \Имя
+									content /
+										<= Reg_name_input $mol_string
+											hint @ \Ваше имя
+											value? <=> reg_name? \
+								<= Reg_surname_field $mol_labeler
+									title @ \Фамилия
+									content /
+										<= Reg_surname_input $mol_string
+											hint @ \Ваша фамилия
+											value? <=> reg_surname? \
+						<= Reg_role_label $mol_view
+							sub /
+								\Кто вы?
+						<= Reg_role_grid $mol_view
+							sub /
+								<= Role_student $bog_tracker_mpit_neolo_auth_role_button
+									role_key \student
+									role_icon \🎒
+									role_label @ \Ученик
+									selected <= role_student_selected false
+									click? <=> role_student_click? null
+								<= Role_teacher $bog_tracker_mpit_neolo_auth_role_button
+									role_key \teacher
+									role_icon \📚
+									role_label @ \Учитель
+									selected <= role_teacher_selected false
+									click? <=> role_teacher_click? null
+								<= Role_parent $bog_tracker_mpit_neolo_auth_role_button
+									role_key \parent
+									role_icon \👨‍👩‍👧
+									role_label @ \Родитель
+									selected <= role_parent_selected false
+									click? <=> role_parent_click? null
+						<= Reg_school_field $mol_labeler
+							attr *
+								^
+								bog_tracker_mpit_neolo_auth_school_visible <= needs_school_field false
+							title @ \Школа
+							content /
+								<= Reg_school_input $mol_string
+									hint @ \Например, Школа №42
+									value? <=> reg_school? \
+						<= Reg_submit $mol_button_major
+							click? <=> register_click? null
+							enabled <= register_enabled true
+							sub /
+								<= register_label \Зарегистрироваться
+
+$bog_tracker_mpit_neolo_auth_role_button $mol_button_minor
+	role_key \
+	role_icon \
+	role_label \
+	selected false
+	attr *
+		^
+		bog_tracker_mpit_neolo_auth_role_button_selected <= selected
+	sub /
+		<= Role_icon $mol_view
+			sub / <= role_icon
+		<= Role_label $mol_view
+			sub / <= role_label

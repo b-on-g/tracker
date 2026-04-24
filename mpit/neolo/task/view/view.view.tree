@@ -1,0 +1,173 @@
+$bog_tracker_mpit_neolo_task_view $bog_tracker_mpit_neolo_modal_modal
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	hidden? true
+	task_id \
+	on_saved? null
+	open_ai_test?* null
+	open_ai_explain?* null
+	title @ \Задача
+	close? <=> close_click? null
+	title_value? \
+	desc_value? \
+	date_value? \
+	start_h? 0
+	start_m? 0
+	end_h? 0
+	end_m? 0
+	task_status \pending
+	task_source \self
+	status_label \
+	source_label \
+	action_label \
+	action_next \
+	has_action false
+	teacher_file_name \
+	teacher_file_url \
+	has_teacher_file false
+	student_file_name \
+	student_file_url \
+	has_student_file false
+	show_upload false
+	show_ai_test false
+	show_ai_explain false
+	error \
+	has_error false
+	busy false
+	ai_hint \
+	ai_predict? null
+	cancel_click? null
+	save_click? null
+	action_click? null
+	delete_click? null
+	ai_test_click? null
+	ai_explain_click? null
+	student_file? null
+	body /
+		<= Status_row $mol_view
+			sub /
+				<= Status_badge $mol_view
+					attr *
+						^
+						bog_tracker_mpit_neolo_task_view_status <= task_status \pending
+					sub /
+						<= status_label
+				<= Source_badge $mol_view
+					sub /
+						<= source_label
+				<= Delete_btn $mol_button_minor
+					click? <=> delete_click? null
+					sub /
+						<= delete_label \🗑 Удалить
+		<= Error_view $mol_view
+			attr *
+				^
+				bog_tracker_mpit_neolo_task_view_error_visible <= has_error false
+			sub /
+				<= error
+		<= Title_field $mol_labeler
+			title @ \Название
+			content /
+				<= Title_voice $bog_tracker_mpit_neolo_modal_voice_input
+					api <= api
+					placeholder @ \Название задачи
+					multiline false
+					value? <=> title_value? \
+		<= Date_field $mol_labeler
+			title @ \Дата
+			content /
+				<= Date_input $mol_date
+					value? <=> date_value? \
+		<= Time_range $bog_tracker_mpit_neolo_modal_time_range
+			start_h? <=> start_h? 0
+			start_m? <=> start_m? 0
+			end_h? <=> end_h? 0
+			end_m? <=> end_m? 0
+			hint <= ai_hint \
+			ai_predict? <=> ai_predict? null
+		<= Desc_field $mol_labeler
+			title @ \Описание
+			content /
+				<= Desc_voice $bog_tracker_mpit_neolo_modal_voice_input
+					api <= api
+					placeholder @ \Что нужно сделать
+					multiline true
+					value? <=> desc_value? \
+		<= Ai_actions $mol_view
+			sub /
+				<= Ai_test_btn $mol_button_minor
+					attr *
+						^
+						bog_tracker_mpit_neolo_task_view_ai_visible <= show_ai_test false
+					click? <=> ai_test_click? null
+					sub /
+						<= ai_test_label \🧠 Тест
+				<= Ai_explain_btn $mol_button_minor
+					attr *
+						^
+						bog_tracker_mpit_neolo_task_view_ai_visible <= show_ai_explain false
+					click? <=> ai_explain_click? null
+					sub /
+						<= ai_explain_label \💡 Объяснить
+		<= Teacher_file_row $mol_view
+			attr *
+				^
+				bog_tracker_mpit_neolo_task_view_visible <= has_teacher_file false
+			sub /
+				<= Teacher_file_label $mol_view
+					sub /
+						\📎 Файл от учителя
+				<= Teacher_file_box $mol_view
+					sub /
+						<= Teacher_file_name $mol_view
+							sub /
+								<= teacher_file_name
+						<= Teacher_file_link $mol_link
+							uri <= teacher_file_url \
+							sub /
+								<= teacher_dl_label \⬇ Скачать
+		<= Upload_section $mol_view
+			attr *
+				^
+				bog_tracker_mpit_neolo_task_view_visible <= show_upload false
+			sub /
+				<= Upload_label $mol_view
+					sub /
+						\Прикрепить выполненную работу
+				<= Upload_drop $bog_tracker_mpit_neolo_modal_file_drop
+					file? <=> student_file? null
+		<= Student_file_row $mol_view
+			attr *
+				^
+				bog_tracker_mpit_neolo_task_view_visible <= has_student_file false
+			sub /
+				<= Student_file_label $mol_view
+					sub /
+						\📤 Ваша работа
+				<= Student_file_box $mol_view
+					sub /
+						<= Student_file_name $mol_view
+							sub /
+								<= student_file_name
+						<= Student_file_link $mol_link
+							uri <= student_file_url \
+							sub /
+								<= student_dl_label \⬇ Скачать
+		<= Actions $mol_view
+			sub /
+				<= Action_btn $mol_button_major
+					attr *
+						^
+						bog_tracker_mpit_neolo_task_view_visible <= has_action false
+					click? <=> action_click? null
+					sub /
+						<= action_label
+				<= Cancel_btn $mol_button_minor
+					click? <=> cancel_click? null
+					sub /
+						<= cancel_label @ \Закрыть
+				<= Save_btn $mol_button_major
+					click? <=> save_click? null
+					enabled <= save_enabled true
+					sub /
+						<= save_label @ \Сохранить изменения

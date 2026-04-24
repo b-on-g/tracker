@@ -1,0 +1,102 @@
+$bog_tracker_mpit_neolo_parent_child $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	child_id \
+	children /
+	back? null
+	create_task? null
+	task_ids /string
+	sub /
+		<= Back_btn $mol_button_minor
+			click? <=> back? null
+			sub / <= back_label \← Назад к детям
+		<= Header $mol_view
+			sub /
+				<= Avatar $mol_view
+					sub / <= avatar_letter \
+				<= Info $mol_view
+					sub /
+						<= Name $mol_view
+							sub / <= child_name \
+						<= Meta $mol_view
+							sub / <= child_meta \
+				<= Create_task_btn $mol_button_major
+					click? <=> create_task? null
+					sub / <= create_task_label \+ Задание
+		<= Stats $mol_view
+			sub /
+				<= Stat_total $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_total \0
+					label \Всего заданий
+					kind \neutral
+				<= Stat_done $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_done \0
+					label \Выполнено
+					kind \done
+				<= Stat_progress $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_progress \0
+					label \В работе
+					kind \progress
+				<= Stat_review $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_review \0
+					label \На проверке
+					kind \review
+				<= Stat_overdue $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_overdue \0
+					label \Просрочено
+					kind \overdue
+				<= Stat_pending $bog_tracker_mpit_neolo_parent_child_stat
+					num <= stat_pending \0
+					label \Ожидают
+					kind \pending
+		<= Section_title $mol_view
+			sub / \Задания ребёнка
+		<= Tasks_list $mol_view
+			sub <= task_rows /
+				<= Task_empty $mol_view
+					sub / \У ребёнка пока нет заданий
+				<= Task_row* $bog_tracker_mpit_neolo_parent_child_task_row
+					title <= task_title* \
+					desc <= task_desc* \
+					date <= task_date* \
+					status <= task_status* \
+
+$bog_tracker_mpit_neolo_parent_child_stat $mol_view
+	num \0
+	label \
+	kind \neutral
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_child_stat_kind <= kind
+	sub /
+		<= Stat_num $mol_view
+			sub / <= num
+		<= Stat_lbl $mol_view
+			sub / <= label
+
+$bog_tracker_mpit_neolo_parent_child_task_dot $mol_view
+	status \pending
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_child_task_dot_status <= status
+	sub /
+
+$bog_tracker_mpit_neolo_parent_child_task_row $mol_view
+	title \
+	desc \
+	date \
+	status \pending
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_child_task_row_status <= status
+	sub /
+		<= Dot $bog_tracker_mpit_neolo_parent_child_task_dot
+			status <= status
+		<= Info $mol_view
+			sub /
+				<= Title $mol_view
+					sub / <= title
+				<= Meta $mol_view
+					sub / <= desc
+		<= Date_view $mol_view
+			sub / <= date

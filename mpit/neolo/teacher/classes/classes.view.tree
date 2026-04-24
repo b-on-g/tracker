@@ -1,0 +1,72 @@
+$bog_tracker_mpit_neolo_teacher_classes $mol_view
+	store $bog_tracker_mpit_neolo_store
+	teacher_classes /
+	classes_count 0
+	classes_count_text \
+	empty_visible true
+	create_class_click? null
+	open_class_click*? null
+	class_ids /string
+	class_name* \
+	class_subject* \
+	class_count_text* \
+	class_id_tail* \
+	grid_sub /
+	Card* $bog_tracker_mpit_neolo_teacher_classes_card
+		name <= class_name* \
+		subject <= class_subject* \
+		count_text <= class_count_text* \
+		id_tail <= class_id_tail* \
+		click? <=> open_class_click*? null
+	sub /
+		<= Header $mol_view
+			sub /
+				<= Count_label $mol_view
+					sub /
+						<= classes_count_text
+				<= Create_btn $mol_button_major
+					click? <=> create_class_click? null
+					sub /
+						\+ Создать класс
+		<= Grid $mol_view
+			sub <= grid_sub
+		<= Empty $mol_view
+			sub /
+				<= Empty_icon $mol_view
+					sub /
+						\🏫
+				<= Empty_text $mol_view
+					sub /
+						\Классов пока нет
+				<= Empty_sub $mol_view
+					sub /
+						\Создайте первый класс
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_classes_empty <= empty_visible
+
+$bog_tracker_mpit_neolo_teacher_classes_card $mol_button_minor
+	name \
+	subject \
+	count_text \
+	id_tail \
+	attr *
+		^
+	sub /
+		<= Icon $mol_view
+			sub /
+				\🏫
+		<= Name $mol_view
+			sub /
+				<= name
+		<= Subject $mol_view
+			sub /
+				<= subject
+		<= Meta $mol_view
+			sub /
+				<= Count_badge $mol_view
+					sub /
+						<= count_text
+				<= Id_badge $mol_view
+					sub /
+						<= id_tail

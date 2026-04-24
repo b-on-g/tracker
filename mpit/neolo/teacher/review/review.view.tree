@@ -1,0 +1,94 @@
+$bog_tracker_mpit_neolo_teacher_review $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	review_tasks_list /
+	task_ids /string
+	task_title* \
+	task_meta* \
+	task_desc* \
+	task_file_name* \
+	task_file_url* \
+	task_file_visible* false
+	accept*? null
+	reject*? null
+	header_text \
+	empty_visible true
+	cards_sub /
+	api_base \
+	Card* $bog_tracker_mpit_neolo_teacher_review_card
+		title <= task_title* \
+		meta <= task_meta* \
+		desc <= task_desc* \
+		file_name <= task_file_name* \
+		file_url <= task_file_url* \
+		file_visible <= task_file_visible* false
+		accept_click? <=> accept*? null
+		reject_click? <=> reject*? null
+	sub /
+		<= Header $mol_view
+			sub /
+				<= header_text
+		<= Cards $mol_view
+			sub <= cards_sub
+		<= Empty $mol_view
+			sub /
+				<= Empty_icon $mol_view
+					sub /
+						\📥
+				<= Empty_text $mol_view
+					sub /
+						\Нет работ на проверку
+				<= Empty_sub $mol_view
+					sub /
+						\Когда ученик сдаст задание, оно появится здесь
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_review_empty <= empty_visible
+
+$bog_tracker_mpit_neolo_teacher_review_card $mol_view
+	title \
+	meta \
+	desc \
+	file_name \
+	file_url \
+	file_visible false
+	accept_click? null
+	reject_click? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_review_card_file <= file_visible
+	sub /
+		<= Title $mol_view
+			sub /
+				<= title
+		<= Meta $mol_view
+			sub /
+				<= meta
+		<= Desc $mol_view
+			sub /
+				<= desc
+		<= File_row $mol_link
+			uri <= file_url
+			sub /
+				<= File_icon $mol_view
+					sub /
+						\📄
+				<= File_name $mol_view
+					sub /
+						<= file_name
+				<= File_hint $mol_view
+					sub /
+						\⬇ Скачать
+		<= File_missing $mol_view
+			sub /
+				\Файл не прикреплён
+		<= Actions $mol_view
+			sub /
+				<= Accept_btn $mol_button_major
+					click? <=> accept_click? null
+					sub /
+						\✓ Принять
+				<= Reject_btn $mol_button_minor
+					click? <=> reject_click? null
+					sub /
+						\✕ Отклонить

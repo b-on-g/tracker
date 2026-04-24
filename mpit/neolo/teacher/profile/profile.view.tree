@@ -1,0 +1,54 @@
+$bog_tracker_mpit_neolo_teacher_profile $mol_view
+	store $bog_tracker_mpit_neolo_store
+	classes_count 0
+	teacher_name \
+	teacher_surname \
+	teacher_username \
+	teacher_school \
+	teacher_id_text \
+	classes_count_text \
+	sub /
+		<= Card $mol_view
+			sub /
+				<= Title $mol_view
+					sub /
+						\Личный кабинет
+				<= Grid $mol_view
+					sub /
+						<= Name_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Имя
+							value <= teacher_name
+						<= Surname_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Фамилия
+							value <= teacher_surname
+						<= Username_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Логин
+							value <= teacher_username
+						<= Role_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Роль
+							value \📚 Учитель
+						<= School_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Школа
+							value <= teacher_school
+						<= Id_box $bog_tracker_mpit_neolo_teacher_profile_box
+							label \Мой ID
+							value <= teacher_id_text
+							highlighted true
+				<= Footer_text $mol_view
+					sub /
+						<= classes_count_text
+
+$bog_tracker_mpit_neolo_teacher_profile_box $mol_view
+	label \
+	value \
+	highlighted false
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_profile_box_highlighted <= highlighted
+	sub /
+		<= Label $mol_view
+			sub /
+				<= label
+		<= Value $mol_view
+			sub /
+				<= value

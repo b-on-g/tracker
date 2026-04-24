@@ -1,0 +1,165 @@
+$bog_tracker_mpit_neolo_ai_test $mol_view
+	api $bog_tracker_mpit_neolo_api
+	hidden true
+	task_title \
+	task_desc \
+	task_file \
+	on_close? null
+	finish? null
+	close_click? null
+	subtitle \Генерация вопросов...
+	is_loading true
+	is_questions false
+	is_results false
+	is_error false
+	has_mistakes false
+	error_text \
+	results_label \
+	results_detail \
+	score_text \
+	question_ids /string
+	mistake_ids /string
+	attr *
+		^
+		bog_tracker_mpit_neolo_ai_test_hidden <= hidden true
+	sub /
+		<= Backdrop $mol_view
+			event *
+				click? <=> backdrop_click? null
+			sub /
+				<= Card $mol_view
+					sub /
+						<= Head $mol_view
+							sub /
+								<= Header_left $mol_view
+									sub /
+										<= Icon $mol_view
+											sub / \🧠
+										<= Titles $mol_view
+											sub /
+												<= Title $mol_view
+													sub / \AI Тест
+												<= Subtitle $mol_view
+													sub /
+														<= subtitle
+								<= Close $mol_button_minor
+									click? <=> close_click? null
+									sub / <= close_label \×
+						<= Content $mol_view
+							sub /
+								<= Loading $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_ai_test_loading_visible <= is_loading true
+									sub /
+										<= Spinner $mol_view
+										<= Loading_text $mol_view
+											sub / \Нейросеть анализирует материал...
+										<= Loading_sub $mol_view
+											sub / \Создаём тест на основе прикреплённого файла. Это займёт 10-30 секунд.
+								<= Questions $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_ai_test_questions_visible <= is_questions false
+									sub <= question_cards /
+								<= Error $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_ai_test_error_visible <= is_error false
+									sub /
+										<= Error_icon $mol_view
+											sub / \⚠️
+										<= Error_title $mol_view
+											sub / \Не удалось создать тест
+										<= Error_text $mol_view
+											sub /
+												<= error_text
+								<= Results $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_ai_test_results_visible <= is_results false
+									sub /
+										<= Score $mol_view
+											sub /
+												<= score_text
+										<= Results_label $mol_view
+											sub /
+												<= results_label
+										<= Results_detail $mol_view
+											sub /
+												<= results_detail
+										<= Mistakes_block $mol_view
+											attr *
+												^
+												bog_tracker_mpit_neolo_ai_test_mistakes_visible <= has_mistakes false
+											sub <= mistake_rows /
+						<= Actions $mol_view
+							sub /
+								<= Close_btn $mol_button_minor
+									click? <=> close_click? null
+									sub / <= close_btn_label \Закрыть
+								<= Finish_btn $mol_button_major
+									attr *
+										^
+										bog_tracker_mpit_neolo_ai_test_finish_visible <= is_questions false
+									click? <=> finish? null
+									sub / <= finish_label \Завершить тест
+	Question_card* $bog_tracker_mpit_neolo_ai_test_question
+		num_text <= question_num_text* \
+		text <= question_text* \
+		option_views <= question_options* /
+	Mistake_row* $bog_tracker_mpit_neolo_ai_test_mistake
+		question <= mistake_question* \
+		user_answer <= mistake_user_answer* \
+		correct_answer <= mistake_correct_answer* \
+		correct_text <= mistake_correct_text* \
+
+$bog_tracker_mpit_neolo_ai_test_question $mol_view
+	num_text \
+	text \
+	option_views /
+	sub /
+		<= Num $mol_view
+			sub /
+				<= num_text
+		<= Text $mol_view
+			sub /
+				<= text
+		<= Options $mol_view
+			sub <= option_views /
+
+$bog_tracker_mpit_neolo_ai_test_option $mol_button_minor
+	letter \
+	text_val \
+	state \idle
+	click? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_ai_test_option_state <= state \idle
+	sub /
+		<= Letter $mol_view
+			sub /
+				<= letter
+		<= Text_val $mol_view
+			sub /
+				<= text_val
+
+$bog_tracker_mpit_neolo_ai_test_mistake $mol_view
+	question \
+	user_answer \
+	correct_answer \
+	correct_text \
+	sub /
+		<= Mq $mol_view
+			sub /
+				<= question
+		<= Ma $mol_view
+			sub /
+				<= prefix_user \Твой ответ:
+				<= user_answer
+				<= sep \ · Правильный:
+				<= Correct_marker $mol_view
+					sub /
+						<= correct_answer
+						<= close_paren \)
+						<= correct_text

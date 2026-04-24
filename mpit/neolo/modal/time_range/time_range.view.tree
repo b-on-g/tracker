@@ -1,0 +1,51 @@
+$bog_tracker_mpit_neolo_modal_time_range $mol_view
+	start_h? 0
+	start_m? 0
+	end_h? 0
+	end_m? 0
+	ai_predict? null
+	hint \
+	has_hint false
+	ai_label \🤖 AI — предсказать время
+	label_text @ \Время (начало–конец)
+	attr *
+		^
+	sub /
+		<= Label $mol_view
+			sub /
+				<= label_text
+		<= Row $mol_view
+			sub /
+				<= Start_h $mol_number
+					hint @ \ЧЧ
+					value? <=> start_h? 0
+				<= Sep1 $mol_view
+					sub /
+						\:
+				<= Start_m $mol_number
+					hint @ \ММ
+					value? <=> start_m? 0
+				<= Range_sep $mol_view
+					sub /
+						\–
+				<= End_h $mol_number
+					hint @ \ЧЧ
+					value? <=> end_h? 0
+				<= Sep2 $mol_view
+					sub /
+						\:
+				<= End_m $mol_number
+					hint @ \ММ
+					value? <=> end_m? 0
+		<= Ai_row $mol_view
+			sub /
+				<= Ai_button $mol_button_minor
+					click? <=> ai_predict? null
+					sub /
+						<= ai_label
+				<= Hint_view $mol_view
+					attr *
+						^
+						bog_tracker_mpit_neolo_modal_time_range_hint_visible <= has_hint false
+					sub /
+						<= hint

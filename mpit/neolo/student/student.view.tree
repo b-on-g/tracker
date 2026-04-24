@@ -1,0 +1,81 @@
+$bog_tracker_mpit_neolo_student $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	screen? \tasks
+	selected_date? \
+	view_month? 0
+	view_year? 0
+	is_tasks false
+	is_calendar false
+	is_stats false
+	invitations_count 0
+	brand_plain \School
+	brand_accent \Plan
+	logout_label @ \Выход
+	logout_icon \↪
+	logout? null
+	open_task*? null
+	open_about? null
+	open_terms? null
+	add_task_click? null
+	create_click? null
+	prev_month? null
+	next_month? null
+	select_day*? null
+	sub /
+		<= Shell $mol_view
+			sub /
+				<= Topbar $mol_view
+					sub /
+						<= Brand $mol_view
+							sub /
+								<= brand_plain
+								<= Brand_accent $mol_view
+									sub /
+										<= brand_accent
+						<= Logout_btn $mol_button_minor
+							click? <=> logout? null
+							sub /
+								<= Logout_icon $mol_view
+									sub /
+										<= logout_icon
+								<= Logout_text $mol_view
+									sub /
+										<= logout_label
+				<= Layout $mol_view
+					sub /
+						<= Main_area $mol_view
+							sub /
+								<= Tasks_screen $bog_tracker_mpit_neolo_student_tasks
+									attr *
+										^
+										bog_tracker_mpit_neolo_student_screen_visible <= is_tasks false
+									store <= store
+									api <= api
+									open_task*? <=> open_task*? null
+									add_task_click? <=> add_task_click? null
+								<= Calendar_screen $bog_tracker_mpit_neolo_student_calendar
+									attr *
+										^
+										bog_tracker_mpit_neolo_student_screen_visible <= is_calendar false
+									store <= store
+									api <= api
+									view_month? <=> view_month? 0
+									view_year? <=> view_year? 0
+									selected_date? <=> selected_date? \
+									prev_month? <=> prev_month? null
+									next_month? <=> next_month? null
+									create_click? <=> create_click? null
+									select_day*? <=> select_day*? null
+									open_task*? <=> open_task*? null
+								<= Stats_screen $bog_tracker_mpit_neolo_student_stats
+									attr *
+										^
+										bog_tracker_mpit_neolo_student_screen_visible <= is_stats false
+									store <= store
+									api <= api
+						<= Sidebar $bog_tracker_mpit_neolo_student_sidebar
+							screen? <=> screen? \tasks
+							invitations_count <= invitations_count 0
+							open_about? <=> open_about? null
+							open_terms? <=> open_terms? null

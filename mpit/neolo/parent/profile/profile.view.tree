@@ -1,0 +1,74 @@
+$bog_tracker_mpit_neolo_parent_profile $mol_view
+	profile_name \
+	profile_surname \
+	profile_username \
+	profile_id \
+	children /
+	open_add? null
+	remove_child?val \
+	child_ids /string
+	sub /
+		<= Card $mol_view
+			sub /
+				<= Card_title $mol_view
+					sub / \Личный кабинет
+				<= Table $mol_view
+					sub /
+						<= Row_name $bog_tracker_mpit_neolo_parent_profile_row
+							label \Имя
+							value <= profile_name \
+						<= Row_surname $bog_tracker_mpit_neolo_parent_profile_row
+							label \Фамилия
+							value <= profile_surname_or_dash \
+						<= Row_username $bog_tracker_mpit_neolo_parent_profile_row
+							label \Логин
+							value <= profile_username_at \
+						<= Row_role $bog_tracker_mpit_neolo_parent_profile_row
+							label \Роль
+							value \👨‍👩‍👧 Родитель
+						<= Row_id $bog_tracker_mpit_neolo_parent_profile_row
+							label \ID
+							value <= profile_id \
+		<= Manage $mol_view
+			sub /
+				<= Manage_title $mol_view
+					sub / \Управление детьми
+				<= Children_block $mol_view
+					sub <= children_rows /
+						<= Children_empty $mol_view
+							sub / \Нет добавленных детей
+						<= Child_row* $bog_tracker_mpit_neolo_parent_profile_child_row
+							initial <= child_initial* \
+							name <= child_name* \
+							meta <= child_meta* \
+							remove? <=> child_remove*? null
+				<= Add_btn $mol_button_major
+					click? <=> open_add? null
+					sub / <= add_label \+ Добавить ребёнка
+
+$bog_tracker_mpit_neolo_parent_profile_row $mol_view
+	label \
+	value \
+	sub /
+		<= Label $mol_view
+			sub / <= label
+		<= Value $mol_view
+			sub / <= value
+
+$bog_tracker_mpit_neolo_parent_profile_child_row $mol_view
+	initial \
+	name \
+	meta \
+	remove? null
+	sub /
+		<= Avatar $mol_view
+			sub / <= initial
+		<= Info $mol_view
+			sub /
+				<= Name $mol_view
+					sub / <= name
+				<= Meta $mol_view
+					sub / <= meta
+		<= Remove_btn $mol_button_minor
+			click? <=> remove? null
+			sub / <= remove_label \Удалить

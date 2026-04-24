@@ -1,0 +1,84 @@
+$bog_tracker_mpit_neolo_student_sidebar $mol_view
+	screen? \tasks
+	invitations_count 0
+	has_invitations false
+	is_tasks false
+	is_calendar false
+	is_stats false
+	about_label @ \О нас
+	terms_label @ \Пользовательское соглашение
+	calendar_label @ \Календарь
+	tasks_label @ \Задания
+	cabinet_label @ \Кабинет
+	calendar_icon \🗓
+	tasks_icon \📋
+	cabinet_icon \👤
+	open_about? null
+	open_terms? null
+	pick_tasks? null
+	pick_calendar? null
+	pick_stats? null
+	sub /
+		<= Stack $mol_view
+			sub /
+				<= Item_calendar $mol_button_minor
+					attr *
+						^
+						bog_tracker_mpit_neolo_student_sidebar_active <= is_calendar false
+					click? <=> pick_calendar? null
+					sub /
+						<= Circle_calendar $mol_view
+							attr *
+								^
+								bog_tracker_mpit_neolo_student_sidebar_circle <= calendar_circle \bk
+							sub /
+								<= calendar_icon
+						<= Label_calendar $mol_view
+							sub /
+								<= calendar_label
+				<= Item_tasks $mol_button_minor
+					attr *
+						^
+						bog_tracker_mpit_neolo_student_sidebar_active <= is_tasks false
+					click? <=> pick_tasks? null
+					sub /
+						<= Circle_tasks $mol_view
+							attr *
+								^
+								bog_tracker_mpit_neolo_student_sidebar_circle <= tasks_circle \g
+							sub /
+								<= tasks_icon
+						<= Label_tasks $mol_view
+							sub /
+								<= tasks_label
+				<= Item_cabinet $mol_button_minor
+					attr *
+						^
+						bog_tracker_mpit_neolo_student_sidebar_active <= is_stats false
+					click? <=> pick_stats? null
+					sub /
+						<= Circle_cabinet $mol_view
+							attr *
+								^
+								bog_tracker_mpit_neolo_student_sidebar_circle <= cabinet_circle \dg
+							sub /
+								<= cabinet_icon
+						<= Label_cabinet $mol_view
+							sub /
+								<= cabinet_label
+						<= Badge $mol_view
+							attr *
+								^
+								bog_tracker_mpit_neolo_student_sidebar_badge_visible <= has_invitations false
+							sub /
+								\!
+		<= Footer $mol_view
+			sub /
+				<= About_btn $mol_button_minor
+					click? <=> open_about? null
+					sub /
+						<= about_label
+				<= Terms_btn $mol_button_minor
+					click? <=> open_terms? null
+					sub /
+						<= terms_label

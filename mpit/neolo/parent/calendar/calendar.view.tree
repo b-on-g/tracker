@@ -1,0 +1,97 @@
+$bog_tracker_mpit_neolo_parent_calendar $mol_view
+	store $bog_tracker_mpit_neolo_store
+	children /
+	view_year? 2026
+	view_month? 0
+	selected_date? \
+	prev_month_click? null
+	next_month_click? null
+	day_click?val \
+	day_ids /string
+	event_ids /string
+	sub /
+		<= Toolbar $mol_view
+			sub /
+				<= Nav $mol_view
+					sub /
+						<= Prev_btn $mol_button_minor
+							click? <=> prev_month_click? null
+							sub / <= prev_label \‹
+						<= Month_label $mol_view
+							sub / <= month_label \
+						<= Next_btn $mol_button_minor
+							click? <=> next_month_click? null
+							sub / <= next_label \›
+		<= Weekdays $mol_view
+			sub /
+				<= Wd_mon $mol_view
+					sub / \Пн
+				<= Wd_tue $mol_view
+					sub / \Вт
+				<= Wd_wed $mol_view
+					sub / \Ср
+				<= Wd_thu $mol_view
+					sub / \Чт
+				<= Wd_fri $mol_view
+					sub / \Пт
+				<= Wd_sat $mol_view
+					sub / \Сб
+				<= Wd_sun $mol_view
+					sub / \Вс
+		<= Grid $mol_view
+			sub <= day_cells /
+				<= Day_cell* $bog_tracker_mpit_neolo_parent_calendar_day
+					day_label <= day_label* \
+					count <= day_count* \
+					state <= day_state* \empty
+					click? <=> cell_click*? null
+		<= Bottom $mol_view
+			sub /
+				<= Selected_info $mol_view
+					sub /
+						<= Selected_title $mol_view
+							sub / \Задания на день
+						<= Selected_date_label $mol_view
+							sub / <= selected_date_label \
+						<= Selected_tasks $mol_view
+							sub <= selected_tasks_rows /
+								<= Selected_empty $mol_view
+									sub / \На выбранный день задач нет.
+								<= Selected_task* $mol_view
+									sub /
+										<= Selected_task_time* $mol_view
+											sub / <= selected_task_time* \
+										<= Selected_task_info* $mol_view
+											sub /
+												<= Selected_task_title* $mol_view
+													sub / <= selected_task_title* \
+												<= Selected_task_meta* $mol_view
+													sub / <= selected_task_meta* \
+				<= Upcoming_info $mol_view
+					sub /
+						<= Upcoming_title $mol_view
+							sub / \Ближайшие события
+						<= Upcoming_list $mol_view
+							sub <= upcoming_rows /
+								<= Upcoming_empty $mol_view
+									sub / \Нет предстоящих заданий
+								<= Event_row* $mol_view
+									sub /
+										<= Event_dot* $mol_view
+											sub /
+										<= Event_body* $mol_view
+											sub / <= event_body* \
+
+$bog_tracker_mpit_neolo_parent_calendar_day $mol_button_minor
+	day_label \
+	count \0
+	state \empty
+	click? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_calendar_day_state <= state
+	sub /
+		<= Day_number $mol_view
+			sub / <= day_label
+		<= Day_badge $mol_view
+			sub / <= count

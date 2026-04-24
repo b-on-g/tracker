@@ -1,0 +1,20 @@
+$bog_tracker_mpit_neolo $mol_view
+	title \SchoolPlan
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	profile null
+	auth_view <= Auth $bog_tracker_mpit_neolo_auth
+		store <= store
+	student_view <= Student $bog_tracker_mpit_neolo_student
+		store <= store
+		api <= api
+	teacher_view <= Teacher $bog_tracker_mpit_neolo_teacher
+		store <= store
+		api <= api
+	parent_view <= Parent $bog_tracker_mpit_neolo_parent
+		store <= store
+		api <= api
+	sub /
+		<= active_view null
+	attr *
+		mol_theme \$mol_theme_light

@@ -1,0 +1,38 @@
+$bog_tracker_mpit_neolo_ai_advice $mol_view
+	api $bog_tracker_mpit_neolo_api
+	overdue /
+	rejected /
+	done_count 0
+	total_count 0
+	trigger? null
+	has_block false
+	is_busy false
+	advice_html \
+	advice_error \
+	has_error false
+	button_label \✨ Получить советы
+	attr *
+		^
+		bog_tracker_mpit_neolo_ai_advice_has_block <= has_block false
+	sub /
+		<= Header $mol_view
+			sub /
+				<= Title $mol_view
+					sub / \AI-советы по вашим задачам
+				<= Trigger_btn $mol_button_major
+					click? <=> trigger? null
+					enabled <= trigger_enabled true
+					sub /
+						<= button_label
+		<= Block $mol_view
+			attr *
+				^
+				bog_tracker_mpit_neolo_ai_advice_block_visible <= has_block false
+			sub /
+				<= Content $mol_view
+				<= Error_view $mol_view
+					attr *
+						^
+						bog_tracker_mpit_neolo_ai_advice_error_visible <= has_error false
+					sub /
+						<= advice_error

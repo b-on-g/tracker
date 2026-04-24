@@ -1,0 +1,55 @@
+$bog_tracker_mpit_neolo_parent_children $mol_view
+	children /
+	open_child?val null
+	open_add? null
+	remove_child?val null
+	child_ids /string
+	sub <= rows /
+		<= Header_bar $mol_view
+			sub /
+				<= Count_label $mol_view
+					sub / <= count_label \
+				<= Add_btn $mol_button_major
+					click? <=> open_add? null
+					sub / <= add_label \+ Добавить ребёнка
+		<= Empty $mol_view
+			sub /
+				<= Empty_icon $mol_view
+					sub / \👨‍👩‍👧
+				<= Empty_text $mol_view
+					sub / \Детей пока нет
+				<= Empty_sub $mol_view
+					sub / \Добавьте ребёнка по его ID, чтобы видеть задания и статистику
+				<= Empty_add_btn $mol_button_major
+					click? <=> open_add? null
+					sub / <= empty_add_label \+ Добавить ребёнка
+		<= Grid $mol_view
+			sub <= cards /
+				<= Card* $bog_tracker_mpit_neolo_parent_children_card
+					initial <= child_initial* \
+					name <= child_name* \
+					meta <= child_meta* \
+					open? <=> card_open*? null
+					remove? <=> card_remove*? null
+
+$bog_tracker_mpit_neolo_parent_children_card $mol_view
+	initial \
+	name \
+	meta \
+	open? null
+	remove? null
+	sub /
+		<= Card_body $mol_button_minor
+			click? <=> open? null
+			sub /
+				<= Avatar $mol_view
+					sub / <= initial
+				<= Info $mol_view
+					sub /
+						<= Name $mol_view
+							sub / <= name
+						<= Meta $mol_view
+							sub / <= meta
+		<= Remove_btn $mol_button_minor
+			click? <=> remove? null
+			sub / <= remove_label \×

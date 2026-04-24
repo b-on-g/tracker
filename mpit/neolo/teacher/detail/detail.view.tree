@@ -1,0 +1,102 @@
+$bog_tracker_mpit_neolo_teacher_detail $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	class_id \
+	tab? \students
+	back_click? null
+	invite_click? null
+	assign_click? null
+	delete_click? null
+	class_name \
+	class_subject \
+	class_summary \
+	students_count 0
+	students_count_text \
+	students_tab_active true
+	stats_tab_active false
+	students_empty_visible true
+	students_ids /string
+	student_id_label* \
+	remove_student*? null
+	body_sub /
+	students_tab_click? null
+	stats_tab_click? null
+	Student_row* $bog_tracker_mpit_neolo_teacher_detail_student_row
+		display_id <= student_id_label* \
+		remove_click? <=> remove_student*? null
+	sub /
+		<= Back_btn $mol_button_minor
+			click? <=> back_click? null
+			sub /
+				\← Назад к классам
+		<= Header $mol_view
+			sub /
+				<= Icon $mol_view
+					sub /
+						\🏫
+				<= Header_info $mol_view
+					sub /
+						<= Class_name $mol_view
+							sub /
+								<= class_name
+						<= Class_summary $mol_view
+							sub /
+								<= class_summary
+				<= Header_actions $mol_view
+					sub /
+						<= Assign_btn $mol_button_major
+							click? <=> assign_click? null
+							sub /
+								\📝 Задать задание
+						<= Invite_btn $mol_button_major
+							click? <=> invite_click? null
+							sub /
+								\+ Добавить ученика
+						<= Delete_btn $mol_button_minor
+							click? <=> delete_click? null
+							sub /
+								\🗑 Удалить класс
+		<= Tab_row $mol_view
+			sub /
+				<= Tab_students $bog_tracker_mpit_neolo_teacher_detail_tab
+					label \Ученики
+					active <= students_tab_active
+					click? <=> students_tab_click? null
+				<= Tab_stats $bog_tracker_mpit_neolo_teacher_detail_tab
+					label \Статистика класса
+					active <= stats_tab_active
+					click? <=> stats_tab_click? null
+		<= Body $mol_view
+			sub <= body_sub
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_detail_students_empty <= students_empty_visible
+
+$bog_tracker_mpit_neolo_teacher_detail_tab $mol_button_minor
+	label \
+	active false
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_detail_tab_active <= active
+	sub /
+		<= label
+
+$bog_tracker_mpit_neolo_teacher_detail_student_row $mol_view
+	display_id \
+	remove_click? null
+	sub /
+		<= Avatar $mol_view
+			sub /
+				\👤
+		<= Name_col $mol_view
+			sub /
+				<= Name $mol_view
+					sub /
+						<= display_id
+				<= Role $mol_view
+					sub /
+						\Ученик
+		<= Remove_btn $mol_button_minor
+			click? <=> remove_click? null
+			sub /
+				\Удалить

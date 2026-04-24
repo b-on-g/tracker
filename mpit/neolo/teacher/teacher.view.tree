@@ -1,0 +1,251 @@
+$bog_tracker_mpit_neolo_teacher $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	screen? \classes
+	open_class_id? \
+	open_class_tab? \students
+	new_class_name? \
+	new_class_subject? \
+	create_class_error \
+	invite_student_id? \
+	invite_result \
+	teacher_side_id_text \
+	screen_title_text \
+	side_classes_active false
+	side_review_active false
+	side_stats_active false
+	side_profile_active false
+	review_badge_text \
+	review_badge_hidden true
+	create_class_modal_hidden true
+	invite_modal_hidden true
+	side_classes_click? null
+	side_review_click? null
+	side_stats_click? null
+	side_profile_click? null
+	logout? null
+	create_class_close? null
+	create_class_submit? null
+	create_class_open_click? null
+	close_class_detail? null
+	invite_close? null
+	invite_submit? null
+	open_class_id_set*? null
+	review_accept*? null
+	review_reject*? null
+	delete_class_click? null
+	invite_open_click? null
+	assign_open_click? null
+	active_screen null
+	Classes_screen $bog_tracker_mpit_neolo_teacher_classes
+		store <= store
+		create_class_click? <=> create_class_open_click? null
+		open_class_click*? <=> open_class_id_set*? null
+	Detail_screen $bog_tracker_mpit_neolo_teacher_detail
+		store <= store
+		api <= api
+		class_id <= open_class_id
+		tab? <=> open_class_tab? \students
+		back_click? <=> close_class_detail? null
+		invite_click? <=> invite_open_click? null
+		assign_click? <=> assign_open_click? null
+		delete_click? <=> delete_class_click? null
+	Review_screen $bog_tracker_mpit_neolo_teacher_review
+		store <= store
+		api <= api
+		accept*? <=> review_accept*? null
+		reject*? <=> review_reject*? null
+	Stats_screen $bog_tracker_mpit_neolo_teacher_stats
+		store <= store
+	Profile_screen $bog_tracker_mpit_neolo_teacher_profile
+		store <= store
+	sub /
+		<= Shell $mol_view
+			sub /
+				<= Topbar $mol_view
+					sub /
+						<= Brand $mol_view
+							sub /
+								\School
+								<= Brand_accent $mol_view
+									sub /
+										\Plan
+								<= Role_badge $mol_view
+									sub /
+										\Учитель
+						<= Logout $mol_button_minor
+							click? <=> logout? null
+							sub /
+								<= Logout_icon $mol_view
+									sub /
+										\↪
+								<= Logout_label $mol_view
+									sub /
+										\Выход
+				<= Layout $mol_view
+					sub /
+						<= Main $mol_view
+							sub /
+								<= Screen_title $mol_view
+									sub /
+										<= screen_title_text
+								<= Screen_content $mol_view
+									sub /
+										<= active_screen
+						<= Sidebar $mol_view
+							sub /
+								<= Side_stack $mol_view
+									sub /
+										<= Side_classes $bog_tracker_mpit_neolo_teacher_side_item
+											icon \🏫
+											icon_kind \g
+											label \Классы
+											active <= side_classes_active
+											badge_text \
+											badge_hidden true
+											click? <=> side_classes_click? null
+										<= Side_review $bog_tracker_mpit_neolo_teacher_side_item
+											icon \📥
+											icon_kind \bk
+											label \Проверка
+											active <= side_review_active
+											badge_text <= review_badge_text
+											badge_hidden <= review_badge_hidden
+											click? <=> side_review_click? null
+										<= Side_stats $bog_tracker_mpit_neolo_teacher_side_item
+											icon \📊
+											icon_kind \bk
+											label \Статистика
+											active <= side_stats_active
+											badge_text \
+											badge_hidden true
+											click? <=> side_stats_click? null
+										<= Side_profile $bog_tracker_mpit_neolo_teacher_side_item
+											icon \👤
+											icon_kind \dg
+											label \Кабинет
+											active <= side_profile_active
+											badge_text \
+											badge_hidden true
+											click? <=> side_profile_click? null
+								<= Side_footer $mol_view
+									sub /
+										<= Side_id $mol_view
+											sub /
+												<= teacher_side_id_text
+		<= Create_class_modal $bog_tracker_mpit_neolo_teacher_create_class_modal
+			hidden <= create_class_modal_hidden
+			name? <=> new_class_name? \
+			subject? <=> new_class_subject? \
+			error <= create_class_error
+			close? <=> create_class_close? null
+			submit? <=> create_class_submit? null
+		<= Invite_modal $bog_tracker_mpit_neolo_teacher_invite_modal
+			hidden <= invite_modal_hidden
+			student_id? <=> invite_student_id? \
+			result <= invite_result
+			close? <=> invite_close? null
+			submit? <=> invite_submit? null
+
+$bog_tracker_mpit_neolo_teacher_side_item $mol_button_minor
+	icon \
+	icon_kind \g
+	label \
+	active false
+	badge_text \
+	badge_hidden true
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_side_item_active <= active
+		bog_tracker_mpit_neolo_teacher_side_item_kind <= icon_kind
+		bog_tracker_mpit_neolo_teacher_side_item_badge_hidden <= badge_hidden
+	sub /
+		<= Circle $mol_view
+			sub /
+				<= icon
+		<= Label $mol_view
+			sub /
+				<= label
+		<= Badge $mol_view
+			sub /
+				<= badge_text
+
+$bog_tracker_mpit_neolo_teacher_create_class_modal $mol_view
+	hidden true
+	name? \
+	subject? \
+	error \
+	close? null
+	submit? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_modal_hidden <= hidden
+	sub /
+		<= Modal_body $mol_view
+			sub /
+				<= Modal_title $mol_view
+					sub /
+						\Новый класс
+				<= Name_field $mol_labeler
+					title \Название класса
+					content /
+						<= Name_input $mol_string
+							hint \Например, 7А
+							value? <=> name? \
+				<= Subject_field $mol_labeler
+					title \Предмет
+					content /
+						<= Subject_input $mol_string
+							hint \Например, Математика
+							value? <=> subject? \
+				<= Error_view $mol_view
+					sub /
+						<= error
+				<= Buttons $mol_view
+					sub /
+						<= Cancel_btn $mol_button_minor
+							click? <=> close? null
+							sub /
+								\Отмена
+						<= Submit_btn $mol_button_major
+							click? <=> submit? null
+							sub /
+								\Создать
+
+$bog_tracker_mpit_neolo_teacher_invite_modal $mol_view
+	hidden true
+	student_id? \
+	result \
+	close? null
+	submit? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_modal_hidden <= hidden
+	sub /
+		<= Modal_body $mol_view
+			sub /
+				<= Modal_title $mol_view
+					sub /
+						\Пригласить ученика
+				<= Hint $mol_view
+					sub /
+						\Введите ID ученика — ему придёт приглашение в класс.
+				<= Id_field $mol_labeler
+					title \ID ученика
+					content /
+						<= Id_input $mol_string
+							hint \Например, 1234567890
+							value? <=> student_id? \
+				<= Result_view $mol_view
+					sub /
+						<= result
+				<= Buttons $mol_view
+					sub /
+						<= Cancel_btn $mol_button_minor
+							click? <=> close? null
+							sub /
+								\Отмена
+						<= Submit_btn $mol_button_major
+							click? <=> submit? null
+							sub /
+								\Отправить приглашение

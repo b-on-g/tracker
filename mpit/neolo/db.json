@@ -1,0 +1,393 @@
+{
+  "users": {
+    "ivan": {
+      "id": 1001,
+      "username": "ivan",
+      "password_hash": "scrypt:32768:8:1$rs74wyBVYDh6oiqE$679cc6724c06716f770ad70975b819d0807ab3a7215bfb5105781c115556df3529ebd65bd4ba8ef1b14d9e26b5e83dcb8ed9ab3c105a97099e9a00c1b32ea75f",
+      "name": "Иван",
+      "surname": "Иванов",
+      "school": "Школа №123",
+      "role": "student"
+    },
+    "loh": {
+      "id": 9273394,
+      "username": "loh",
+      "password_hash": "scrypt:32768:8:1$n3PwKYAwJjBsJTPu$6515b606f179f066c6ed34b87435c26bff9bad45ae19fe8c7bf2a76dcd273552eb8a82040c90427729ce3c595636725b670d1f2fdea6ef47a3588da2efee94ce",
+      "name": "loh",
+      "surname": "lochara",
+      "school": "67",
+      "role": "student",
+      "tg_chat_id": 6523268394
+    },
+    "qwert": {
+      "id": 5833236,
+      "username": "qwert",
+      "password_hash": "scrypt:32768:8:1$egt70caFdOum9hRt$e0059c7aeeeb532ef26e68ad9518fc8e4ee6f88e2f37974e1effd020c65081b0a06526ebba0ac868d9ec91011ef61f3c42016bb97bb7c420b39f611b8907ca00",
+      "name": "qwerty",
+      "surname": "qwerty",
+      "school": "67",
+      "role": "teacher"
+    },
+    "qqqqq": {
+      "id": 9828569,
+      "username": "qqqqq",
+      "password_hash": "scrypt:32768:8:1$ngbSmRwyrQqv48ul$c742726c996c0785cda2349909fd52db5f230ade563ba8e509d482e90167fe2404c3f0c06fc7ea2ae0b9f098856bde048ffb84c4f1b06194645b7c347d7ad28e",
+      "name": "qqqqq",
+      "surname": "qqqqq",
+      "school": "None",
+      "role": "parent"
+    },
+    "qwerty": {
+      "id": 4305445,
+      "username": "qwerty",
+      "password_hash": "scrypt:32768:8:1$cPuKldPnJZ2g6SgV$0c72219e240bf0eb179b2ed6b644ea5f92073de31a1ac8fdd2c95aff30847fa776735d1fe21d94ea69c930f3bd39f206cd7d1e545863f9d1280beb1a8e3ee527",
+      "name": "qwerty",
+      "surname": "qwerty",
+      "school": "67",
+      "role": "teacher"
+    },
+    "pastuh": {
+      "id": 7517597,
+      "username": "pastuh",
+      "password_hash": "scrypt:32768:8:1$s2Ifsb8CGgIq2Usf$59ebef037c7cbd2af76976999295713c42edaa8cbc69d5148e025dab5ea64e50413ca1587eb4b952fd9d144ba843f85aa9d470ea5f28a197503dc8244a8aa545",
+      "name": "Никита",
+      "surname": "Пастухов",
+      "school": "488",
+      "role": "student"
+    },
+    "йфяцыч": {
+      "id": 2392906,
+      "username": "йфяцыч",
+      "password_hash": "scrypt:32768:8:1$KaJfXMOlI9E34Z4O$84d4a792541b4793b17d582de6658bc153bfe462b3dd6a2cb8dd7bf57cecb6df6f0c495469716abfbf107f255f4ca1221b805de7af4599cfd1e78fa845889662",
+      "name": "йфяцыч",
+      "surname": "йфяцыч",
+      "school": "None",
+      "role": "parent"
+    }
+  },
+  "tasks": {
+    "ivan": [
+      {
+        "id": 1,
+        "title": "Математика",
+        "desc": "Решить уравнения",
+        "date": "2025-05-15",
+        "time": "15:30–16:30",
+        "source": "teacher",
+        "done": true,
+        "status": "done"
+      },
+      {
+        "id": 2,
+        "title": "История",
+        "desc": "Подготовить доклад",
+        "date": "2025-05-16",
+        "time": "16:10–17:00",
+        "source": "teacher",
+        "done": false,
+        "status": "progress"
+      },
+      {
+        "id": 3,
+        "title": "Английский язык",
+        "desc": "Выучить новые слова",
+        "date": "2025-05-14",
+        "time": "14:00–14:40",
+        "source": "parent",
+        "done": false,
+        "status": "pending"
+      },
+      {
+        "id": 4,
+        "title": "Литература",
+        "desc": "Прочитать главы 5-6",
+        "date": "2025-05-15",
+        "time": "18:00–19:00",
+        "source": "teacher",
+        "done": false,
+        "status": "review"
+      },
+      {
+        "id": 5,
+        "title": "Физика",
+        "desc": "Оформить лабораторную",
+        "date": "2025-05-18",
+        "time": "12:20–13:10",
+        "source": "teacher",
+        "done": false,
+        "status": "pending"
+      },
+      {
+        "id": 6,
+        "title": "Биология",
+        "desc": "Подготовить презентацию",
+        "date": "2025-05-19",
+        "time": "17:00–18:00",
+        "source": "parent",
+        "done": false,
+        "status": "pending"
+      },
+      {
+        "id": 7,
+        "title": "География",
+        "desc": "Выучить карту регионов",
+        "date": "2025-05-20",
+        "time": "13:00–13:45",
+        "source": "teacher",
+        "done": true,
+        "status": "done"
+      }
+    ],
+    "loh": [
+      {
+        "id": 1,
+        "title": "Помой полы",
+        "desc": "Помой полы во всём доме",
+        "date": "2026-04-23",
+        "time": "02:58–03:27",
+        "source": "parent",
+        "done": true,
+        "status": "done",
+        "assigned_by": null,
+        "class_id": null
+      },
+      {
+        "id": 2,
+        "title": "йЫ",
+        "desc": "йы",
+        "date": "2026-04-24",
+        "time": "03:10–03:24",
+        "source": "parent",
+        "done": true,
+        "status": "done",
+        "assigned_by": null,
+        "class_id": null
+      },
+      {
+        "id": 3,
+        "title": "История",
+        "desc": "Подготовиться к с/р по истории",
+        "date": "2026-04-22",
+        "time": "03:41–04:43",
+        "source": "self",
+        "done": false,
+        "status": "pending",
+        "assigned_by": null,
+        "class_id": null
+      },
+      {
+        "id": 4,
+        "title": "af",
+        "desc": "aef",
+        "date": "2026-04-24",
+        "time": "04:37–05:33",
+        "source": "self",
+        "done": false,
+        "status": "pending",
+        "assigned_by": null,
+        "class_id": null
+      },
+      {
+        "id": 5,
+        "title": "фцвфцв",
+        "desc": "фвфцвцф",
+        "date": "2026-04-24",
+        "time": "04:35–05:35",
+        "source": "parent",
+        "done": false,
+        "status": "pending",
+        "assigned_by": null,
+        "class_id": null
+      }
+    ],
+    "qwert": [],
+    "qqqqq": [],
+    "qwerty": [],
+    "pastuh": [
+      {
+        "id": 1,
+        "title": "Сделать дз по истории",
+        "desc": "Сделать дз по истории",
+        "date": "2026-04-23",
+        "time": "15:00–16:00",
+        "source": "self",
+        "done": true,
+        "status": "done"
+      },
+      {
+        "id": 2,
+        "title": "Сделать дз по истории",
+        "desc": "Сделать дз по истории",
+        "date": "2026-04-23",
+        "time": "15:00–16:00",
+        "source": "self",
+        "done": true,
+        "status": "done"
+      },
+      {
+        "id": 3,
+        "title": "дз",
+        "desc": "дз",
+        "date": "2026-04-23",
+        "time": "15:00–15:16",
+        "source": "self",
+        "done": true,
+        "status": "done"
+      },
+      {
+        "id": 4,
+        "title": "ad",
+        "desc": "ad",
+        "date": "2026-04-23",
+        "time": "18:00–19:00",
+        "source": "self",
+        "done": false,
+        "status": "pending"
+      },
+      {
+        "id": 5,
+        "title": "adad",
+        "desc": "adadad",
+        "date": "2026-04-23",
+        "time": "18:00–19:00",
+        "source": "self",
+        "done": false,
+        "status": "pending"
+      },
+      {
+        "id": 6,
+        "title": "ДЗ",
+        "desc": "Параграф 25 прочитать и ответить на вопросы",
+        "date": "2026-04-23",
+        "time": "15:00-16:00",
+        "source": "teacher",
+        "done": true,
+        "status": "done",
+        "assigned_by": 4305445,
+        "class_id": "cls_33ec346f",
+        "teacher_file": "1.py",
+        "teacher_file_path": "teacher_pastuh_6_1.py",
+        "student_file": "index.html",
+        "student_file_path": "pastuh_6_index.html",
+        "attachment": "index.html",
+        "attachment_path": "pastuh_6_index.html"
+      },
+      {
+        "id": 7,
+        "title": "выгулять собаку",
+        "desc": "Пройтись с домашним питомцем на свежем воздухе",
+        "date": "2026-04-23",
+        "time": "15:00–15:32",
+        "source": "self",
+        "done": true,
+        "status": "done",
+        "assigned_by": null,
+        "class_id": null
+      },
+      {
+        "id": 8,
+        "title": "Дз",
+        "desc": "Прочитать параграф",
+        "date": "2026-04-23",
+        "time": "15:00-16:00",
+        "source": "teacher",
+        "done": false,
+        "status": "pending",
+        "assigned_by": 4305445,
+        "class_id": "cls_33ec346f",
+        "teacher_file": "1701836701_istorija_-istross_-uchebnik_-1-ch_-9-kl_-torkunov.pdf",
+        "teacher_file_path": "teacher_pastuh_8_1701836701_istorija_-istross_-uchebnik_-1-ch_-9-kl_-torkunov.pdf"
+      },
+      {
+        "id": 9,
+        "title": "дз",
+        "desc": "дз",
+        "date": "2026-04-23",
+        "time": "",
+        "source": "teacher",
+        "done": false,
+        "status": "pending",
+        "assigned_by": 4305445,
+        "class_id": "cls_33ec346f",
+        "teacher_file": "1701836701_istorija_-istross_-uchebnik_-1-ch_-9-kl_-torkunov.pdf",
+        "teacher_file_path": "teacher_pastuh_9_1701836701_istorija_-istross_-uchebnik_-1-ch_-9-kl_-torkunov.pdf"
+      },
+      {
+        "id": 10,
+        "title": "awd",
+        "desc": "awd",
+        "date": "2026-04-25",
+        "time": "",
+        "source": "teacher",
+        "done": false,
+        "status": "pending",
+        "assigned_by": 4305445,
+        "class_id": "cls_33ec346f"
+      },
+      {
+        "id": 11,
+        "title": "awd",
+        "desc": "awd",
+        "date": "2026-04-19",
+        "time": "22:34–22:50",
+        "source": "self",
+        "done": false,
+        "status": "pending",
+        "assigned_by": null,
+        "class_id": null
+      },
+      {
+        "id": 12,
+        "title": "новая тема",
+        "desc": "Изучить тему Радиоактивность",
+        "date": "2026-04-25",
+        "time": "15:00-16:00",
+        "source": "teacher",
+        "done": false,
+        "status": "pending",
+        "assigned_by": 4305445,
+        "class_id": "cls_33ec346f"
+      },
+      {
+        "id": 13,
+        "title": "Тема",
+        "desc": "радиоактивность",
+        "date": "2026-04-23",
+        "time": "—",
+        "source": "teacher",
+        "done": false,
+        "status": "pending",
+        "assigned_by": 4305445,
+        "class_id": "cls_33ec346f"
+      }
+    ],
+    "йфяцыч": []
+  },
+  "classes": {
+    "cls_33ec346f": {
+      "id": "cls_33ec346f",
+      "name": "9D",
+      "subject": "Физика",
+      "teacher_id": 4305445,
+      "student_ids": [
+        7517597
+      ],
+      "created_at": "2026-04-23T15:26:37.266422"
+    }
+  },
+  "invites": [],
+  "invitations": {
+    "pastuh": [
+      {
+        "id": "14cb54e8",
+        "from_teacher_id": 4305445,
+        "from_teacher_name": "qwerty qwerty",
+        "class_id": "cls_33ec346f",
+        "class_name": "9D",
+        "status": "accepted",
+        "created_at": "2026-04-23T15:26:57.812189"
+      }
+    ],
+    "йфяцыч": []
+  }
+}

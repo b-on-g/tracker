@@ -1,0 +1,228 @@
+$bog_tracker_mpit_neolo_student_stats $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	profile_title @ \Личный кабинет
+	label_name @ \Имя
+	label_surname @ \Фамилия
+	label_login @ \Логин
+	label_role @ \Роль
+	label_school @ \Школа
+	label_id @ \ID
+	value_name \—
+	value_surname \—
+	value_login \—
+	value_role \—
+	value_school \—
+	value_id \—
+	invitations_title \📬 Приглашения
+	ai_title \🤖 ИИ-наставник
+	ai_button_label \Получить советы
+	stats_title @ \Статистика
+	done_title \✅ Выполненные задания
+	work_title \⏳ Задания в работе
+	overdue_title \⚠️ Просроченные задания
+	rejected_title \❌ Отклонённые задания
+	done_count \0
+	work_count \0
+	overdue_count \0
+	rejected_count \0
+	invitation_ids /string
+	invitation_title* \
+	invitation_sub* \
+	invitation_rows /
+	inv_accept*? null
+	inv_reject*? null
+	ai_click? null
+	ai_text? \
+	ai_visible? false
+	done_line_path \
+	done_fill_path \
+	work_line_path \
+	work_fill_path \
+	overdue_line_path \
+	overdue_fill_path \
+	rejected_line_path \
+	rejected_fill_path \
+	Invitation_row* $bog_tracker_mpit_neolo_student_stats_invitation
+		invitation_id* <= invitation_id_value* \
+		invitation_title <= invitation_title* \
+		invitation_sub <= invitation_sub* \
+		accept_click? <=> inv_accept*? null
+		reject_click? <=> inv_reject*? null
+	Done_chart $bog_tracker_mpit_neolo_student_stats_chart
+		line_path <= done_line_path \
+		fill_path <= done_fill_path \
+		color \#1aa843
+	Work_chart $bog_tracker_mpit_neolo_student_stats_chart
+		line_path <= work_line_path \
+		fill_path <= work_fill_path \
+		color \#111111
+	Overdue_chart $bog_tracker_mpit_neolo_student_stats_chart
+		line_path <= overdue_line_path \
+		fill_path <= overdue_fill_path \
+		color \#c0392b
+	Rejected_chart $bog_tracker_mpit_neolo_student_stats_chart
+		line_path <= rejected_line_path \
+		fill_path <= rejected_fill_path \
+		color \#e67e22
+	Done_card $bog_tracker_mpit_neolo_student_stats_card
+		card_title <= done_title
+		count <= done_count
+		accent \green
+		Chart <= Done_chart
+	Work_card $bog_tracker_mpit_neolo_student_stats_card
+		card_title <= work_title
+		count <= work_count
+		accent \black
+		Chart <= Work_chart
+	Overdue_card $bog_tracker_mpit_neolo_student_stats_card
+		card_title <= overdue_title
+		count <= overdue_count
+		accent \red
+		Chart <= Overdue_chart
+	Rejected_card $bog_tracker_mpit_neolo_student_stats_card
+		card_title <= rejected_title
+		count <= rejected_count
+		accent \orange
+		Chart <= Rejected_chart
+	sub /
+		<= Stats_layout $mol_view
+			sub /
+				<= Profile_card $mol_view
+					sub /
+						<= Profile_title $mol_view
+							sub /
+								<= profile_title
+						<= Profile_table $mol_view
+							sub /
+								<= L_name $mol_view
+									sub /
+										<= label_name
+								<= V_name $mol_view
+									sub /
+										<= value_name
+								<= L_surname $mol_view
+									sub /
+										<= label_surname
+								<= V_surname $mol_view
+									sub /
+										<= value_surname
+								<= L_login $mol_view
+									sub /
+										<= label_login
+								<= V_login $mol_view
+									sub /
+										<= value_login
+								<= L_role $mol_view
+									sub /
+										<= label_role
+								<= V_role $mol_view
+									sub /
+										<= value_role
+								<= L_school $mol_view
+									sub /
+										<= label_school
+								<= V_school $mol_view
+									sub /
+										<= value_school
+								<= L_id $mol_view
+									sub /
+										<= label_id
+								<= V_id $mol_view
+									sub /
+										<= value_id
+						<= Inv_section $mol_view
+							sub /
+								<= Inv_title $mol_view
+									sub /
+										<= invitations_title
+								<= Inv_list $mol_list
+									rows <= invitation_rows
+						<= Ai_section $mol_view
+							sub /
+								<= Ai_heading $mol_view
+									sub /
+										<= ai_title
+								<= Ai_btn $mol_button_minor
+									click? <=> ai_click? null
+									sub /
+										<= ai_button_label
+								<= Ai_block $mol_view
+									attr *
+										^
+										bog_tracker_mpit_neolo_student_stats_ai_visible <= ai_visible false
+									sub /
+										<= Ai_content $mol_view
+											sub /
+												<= ai_text
+				<= Stats_side $mol_view
+					sub /
+						<= Stats_title $mol_view
+							sub /
+								<= stats_title
+						<= Stats_column $mol_view
+							sub /
+								<= Done_card
+								<= Work_card
+								<= Overdue_card
+								<= Rejected_card
+
+$bog_tracker_mpit_neolo_student_stats_card $mol_view
+	card_title \
+	count \0
+	accent \green
+	Chart null
+	attr *
+		^
+		bog_tracker_mpit_neolo_student_stats_card_accent <= accent \green
+	sub /
+		<= Card_title $mol_view
+			sub /
+				<= card_title
+		<= Main $mol_view
+			sub /
+				<= Big_number $mol_view
+					sub /
+						<= count
+				<= Chart_holder $mol_view
+					sub /
+						<= Chart
+
+$bog_tracker_mpit_neolo_student_stats_invitation $mol_view
+	invitation_id \
+	invitation_title \
+	invitation_sub \
+	accept_label @ \Принять
+	reject_label @ \Отклонить
+	accept_click? null
+	reject_click? null
+	sub /
+		<= Inv_title $mol_view
+			sub /
+				<= invitation_title
+		<= Inv_sub $mol_view
+			sub /
+				<= invitation_sub
+		<= Inv_actions $mol_view
+			sub /
+				<= Accept_btn $mol_button_minor
+					click? <=> accept_click? null
+					sub /
+						<= accept_label
+				<= Reject_btn $mol_button_minor
+					click? <=> reject_click? null
+					sub /
+						<= reject_label
+
+$bog_tracker_mpit_neolo_student_stats_chart $mol_svg_root
+	view_box \0 0 400 90
+	aspect \none
+	color \#1aa843
+	line_path \
+	fill_path \
+	style * fill <= color \#1aa843
+	sub /
+		<= Fill $mol_svg_path
+			geometry <= fill_path
+		<= Line $mol_svg_path
+			geometry <= line_path

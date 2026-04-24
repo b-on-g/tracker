@@ -1,0 +1,149 @@
+$bog_tracker_mpit_neolo_parent $mol_view
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	screen_id? \children
+	open_child_id? \
+	logout_click? null
+	open_add_child_modal? null
+	add_child_modal_open? false
+	add_child_id? \
+	add_child_result? \
+	add_child_result_kind? \
+	goto_children? null
+	goto_calendar? null
+	goto_profile? null
+	children_open_child?val \
+	children_remove_child?val \
+	sub /
+		<= Topbar $mol_view
+			sub /
+				<= Brand $mol_view
+					sub /
+						\School
+						<= Brand_em $mol_view
+							sub / \Plan
+						<= Brand_badge $mol_view
+							sub / \Родитель
+				<= Logout_btn $mol_button_minor
+					click? <=> logout_click? null
+					sub / <= logout_label \↪ Выход
+		<= Layout $mol_view
+			sub /
+				<= Main $mol_view
+					sub /
+						<= Screen_title $mol_view
+							sub / <= screen_title \Мои дети
+						<= Screen_content $mol_view
+							sub /
+								<= active_screen null
+				<= Sidebar $mol_view
+					sub /
+						<= Side_stack $mol_view
+							sub /
+								<= Side_children $bog_tracker_mpit_neolo_parent_side_item
+									icon \👨‍👩‍👧
+									label \Дети
+									selected <= side_children_selected true
+									click? <=> goto_children? null
+								<= Side_calendar $bog_tracker_mpit_neolo_parent_side_item
+									icon \🗓
+									label \Календарь
+									selected <= side_calendar_selected false
+									click? <=> goto_calendar? null
+								<= Side_profile $bog_tracker_mpit_neolo_parent_side_item
+									icon \👤
+									label \Кабинет
+									selected <= side_profile_selected false
+									click? <=> goto_profile? null
+						<= Side_footer $mol_view
+							sub /
+								<= Side_id $mol_view
+									sub / <= side_id \
+		<= Add_child_modal $bog_tracker_mpit_neolo_parent_add_child_modal
+			open <= add_child_modal_open false
+			id_input? <=> add_child_id? \
+			result <= add_child_result \
+			result_kind <= add_child_result_kind \
+			submit? <=> add_child_submit? null
+			close? <=> add_child_close? null
+		<= Children_screen $bog_tracker_mpit_neolo_parent_children
+			children <= children_summaries /
+			open_child?val <=> children_open_child?val \
+			open_add? <=> open_add_child_modal? null
+			remove_child?val <=> children_remove_child?val \
+		<= Child_screen $bog_tracker_mpit_neolo_parent_child
+			store <= store
+			api <= api
+			child_id <= open_child_id \
+			children <= children_summaries /
+			back? <=> back_to_children? null
+			create_task? <=> create_task_click? null
+		<= Calendar_screen $bog_tracker_mpit_neolo_parent_calendar
+			store <= store
+			children <= children_summaries /
+		<= Profile_screen $bog_tracker_mpit_neolo_parent_profile
+			profile_name <= profile_name \
+			profile_surname <= profile_surname \
+			profile_username <= profile_username \
+			profile_id <= profile_id \
+			children <= children_summaries /
+			open_add? <=> open_add_child_modal? null
+			remove_child?val <=> children_remove_child?val \
+
+$bog_tracker_mpit_neolo_parent_side_item $mol_button_minor
+	icon \
+	label \
+	selected false
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_side_item_selected <= selected
+	sub /
+		<= Side_circle $mol_view
+			sub / <= icon
+		<= Side_label $mol_view
+			sub / <= label
+
+$bog_tracker_mpit_neolo_parent_add_child_modal $mol_view
+	open? false
+	id_input? \
+	result \
+	result_kind \
+	submit? null
+	close? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_parent_add_child_modal_open <= open
+	sub /
+		<= Backdrop $mol_view
+			sub /
+				<= Dialog $mol_view
+					sub /
+						<= Head $mol_view
+							sub /
+								<= Head_title $mol_view
+									sub / \Добавить ребёнка
+								<= Close_btn $mol_button_minor
+									click? <=> close? null
+									sub / <= close_label \×
+						<= Hint $mol_view
+							sub / \Введите ID ребёнка. Ребёнок найдёт свой ID в разделе «Кабинет» → поле «ID».
+						<= Id_field $mol_labeler
+							title @ \ID ребёнка
+							content /
+								<= Id_input $mol_string
+									hint @ \Например, 3847291
+									value? <=> id_input? \
+						<= Result_view $mol_view
+							attr *
+								^
+								bog_tracker_mpit_neolo_parent_add_child_modal_result_kind <= result_kind
+							sub /
+								<= result
+						<= Actions $mol_view
+							sub /
+								<= Cancel_btn $mol_button_minor
+									click? <=> close? null
+									sub / <= cancel_label \Отмена
+								<= Submit_btn $mol_button_major
+									click? <=> submit? null
+									sub / <= submit_label \Добавить

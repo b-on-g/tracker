@@ -1,0 +1,28 @@
+$bog_tracker_mpit_neolo_modal_voice_input $mol_view
+	api $bog_tracker_mpit_neolo_api
+	value? \
+	placeholder @ \
+	multiline false
+	listening false
+	busy false
+	voice_click? null
+	attr *
+		^
+		bog_tracker_mpit_neolo_modal_voice_input_multiline <= multiline false
+	sub /
+		<= Input_slot null
+		<= Voice_btn $mol_button_minor
+			click? <=> voice_click? null
+			attr *
+				^
+				bog_tracker_mpit_neolo_modal_voice_input_listening <= listening false
+			sub /
+				<= voice_icon \🎤
+
+$bog_tracker_mpit_neolo_modal_voice_input_string $mol_string
+	hint @ \
+	value? <=> value? \
+
+$bog_tracker_mpit_neolo_modal_voice_input_textarea $mol_textarea
+	hint @ \
+	value? <=> value? \

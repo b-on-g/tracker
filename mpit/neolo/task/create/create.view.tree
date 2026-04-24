@@ -1,0 +1,68 @@
+$bog_tracker_mpit_neolo_task_create $bog_tracker_mpit_neolo_modal_modal
+	store $bog_tracker_mpit_neolo_store
+	api $bog_tracker_mpit_neolo_api
+	hidden? true
+	default_date \
+	on_saved? null
+	title @ \Новая задача
+	close? <=> close_click? null
+	title_value? \
+	desc_value? \
+	date_value? \
+	start_h? 0
+	start_m? 0
+	end_h? 0
+	end_m? 0
+	error \
+	has_error false
+	busy false
+	ai_hint \
+	ai_predict? null
+	cancel_click? null
+	save_click? null
+	body /
+		<= Error_view $mol_view
+			attr *
+				^
+				bog_tracker_mpit_neolo_task_create_error_visible <= has_error false
+			sub /
+				<= error
+		<= Title_field $mol_labeler
+			title @ \Название
+			content /
+				<= Title_voice $bog_tracker_mpit_neolo_modal_voice_input
+					api <= api
+					placeholder @ \Например, собрать рюкзак
+					multiline false
+					value? <=> title_value? \
+		<= Date_field $mol_labeler
+			title @ \Дата
+			content /
+				<= Date_input $mol_date
+					value? <=> date_value? \
+		<= Time_range $bog_tracker_mpit_neolo_modal_time_range
+			start_h? <=> start_h? 0
+			start_m? <=> start_m? 0
+			end_h? <=> end_h? 0
+			end_m? <=> end_m? 0
+			hint <= ai_hint \
+			ai_predict? <=> ai_predict? null
+		<= Desc_field $mol_labeler
+			title @ \Описание
+			content /
+				<= Desc_voice $bog_tracker_mpit_neolo_modal_voice_input
+					api <= api
+					placeholder @ \Что нужно сделать
+					multiline true
+					value? <=> desc_value? \
+		<= Actions $mol_view
+			sub /
+				<= Cancel_btn $mol_button_minor
+					click? <=> cancel_click? null
+					sub /
+						<= cancel_label @ \Отмена
+				<= Save_btn $mol_button_major
+					click? <=> save_click? null
+					enabled <= save_enabled true
+					sub /
+						<= save_label @ \Сохранить

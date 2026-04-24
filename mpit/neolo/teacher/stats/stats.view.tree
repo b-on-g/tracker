@@ -1,0 +1,49 @@
+$bog_tracker_mpit_neolo_teacher_stats $mol_view
+	store $bog_tracker_mpit_neolo_store
+	teacher_classes /
+	class_ids /string
+	class_name* \
+	class_summary* \
+	empty_visible true
+	cards_sub /
+	Card* $bog_tracker_mpit_neolo_teacher_stats_card
+		name <= class_name* \
+		summary <= class_summary* \
+	sub /
+		<= Cards $mol_view
+			sub <= cards_sub
+		<= Empty $mol_view
+			sub /
+				<= Empty_icon $mol_view
+					sub /
+						\📊
+				<= Empty_text $mol_view
+					sub /
+						\Нет классов
+				<= Empty_sub $mol_view
+					sub /
+						\Создайте классы, чтобы видеть статистику
+	attr *
+		^
+		bog_tracker_mpit_neolo_teacher_stats_empty <= empty_visible
+
+$bog_tracker_mpit_neolo_teacher_stats_card $mol_view
+	name \
+	summary \
+	sub /
+		<= Head $mol_view
+			sub /
+				<= Icon $mol_view
+					sub /
+						\🏫
+				<= Info $mol_view
+					sub /
+						<= Name $mol_view
+							sub /
+								<= name
+						<= Summary $mol_view
+							sub /
+								<= summary
+		<= Placeholder $mol_view
+			sub /
+				\Данные о выполнении заданий будут показаны здесь
