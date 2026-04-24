@@ -1,4 +1,4 @@
-name: $bog_tracker_app
+name: $bog_tracker_mpit_neolo
 
 permissions: write-all
 
@@ -19,13 +19,12 @@ jobs:
         steps:
             - uses: hyoo-ru/mam_build@master2
               with:
-                  package: "bog/tracker"
-                  modules: 'app'
+                  package: "bog/tracker/mplit/neolo"
 
             - uses: hyoo-ru/gh-deploy@v4.4.1
               if: github.ref == 'refs/heads/main'
               with:
-                  folder: "bog/tracker/app/-"
+                  folder: "bog/tracker/mplit/neolo/-"
 
     cleanup:
         if: github.event_name == 'delete' && startsWith(github.event.ref, 'feature/')
