@@ -1,5 +1,6 @@
 name: $bog_tracker_mpit_neolo
 
+
 permissions: write-all
 
 on:
